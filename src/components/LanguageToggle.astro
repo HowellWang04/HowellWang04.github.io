@@ -1,0 +1,45 @@
+<button type="button" class="btn btn-sm btn-ghost rounded-full gap-1" data-language-toggle aria-label="切换到中文" title="切换到中文">
+  <span data-language="en" lang="en">EN</span>
+  <span class="opacity-40" aria-hidden="true">/</span>
+  <span data-language="zh-CN" lang="zh-CN">中</span>
+</button>
+
+<script>
+  const preferredLanguage = () => localStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
+
+  const applyLanguage = (page: Document, language: string) => {
+    page.documentElement.lang = language;
+    page.querySelectorAll<HTMLElement>("[data-en][data-zh]").forEach((element) => {
+      element.textContent = language === "zh-CN" ? element.dataset.zh! : element.dataset.en!;
+    });
+    page.querySelectorAll<HTMLButtonElement>("[data-language-toggle]").forEach((button) => {
+      const label = language === "en" ? "切换到中文" : "Switch to English";
+      button.setAttribute("aria-label", label);
+      button.title = label;
+    });
+  };
+
+  const setupLanguage = () => {
+    applyLanguage(document, preferredLanguage());
+    document.querySelectorAll<HTMLButtonElement>("[data-language-toggle]").forEach((button) => {
+      if (button.dataset.bound) return;
+      button.dataset.bound = "true";
+      button.addEventListener("click", () => {
+        const language = document.documentElement.lang === "en" ? "zh-CN" : "en";
+        localStorage.setItem("portfolio-language", language);
+        applyLanguage(document, language);
+        document.dispatchEvent(new Event("portfolio:language-change"));
+      });
+    });
+  };
+
+  setupLanguage();
+  document.addEventListener("astro:page-load", setupLanguage);
+  document.addEventListener("astro:before-swap", (event) => applyLanguage(event.newDocument, preferredLanguage()));
+</script>
+
+<style>
+  [data-language] { opacity: 0.45; }
+  :global(html[lang="en"]) [data-language="en"],
+  :global(html[lang="zh-CN"]) [data-language="zh-CN"] { opacity: 1; font-weight: 700; }
+</style>

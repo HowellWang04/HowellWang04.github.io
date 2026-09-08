@@ -18,8 +18,17 @@ const {
 ---
 
 <!doctype html>
-<html lang="en" data-theme="lofi">
+<html lang="en" data-theme="cupcake">
   <head>
+    <script is:inline>
+      const storedTheme = localStorage.getItem("astrofy-theme");
+      const initialTheme = storedTheme
+        ? (storedTheme === "dark" ? "dark" : "cupcake")
+        : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "cupcake");
+      document.documentElement.dataset.theme = initialTheme;
+      document.documentElement.style.colorScheme = initialTheme === "dark" ? "dark" : "light";
+      document.documentElement.lang = localStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
+    </script>
     <BaseHead title={title} description={description} image={image} , ogType={ogType} />
     {TRANSITION_API && <ViewTransitions />}
   </head>
@@ -29,7 +38,7 @@ const {
       <div class="drawer-content bg-base-100">
         <Header title={SITE_TITLE} />
         <div class="md:flex md:justify-center">
-          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]">
+          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]" transition:name="page-content" transition:animate="none">
             <slot />
           </main>
         </div>

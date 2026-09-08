@@ -1,0 +1,65 @@
+---
+import LocalizedText from "./LocalizedText.astro";
+const { closedLabel = "Show more", openLabel = "Show less", closedLabelZh = "展开更多", openLabelZh = "收起" } = Astro.props;
+---
+
+<details class="expandable-section group mt-2">
+  <summary
+    class="expandable-trigger inline-flex cursor-pointer list-none items-center gap-2 rounded-full border border-base-300 bg-base-200 px-4 py-2 text-sm font-medium transition duration-200 hover:bg-base-300 focus:outline-none focus-visible:ring-2 focus-visible:ring-secondary"
+  >
+    <span class="group-open:hidden"><LocalizedText en={closedLabel} zh={closedLabelZh} /></span>
+    <span class="hidden group-open:inline"><LocalizedText en={openLabel} zh={openLabelZh} /></span>
+    <span
+      class="flex h-5 w-5 items-center justify-center rounded-full border border-current transition-transform duration-200 group-open:rotate-90"
+      aria-hidden="true"
+    >
+      →
+    </span>
+  </summary>
+  <div class="expandable-content">
+    <slot />
+  </div>
+</details>
+
+<script>
+  const setupExpandableSections = () => {
+    document.querySelectorAll<HTMLDetailsElement>(".expandable-section").forEach((section) => {
+      if (section.dataset.bound) return;
+      section.dataset.bound = "true";
+      const trigger = section.querySelector<HTMLElement>("summary")!;
+      let animation: Animation | undefined;
+      let expanded = section.open;
+
+      trigger.addEventListener("click", (event) => {
+        event.preventDefault();
+        const startHeight = section.getBoundingClientRect().height;
+        animation?.cancel();
+        expanded = !expanded;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          section.open = expanded;
+          section.style.overflow = "";
+          return;
+        }
+
+        section.open = true;
+        const endHeight = expanded
+          ? section.getBoundingClientRect().height
+          : trigger.getBoundingClientRect().height;
+        section.style.overflow = "hidden";
+        animation = section.animate(
+          { height: [`${startHeight}px`, `${endHeight}px`] },
+          { duration: 480, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
+        );
+        animation.onfinish = () => {
+          section.open = expanded;
+          section.style.overflow = "";
+          animation = undefined;
+        };
+      });
+    });
+  };
+
+  setupExpandableSections();
+  document.addEventListener("astro:page-load", setupExpandableSections);
+</script>

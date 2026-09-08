@@ -1,3 +1,47 @@
 .time-line-container>div:last-child .education__time>.education__line {
     display: none;
 }
+
+.btn {
+    --animation-btn: 0s;
+}
+
+html[data-theme="cupcake"] .sidebar-link {
+    color: #291334;
+}
+
+html[data-theme="cupcake"] .sidebar-link:is(:hover, :focus, :active, [aria-current="page"]) {
+    background-color: #291334;
+    color: #f1ece8;
+    box-shadow: none;
+}
+
+html[data-theme="cupcake"] .sidebar-dot {
+    background-color: #291334;
+    opacity: 0.3;
+}
+
+html[data-theme="cupcake"] .sidebar-link:is(:hover, :focus, :active, [aria-current="page"]) .sidebar-dot {
+    background-color: currentColor;
+    opacity: 1;
+}
+
+html[data-theme="cupcake"] .badge-secondary {
+    background-color: #ef9fbc;
+    border-color: #ef9fbc;
+    color: #291334;
+}
+
+html[data-theme="cupcake"] .expandable-trigger {
+    --tw-ring-color: #291334;
+}
+
+.card-pending {
+    opacity: 0;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .card-pending {
+        opacity: 1;
+    }
+}

@@ -1,11 +1,12 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import TimeLineElement from "../components/cv/TimeLine.astro";
+import LocalizedText from "../components/LocalizedText.astro";
 ---
 
 <BaseLayout title="Resume" sideBarActiveItemID="cv">
   <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Profile</div>
+    <div class="text-3xl w-full font-bold"><LocalizedText en="Profile" zh="个人简介" /></div>
   </div>
 
   <div class="mb-10 text-justify">
@@ -16,7 +17,7 @@ import TimeLineElement from "../components/cv/TimeLine.astro";
   </div>
 
   <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Education</div>
+    <div class="text-3xl w-full font-bold"><LocalizedText en="Education" zh="教育经历" /></div>
   </div>
 
   <div class="time-line-container grid gap-4 mb-10">
@@ -31,7 +32,7 @@ import TimeLineElement from "../components/cv/TimeLine.astro";
   </div>
 
   <div class="mb-5">
-    <div class="text-3xl w-full font-bold">Experience</div>
+    <div class="text-3xl w-full font-bold"><LocalizedText en="Experience" zh="工作经历" /></div>
   </div>
 
   <div class="time-line-container mb-10">

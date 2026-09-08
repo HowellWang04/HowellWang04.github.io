@@ -1,26 +1,78 @@
 ---
+import LocalizedText from "./LocalizedText.astro";
 const { sideBarActiveItemID } = Astro.props;
-const activeClass = "bg-base-300"; // For primary color replace with `active` class
+const chineseLabels = { home: "首页", projects: "项目", services: "服务", blog: "博客", cv: "简历" };
+const menuItems = [
+    { id: "home", label: "Home", href: "/" },
+    { id: "projects", label: "Projects", href: "/projects" },
+    { id: "services", label: "Services", href: "/services" },
+    { id: "blog", label: "Blog", href: "/blog/" },
+    { id: "cv", label: "CV", href: "/cv" },
+];
 ---
 
 <ul class="menu grow shrink menu-md overflow-y-auto">
-    <li><a class="py-3 text-base" id="home" href="/">Home</a></li>
-    <li><a class="py-3 text-base" id="projects" href="/projects">Projects</a></li>
-    <li><a class="py-3 text-base" id="services" href="/services">Services</a></li>
-    <li><a class="py-3 text-base" id="store" href="/store">Store</a></li>
-    <li><a class="py-3 text-base" id="blog" href="/blog/">Blog</a></li>
-    <li><a class="py-3 text-base" id="cv" href="/cv">CV</a></li>
+    {
+        menuItems.map((item) => {
+            const isActive = item.id === sideBarActiveItemID;
+
+            return (
+                <li>
+                    <a
+                        class:list={[
+                            "sidebar-link group my-0.5 py-3 text-base transform-gpu transition duration-300 ease-in-out hover:scale-[1.03] hover:bg-base-300",
+                            isActive && "scale-[1.03] bg-base-300 font-semibold text-secondary shadow-sm",
+                        ]}
+                        id={item.id}
+                        href={item.href}
+                        aria-current={isActive ? "page" : undefined}
+                        transition:name={`sidebar-item-${item.id}`}
+                        transition:animate="fade"
+                    >
+                        <span
+                            class:list={[
+                                "sidebar-dot h-2 w-2 rounded-full bg-base-content/30 transition duration-300 group-hover:scale-125 group-hover:bg-secondary",
+                                isActive && "scale-125 bg-secondary",
+                            ]}
+                            aria-hidden="true"
+                        ></span>
+                        <span class="flex-1">
+                            <LocalizedText en={item.label} zh={chineseLabels[item.id]} />
+                        </span>
+                    </a>
+                </li>
+            );
+        })
+    }
     <li>
         <a
-            class="py-3 text-base"
+            class="sidebar-link py-3 text-base"
             href="mailto:contact.manuelernestog@gmail.com"
             target="_blank"
-            referrerpolicy="no-referrer-when-downgrade">Contact</a
+            referrerpolicy="no-referrer-when-downgrade"><span class="flex-1" transition:name="sidebar-label-contact" transition:animate="none"><LocalizedText en="Contact" zh="联系我" /></span></a
         >
     </li>
 </ul>
 
-<script define:vars={{ sideBarActiveItemID: sideBarActiveItemID, activeClass: activeClass }}>
-const activeItemElem = document.getElementById(sideBarActiveItemID);
-activeItemElem && activeItemElem.classList.add(activeClass);
-</script>
+<style>
+    .sidebar-link {
+        will-change: transform;
+        backface-visibility: hidden;
+    }
+
+    .sidebar-link[aria-current="page"] {
+        transition-property: color, background-color, border-color, box-shadow;
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+        .sidebar-link,
+        .sidebar-link > span {
+            transition: none;
+        }
+
+        .sidebar-link {
+            transform: none;
+            will-change: auto;
+        }
+    }
+</style>

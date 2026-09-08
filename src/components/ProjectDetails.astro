@@ -1,0 +1,179 @@
+---
+import LocalizedText from "./LocalizedText.astro";
+import { projectDetails } from "../data/projectDetails";
+
+const { projectId, title, desc, descZh, img } = Astro.props;
+const details = projectDetails[projectId] ?? {};
+const dialogId = `project-details-${projectId}`;
+const pending = { en: "Not yet documented", zh: "尚待补充" };
+const facts = [
+  { label: { en: "My role", zh: "我的角色" }, value: details.role },
+  { label: { en: "Team", zh: "团队背景" }, value: details.team },
+  { label: { en: "Timeline", zh: "开发周期" }, value: details.duration },
+];
+const decisions = [
+  { label: { en: "The challenge", zh: "关键问题" }, value: details.challenge },
+  { label: { en: "My approach", zh: "我的解决方案" }, value: details.approach },
+];
+---
+
+<project-details class="block px-4 pb-4 text-right">
+  <button type="button" class="btn btn-sm btn-outline rounded-full" data-project-open aria-haspopup="dialog" aria-controls={dialogId}>
+    <LocalizedText en="My contribution" zh="我的贡献" />
+    <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M7 7h10v10" /></svg>
+  </button>
+
+  <dialog id={dialogId} class="project-dialog" aria-labelledby={`${dialogId}-title`}>
+    <div class="project-sheet bg-base-100 text-base-content text-left">
+      <header class="project-header border-b border-base-300 bg-base-100">
+        <div>
+          <p class="text-sm opacity-60"><LocalizedText en="Project breakdown" zh="项目详解" /></p>
+          <h2 id={`${dialogId}-title`} class="text-2xl sm:text-3xl font-bold mt-1">{title}</h2>
+        </div>
+        <form method="dialog">
+          <button class="btn btn-sm btn-ghost rounded-full" autofocus>
+            <LocalizedText en="Close" zh="关闭" /><span aria-hidden="true">×</span>
+          </button>
+        </form>
+      </header>
+
+      <div class="project-body">
+        <div class="project-overview">
+          {img && <img src={img} alt={title} class="project-cover rounded-xl" loading="lazy" />}
+          <div>
+            <p class="text-base leading-relaxed"><LocalizedText en={desc} zh={descZh ?? desc} /></p>
+            {details.context && <p class="text-sm leading-relaxed opacity-70 mt-3"><LocalizedText {...details.context} /></p>}
+          </div>
+        </div>
+
+        <dl class="project-facts rounded-xl bg-base-200">
+          {facts.map(({ label, value }) => (
+            <div>
+              <dt class="text-sm opacity-60 mb-2"><LocalizedText {...label} /></dt>
+              <dd class:list={["text-base", !value && "opacity-60"]}><LocalizedText {...(value ?? pending)} /></dd>
+            </div>
+          ))}
+        </dl>
+
+        <section class="project-section">
+          <h3 class="text-lg font-bold"><LocalizedText en="Tools & technology" zh="技术栈与工具" /></h3>
+          {details.stack?.length ? (
+            <ul class="grid gap-3 mt-4">
+              {details.stack.map((tool) => (
+                <li class="flex flex-col sm:flex-row gap-2 sm:gap-4">
+                  <span class="badge badge-outline h-auto min-h-6 py-1 shrink-0">{tool.name}</span>
+                  <p class="text-base leading-relaxed"><LocalizedText {...tool.use} /></p>
+                </li>
+              ))}
+            </ul>
+          ) : <p class="text-base opacity-60 mt-3"><LocalizedText {...pending} /></p>}
+        </section>
+
+        <section class="project-section">
+          <h3 class="text-lg font-bold"><LocalizedText en="What I owned & delivered" zh="我负责并完成的工作" /></h3>
+          {details.contributions?.length ? (
+            <ul class="list-disc pl-5 mt-3 space-y-3 text-base leading-relaxed">
+              {details.contributions.map((contribution) => <li><LocalizedText {...contribution} /></li>)}
+            </ul>
+          ) : <p class="text-base opacity-60 mt-3"><LocalizedText en="My individual responsibilities and contributions will be added here." zh="我的具体职责与个人贡献尚待补充。" /></p>}
+        </section>
+
+        <section class="project-section">
+          <h3 class="text-lg font-bold"><LocalizedText en="Problem solving" zh="问题解决与决策" /></h3>
+          <div class="project-decisions mt-4">
+            {decisions.map(({ label, value }) => (
+              <div class="border-l-2 border-base-300 pl-4">
+                <h4 class="text-sm font-semibold mb-2"><LocalizedText {...label} /></h4>
+                <p class:list={["text-base leading-relaxed", !value && "opacity-60"]}><LocalizedText {...(value ?? pending)} /></p>
+              </div>
+            ))}
+          </div>
+        </section>
+
+        <section class="project-section">
+          <h3 class="text-lg font-bold"><LocalizedText en="Results & evidence" zh="成果与证据" /></h3>
+          <p class:list={["text-base leading-relaxed mt-3", !details.outcome && "opacity-60"]}><LocalizedText {...(details.outcome ?? pending)} /></p>
+          {details.links?.length && <div class="flex flex-wrap gap-3 mt-4">
+            {details.links.map((link) => <a class="btn btn-sm rounded-full" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
+          </div>}
+        </section>
+
+        <section class="project-section">
+          <h3 class="text-lg font-bold"><LocalizedText en="What I learned" zh="复盘与收获" /></h3>
+          <p class:list={["text-base leading-relaxed mt-3", !details.reflection && "opacity-60"]}><LocalizedText {...(details.reflection ?? pending)} /></p>
+        </section>
+      </div>
+    </div>
+  </dialog>
+</project-details>
+
+<script>
+  class ProjectDetails extends HTMLElement {
+    connectedCallback() {
+      if (this.dataset.bound) return;
+      this.dataset.bound = "true";
+      const dialog = this.querySelector<HTMLDialogElement>("dialog")!;
+      const trigger = this.querySelector<HTMLButtonElement>("[data-project-open]")!;
+
+      trigger.addEventListener("click", () => dialog.showModal());
+      dialog.addEventListener("click", (event) => {
+        if (event.target === dialog) dialog.close();
+      });
+    }
+  }
+
+  if (!customElements.get("project-details")) {
+    customElements.define("project-details", ProjectDetails);
+  }
+</script>
+
+<style>
+  .project-dialog {
+    width: min(56rem, calc(100vw - 2rem));
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 1.25rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
+  }
+
+  .project-dialog::backdrop {
+    background: rgb(10 12 18 / 65%);
+    backdrop-filter: blur(4px);
+  }
+
+  :global(html:has(.project-dialog[open])) {
+    overflow: hidden;
+  }
+
+  .project-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 1.5rem 2rem;
+  }
+
+  .project-header form { flex-shrink: 0; }
+  .project-body { padding: 2rem; }
+  .project-overview { display: flex; gap: 1.5rem; align-items: center; }
+  .project-cover { width: 9rem; height: 7.25rem; object-fit: cover; flex-shrink: 0; }
+  .project-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; padding: 1.25rem; margin-top: 1.75rem; }
+  .project-section { margin-top: 2rem; }
+  .project-decisions { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1.5rem; }
+
+  @media (max-width: 600px) {
+    .project-header { padding: 1rem; }
+    .project-body { padding: 1.25rem; }
+    .project-overview { flex-direction: column; align-items: flex-start; }
+    .project-cover { width: 7rem; height: auto; }
+    .project-facts, .project-decisions { grid-template-columns: 1fr; gap: 1rem; }
+  }
+</style>

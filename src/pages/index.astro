@@ -3,6 +3,8 @@ import BaseLayout from "../layouts/BaseLayout.astro";
 import HorizontalCard from "../components/HorizontalCard.astro";
 import { getCollection } from "astro:content";
 import createSlug from "../lib/createSlug"
+import ExpandableSection from "../components/ExpandableSection.astro";
+import LocalizedText from "../components/LocalizedText.astro";
 
 const posts = (await getCollection("blog")).sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf());
 
@@ -11,53 +13,60 @@ const last_posts = posts.slice(0, 3);
 
 <BaseLayout sideBarActiveItemID="home">
   <div class="pb-12 mt-5">
-    <div class="text-xl py-1">Hey there 👋</div>
-    <div class="text-5xl font-bold">I'm Manuel Ernesto</div>
-    <div class="text-3xl py-3 font-bold">Software Engineer and Entrepreneur</div>
+    <div class="text-xl py-1"><LocalizedText en="Hey there 👋" zh="你好 👋" /></div>
+    <div class="text-5xl font-bold"><LocalizedText en="I'm Guanhao Wang" zh="我是 Guanhao Wang" /></div>
+    <div class="text-3xl py-3 font-bold"><LocalizedText en="Game Developer & Designer" zh="游戏开发者与设计者" /></div>
     <div class="py-2">
       <text class="text-lg">
-        This is <b>Astrofy</b> a free and open-source template for your Personal Portfolio Website built with Astro and TailwindCSS.
-        Create in minutes a website with Blog, CV, Project Section, Store and RSS Feed. I hope you find
-        it useful!
+        <LocalizedText
+          en="I create games and interactive experiences, bringing ideas to life through code and design. Here you'll find my projects, creative experiments, and what I learn along the way."
+          zh="我通过编程与设计，将想法变成游戏和交互体验。这里记录着我的项目、创意尝试，以及一路上的学习与思考。"
+        />
       </text>
     </div>
     <div class="mt-8">
-      <a class="btn" href="https://twitter.com/manuelernestog" target="_blank"> Let's connect!</a>
-      <a href="https://github.com/manuelernestog/astrofy" target="_blank" class="btn btn-outline ml-5">
-        Get This template
+      <a class="btn" href="/projects"><LocalizedText en="View my projects" zh="查看我的项目" /></a>
+      <a href="/cv" class="btn btn-outline ml-5">
+        <LocalizedText en="View my resume" zh="查看我的简历" />
       </a>
     </div>
   </div>
 
   <div>
-    <div class="text-3xl w-full font-bold mb-2">My last projects {"</>"}</div>
+    <div class="text-3xl w-full font-bold mb-2"><LocalizedText en="My last projects" zh="近期项目" /> {"</>"}</div>
   </div>
 
   <HorizontalCard
-    title="Demo Project 1"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="NEW"
+    title="Seafloor Revival"
+    projectId="seafloor-revival"
+    img="/seafloor-revival.jpg"
+    desc="A 2.5D underwater base building game made for GMTK Game Jam 2025. Lead a sea hare civilization, gather resources, unlock technology, and rebuild through recurring pollution disasters."
+    descZh="为 GMTK Game Jam 2025 制作的 2.5D 海底基地建造游戏。带领海兔文明采集资源、解锁科技，在循环来袭的污染灾难中重建家园。"
+    url="https://nikolai16.itch.io/seafloor-revival"
+    badge="GMTK 2025"
   />
   <div class="divider my-0"></div>
   <HorizontalCard
     title="Demo Project 2"
+    projectId="demo-project-2"
     img="/post_img.webp"
     desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
     url="#"
   />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Demo Project 3"
-    img="/post_img.webp"
-    desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
-    url="#"
-    badge="FOSS"
-  />
+  <ExpandableSection closedLabel="More projects" openLabel="Show less" closedLabelZh="更多项目">
+    <div class="divider my-0"></div>
+    <HorizontalCard
+      title="Demo Project 3"
+      projectId="demo-project-3"
+      img="/post_img.webp"
+      desc="Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua."
+      url="#"
+      badge="FOSS"
+    />
+  </ExpandableSection>
 
   <div>
-    <div class="text-3xl w-full font-bold mb-5 mt-10">Latest from blog</div>
+    <div class="text-3xl w-full font-bold mb-5 mt-10"><LocalizedText en="Latest from blog" zh="最新文章" /></div>
   </div>
 
   {
