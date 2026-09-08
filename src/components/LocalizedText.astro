@@ -2,3 +2,7 @@
 const { en, zh } = Astro.props;
 ---
 <span data-en={en} data-zh={zh}>{en}</span>
+
+<style>
+  span { display: inline-block; max-width: 100%; }
+</style>
