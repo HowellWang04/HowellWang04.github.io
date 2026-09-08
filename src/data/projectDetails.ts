@@ -17,6 +17,18 @@ export type ProjectDetails = {
 // Add only confirmed personal responsibilities, tools, and results.
 // Describe contributions as an action, the work you owned, and its impact.
 export const projectDetails: Record<string, ProjectDetails> = {
+  "mask": {
+    context: {
+      en: "A Global Game Jam 2026 entry from the CiGA online jam site in China, built around the theme of Mask.",
+      zh: "Global Game Jam 2026 中国 CiGA 线上站点参赛作品，围绕 Mask 主题展开。",
+    },
+    links: [
+      {
+        label: { en: "Jam submission", zh: "参赛页面" },
+        url: "https://globalgamejam.org/games/2026/mask-6-4",
+      },
+    ],
+  },
   "seafloor-revival": {
     context: {
       en: "A team project for GMTK Game Jam 2025, exploring civilization building through recurring environmental disasters.",
