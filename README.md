@@ -2,7 +2,7 @@
 
 ![Astrofy | Personal Porfolio Website Template](public/social_img.webp)
 
-Astrofy is a free and open-source template for your Personal Portfolio Website built with Astro and TailwindCSS. Create in minutes a website with a Blog, CV, Project Section, Store, and RSS Feed.
+Astrofy is a free and open-source template for your Personal Portfolio Website built with Astro and TailwindCSS. Create in minutes a website with a CV and Project Section.
 
 ## Demo
 
@@ -43,25 +43,12 @@ pnpm run dev
 │   │   └── SideBar.astro
 │   │   └── SideBarMenu.astro
 │   │   └── SideBarFooter.astro
-│   ├── content/
-│   │   ├── blog/
-│   │   │   ├── post1.md
-│   │   │   ├── post2.md
-│   │   │   └── post3.md
-│   │   ├── store/
-│   │   │   ├── item1.md
-│   │   │   ├── item2.md
 │   ├── layouts/
 │   │   └── BaseLayout.astro
-│   │   └── PostLayout.astro
 │   └── pages/
-│   │   ├── blog/
-│   │   │   ├── [...page].astro
-│   │   │   ├── [slug].astro
 │   │   └── cv.astro
 │   │   └── index.astro
 │   │   └── projects.astro
-│   │   └── rss.xml.js
 │   ├── styles/
 │   │   └── global.css
 │   └── config.ts
@@ -81,7 +68,6 @@ You can change global site configuration on '/src/config.ts' file:
 
 - **SITE_TITLE**: Default pages title.
 - **SITE_DESCRIPTION**: Default pages title.
-- **GENERATE_SLUG_FROM_TITLE**: By default Astrofy will generate the blog slug pages base on the article name. Set this var to false if you want to use the Astro file base (Compatible with Astrofy older versions).
 - **TRANSITION_API**: Enable and disable transition API
 
 ### Components usage
@@ -124,7 +110,7 @@ The timeline components are used to confirm the CV.
 
 #### Card & HorizontalCard
 
-The cards are primarly used for the Project and the Blog components. They include a picture, a title, and a description. 
+The cards are primarily used for the Project components. They include a picture, a title, and a description.
 
 ```html
 <HorizontalCard title="Card Title" img="imge_url" desc="Description" url="Link
@@ -172,48 +158,11 @@ For more details, see the [astro components](https://docs.astro.build/en/core-co
 
 ### Layouts
 
-Include `BaseLayout` in each page you add and `PostLayout` to your post pages.
+Include `BaseLayout` in each page you add.
 
 The BaseLayout defines a general template for each new webpage you want to add. It imports constants SITE_TITLE and SITE_DESCRIPTION which can be modified in the ```../config``` folder. Data placed there can be imported anywhere using import. 
 
-### Content
-
-You can add a [content collection](https://docs.astro.build/en/guides/content-collections/) in `/content/' folder, you will need add it at config.ts.
-
-#### config.ts
-
-Where you need to define your content collections, we define our content schemas too.
-
-#### Blog
-
-Add your `md` blog post in the `/content/blog/` folder.
-
-##### Post format
-
-Add code with this format in the top of each post file.
-
-```
----
-title: "Post Title"
-description: "Description"
-pubDate: "Post date format(Sep 10 2022)"
-heroImage: "Post Hero Image URL"
----
-```
-
 ### Pages
-
-#### Blog
-
-Blog uses Astro's content collection to query post's `md`.
-
-##### [page].astro
-
-The `[page].astro` is the route to work with the paginated post list. You can change there the number of items listed for each page and the pagination button labels.
-
-##### [slug].astro
-
-The `[slug].astro` is the base route for every blog post, you can customize the page layout or behaviour, by default uses `content/blog` for content collection and `PostLayout` as layout.
 
 #### Shop
 
@@ -264,9 +213,6 @@ The Sitemap is generated automatically when you build your website in the root o
 You can deploy your site on your favourite static hosting service such as Vercel, Netlify, GitHub Pages, etc.
 
 The configuration for the deployment varies depending on the platform where you are going to do it. See the [official Astro information](https://docs.astro.build/en/guides/deploy/) to deploy your website.
-
-> **⚠️ CAUTION** </br>
-> The Blog pagination of this template is implemented using dynamic route parameters in its filename and for now this format is incompatible with SSR deploy configs, so please use the default static deploy options for your deployments.
 
 ## Contributing
 

@@ -18,7 +18,7 @@ const decisions = [
 ---
 
 <project-details class="block px-4 pb-4 text-right">
-  <button type="button" class="btn btn-sm btn-outline rounded-full" data-project-open aria-haspopup="dialog" aria-controls={dialogId}>
+  <button type="button" class="btn btn-sm btn-outline btn-primary rounded-full" data-project-open aria-haspopup="dialog" aria-controls={dialogId}>
     <LocalizedText en="My contribution" zh="我的贡献" />
     <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M7 17 17 7M7 7h10v10" /></svg>
   </button>
@@ -94,7 +94,7 @@ const decisions = [
           <h3 class="text-lg font-bold"><LocalizedText en="Results & evidence" zh="成果与证据" /></h3>
           <p class:list={["text-base leading-relaxed mt-3", !details.outcome && "opacity-60"]}><LocalizedText {...(details.outcome ?? pending)} /></p>
           {details.links?.length && <div class="flex flex-wrap gap-3 mt-4">
-            {details.links.map((link) => <a class="btn btn-sm rounded-full" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
+            {details.links.map((link) => <a class="btn btn-sm btn-primary rounded-full" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
           </div>}
         </section>
 

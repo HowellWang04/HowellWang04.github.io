@@ -3,5 +3,4 @@
 
 export const SITE_TITLE = 'Guanhao Wang | Game Developer & Designer';
 export const SITE_DESCRIPTION = 'Games and interactive experiences by Guanhao Wang. Explore my projects, UI development work, and game design experiments.';
-export const GENERATE_SLUG_FROM_TITLE = true
 export const TRANSITION_API = true

@@ -1,12 +1,10 @@
 ---
 import LocalizedText from "./LocalizedText.astro";
 const { sideBarActiveItemID } = Astro.props;
-const chineseLabels = { home: "首页", projects: "项目", services: "服务", blog: "博客", cv: "简历" };
+const chineseLabels = { home: "首页", projects: "项目", cv: "简历" };
 const menuItems = [
     { id: "home", label: "Home", href: "/" },
     { id: "projects", label: "Projects", href: "/projects" },
-    { id: "services", label: "Services", href: "/services" },
-    { id: "blog", label: "Blog", href: "/blog/" },
     { id: "cv", label: "CV", href: "/cv" },
 ];
 ---
@@ -21,7 +19,7 @@ const menuItems = [
                     <a
                         class:list={[
                             "sidebar-link group my-0.5 py-3 text-base transform-gpu transition duration-300 ease-in-out hover:scale-[1.03] hover:bg-base-300",
-                            isActive && "scale-[1.03] bg-base-300 font-semibold text-secondary shadow-sm",
+                            isActive && "scale-[1.03] bg-base-300 font-semibold text-primary shadow-sm",
                         ]}
                         id={item.id}
                         href={item.href}
@@ -31,8 +29,8 @@ const menuItems = [
                     >
                         <span
                             class:list={[
-                                "sidebar-dot h-2 w-2 rounded-full bg-base-content/30 transition duration-300 group-hover:scale-125 group-hover:bg-secondary",
-                                isActive && "scale-125 bg-secondary",
+                                "sidebar-dot h-2 w-2 rounded-full bg-base-content/30 transition duration-300 group-hover:scale-125 group-hover:bg-primary",
+                                isActive && "scale-125 bg-primary",
                             ]}
                             aria-hidden="true"
                         ></span>
@@ -47,9 +45,7 @@ const menuItems = [
     <li>
         <a
             class="sidebar-link py-3 text-base"
-            href="mailto:contact.manuelernestog@gmail.com"
-            target="_blank"
-            referrerpolicy="no-referrer-when-downgrade"><span class="flex-1" transition:name="sidebar-label-contact" transition:animate="none"><LocalizedText en="Contact" zh="联系我" /></span></a
+            href="mailto:howellwang7679@gmail.com"><span class="flex-1" transition:name="sidebar-label-contact" transition:animate="none"><LocalizedText en="Contact" zh="联系我" /></span></a
         >
     </li>
 </ul>

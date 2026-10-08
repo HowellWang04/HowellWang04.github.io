@@ -48,18 +48,18 @@ const { class: className = "" } = Astro.props;
 <script>
   const storageKey = "astrofy-theme";
 
-  const getPreferredTheme = (): "cupcake" | "dark" => {
+  const getPreferredTheme = (): "portfolio-light" | "dark" => {
     const storedTheme = localStorage.getItem(storageKey);
-    if (storedTheme) return storedTheme === "dark" ? "dark" : "cupcake";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "cupcake";
+    if (storedTheme) return storedTheme === "dark" ? "dark" : "portfolio-light";
+    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "portfolio-light";
   };
 
-  const setTheme = (root: HTMLElement, theme: "cupcake" | "dark") => {
+  const setTheme = (root: HTMLElement, theme: "portfolio-light" | "dark") => {
     root.dataset.theme = theme;
     root.style.colorScheme = theme === "dark" ? "dark" : "light";
   };
 
-  const applyTheme = (theme: "cupcake" | "dark") => {
+  const applyTheme = (theme: "portfolio-light" | "dark") => {
     setTheme(document.documentElement, theme);
 
     document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]").forEach((button) => {
@@ -75,7 +75,7 @@ const { class: className = "" } = Astro.props;
   };
 
   const setupThemeToggles = () => {
-    const theme = document.documentElement.dataset.theme === "dark" ? "dark" : "cupcake";
+    const theme = document.documentElement.dataset.theme === "dark" ? "dark" : "portfolio-light";
     applyTheme(theme);
 
     document.querySelectorAll<HTMLButtonElement>("[data-theme-toggle]").forEach((button) => {
@@ -83,7 +83,7 @@ const { class: className = "" } = Astro.props;
 
       button.dataset.themeToggleBound = "true";
       button.addEventListener("click", () => {
-        const nextTheme = document.documentElement.dataset.theme === "dark" ? "cupcake" : "dark";
+        const nextTheme = document.documentElement.dataset.theme === "dark" ? "portfolio-light" : "dark";
         localStorage.setItem(storageKey, nextTheme);
         applyTheme(nextTheme);
       });
