@@ -7,11 +7,11 @@
 }
 
 html[data-theme="portfolio-light"] {
-    --portfolio-canvas: #F5F3EE;
+    --portfolio-canvas: #EDE8DE;
 }
 
 html[data-theme="dark"] {
-    --portfolio-canvas: #151E23;
+    --portfolio-canvas: #181919;
 }
 
 .portfolio-canvas {
@@ -19,17 +19,17 @@ html[data-theme="dark"] {
 }
 
 html[data-theme="portfolio-light"] .sidebar-link {
-    color: #1E2B31;
+    color: #292B2A;
 }
 
 html[data-theme="portfolio-light"] .sidebar-link:is(:hover, :focus, :active, [aria-current="page"]) {
-    background-color: #1B6B73;
+    background-color: #8B4935;
     color: #FFFFFF;
     box-shadow: none;
 }
 
 html[data-theme="portfolio-light"] .sidebar-dot {
-    background-color: #1E2B31;
+    background-color: #292B2A;
     opacity: 0.3;
 }
 

@@ -48,3 +48,21 @@ const {
     </div>
   </body>
 </html>
+
+<script>
+  document.addEventListener("astro:before-preparation", (event) => {
+    const loadPage = event.loader;
+    event.loader = async () => {
+      const destination = event.to;
+      const requestURL = new URL(destination);
+      // Keep cached HTML from an earlier deployment out of this navigation.
+      requestURL.searchParams.set("_site_build", import.meta.env.PUBLIC_BUILD_ID);
+      event.to = requestURL;
+      try {
+        await loadPage();
+      } finally {
+        event.to = destination;
+      }
+    };
+  });
+</script>
