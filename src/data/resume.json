@@ -1,0 +1,314 @@
+{
+  "en": {
+    "name": "Guanhao Wang",
+    "contact": "gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926",
+    "links": [
+      {
+        "label": "Portfolio",
+        "url": "https://howellwang04.github.io/"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/HowellWang04"
+      }
+    ],
+    "summary": "Computer science undergraduate focused on game level design, environmental storytelling, game interaction, and physical computing.",
+    "sections": [
+      {
+        "title": "Education",
+        "entries": [
+          {
+            "title": "University of Wisconsin–Madison  |  Computer Science Undergraduate",
+            "meta": "June 2025 to present  ·  Expected graduation May 2027  ·  GPA 3.724/4.000"
+          },
+          {
+            "title": "The Pennsylvania State University  |  Undergraduate Study in Computer Science",
+            "meta": "August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison"
+          }
+        ]
+      },
+      {
+        "title": "Games and Interactive Projects",
+        "entries": [
+          {
+            "title": "Coal Echoes  |  Narrative Exploration Game",
+            "meta": "2026  ·  In development  ·  Unity 6, HDRP, C#, Blender",
+            "bullets": [
+              "Developing a first person exploration game inspired by family memories of Shitanjing, Ningxia, using photography, a grandfather’s diary, and scrapbooking to tell a story about an abandoned coal plant.",
+              "Built photography, album, scrapbook layout, object inspection, and echo discovery systems, with local storage for photographs, layouts, diary progress, and discovered echoes.",
+              "Integrated DEM terrain, industrial buildings, and a moving cableway, and developed sandstorm, heat haze, and newspaper photo transition effects to support the setting."
+            ],
+            "links": [
+              {
+                "label": "Source code on GitHub",
+                "url": "https://github.com/HowellWang04/Grad-App-Project-Coal"
+              }
+            ]
+          },
+          {
+            "title": "Project Fireflies  |  Interactive Light Installation",
+            "meta": "2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP",
+            "bullets": [
+              "Mapped movement and ambient light inputs to firefly disturbance and synchronization behavior using LD2410B radar, light sensors, and WS2812B LEDs.",
+              "Configured firmware for 420 LEDs across three swarms, with two independently responsive zones, one ambient swarm, and a UDP interface for Unity synchronization commands."
+            ]
+          },
+          {
+            "title": "Seafloor Revival  |  GMTK Game Jam 2025",
+            "meta": "July to August 2025  ·  UI Development and Art Integration  ·  Unity, C#",
+            "bullets": [
+              "Built all game UI in a team of six credited creators, wired component references and related C# behavior, and processed and integrated interface art assets.",
+              "Contributed to a 2.5D underwater base building game about recurring pollution disasters, released as a playable browser prototype."
+            ],
+            "links": [
+              {
+                "label": "Playable browser prototype",
+                "url": "https://nikolai16.itch.io/seafloor-revival"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Additional Projects and Research",
+        "entries": [
+          {
+            "title": "Mask  |  Global Game Jam 2026",
+            "meta": "2026  ·  Team Game Jam Entry  ·  Unity, C#",
+            "bullets": [
+              "Participated in a 2D narrative platformer about identity and social roles. The project combines household tasks, branching phone conversations during a subway commute, and memories of different identities."
+            ],
+            "links": [
+              {
+                "label": "Game Jam entry",
+                "url": "https://globalgamejam.org/games/2026/mask-6-4"
+              }
+            ]
+          },
+          {
+            "title": "Online Computer Graphics Project  |  Mooncake",
+            "meta": "February to April 2025  ·  Course led by Prof. Saty Raghavachary  ·  Three.js, JavaScript",
+            "bullets": [
+              "Studied 3D modeling, rendering, animation, and GUI interaction; developed the particle system and web demonstration with controls for particle count and size.",
+              "Implemented interactive controls with Three.js and lil GUI and documented the graphics implementation and technical approach in a project report."
+            ],
+            "links": [
+              {
+                "label": "Project demonstration",
+                "url": "https://howellwang04.github.io/MooncakeProjectDemo/"
+              }
+            ]
+          },
+          {
+            "title": "Human Computer Interaction in Indie Games  |  Published Paper",
+            "meta": "Research November 2022 to June 2023  ·  Published 2023  ·  Sole Author",
+            "bullets": [
+              "Analyzed FAR Lone Sails through its official artbook and gameplay, examining implicit guidance, environmental storytelling, mood building, and emotional attachment to a vehicle.",
+              "Published in Lecture Notes in Education Psychology and Public Media, volume 18, pages 194 to 199."
+            ],
+            "links": [
+              {
+                "label": "Publication and DOI",
+                "url": "https://www.ewadirect.com/proceedings/lnep/article/view/5390"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Professional Experience",
+        "entries": [
+          {
+            "title": "IQVIA  |  Technology Solutions Intern",
+            "meta": "July to August 2024  ·  Shanghai, China",
+            "bullets": [
+              "Created and maintained over 100 pages of user documentation for a pharmaceutical company's WeChat Mini Program platform upgrade, covering two user types, four scenarios, and three device contexts.",
+              "Performed user acceptance testing, reported over 10 defects through Jira, and explained reproduction steps and cross platform scenarios in project meetings.",
+              "Organized over 1,000 data tags into a three level hierarchy tied to business scenarios to support user filtering and tag prioritization."
+            ],
+            "links": [
+              {
+                "label": "Download internship certificate (PDF)",
+                "url": "/resume/guanhao-wang-iqvia-internship-certificate.pdf",
+                "download": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "Skills and Languages",
+        "entries": [
+          {
+            "title": "Games and interaction",
+            "description": "Unity, C#, HDRP, uGUI, TextMesh Pro, Shader Graph, Blender, ESP32, Arduino"
+          },
+          {
+            "title": "Programming and tools",
+            "description": "Python, Java, C, JavaScript, Three.js, Git, Git LFS, Jira"
+          },
+          {
+            "title": "Languages",
+            "description": "Mandarin native, English fluent, Japanese basic"
+          }
+        ]
+      }
+    ]
+  },
+  "zh": {
+    "name": "王冠豪  Guanhao Wang",
+    "contact": "gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926",
+    "links": [
+      {
+        "label": "作品集",
+        "url": "https://howellwang04.github.io/"
+      },
+      {
+        "label": "GitHub",
+        "url": "https://github.com/HowellWang04"
+      }
+    ],
+    "summary": "关注游戏关卡设计、环境叙事、游戏交互与实体交互体验的计算机科学本科生。",
+    "sections": [
+      {
+        "title": "教育背景",
+        "entries": [
+          {
+            "title": "威斯康星大学麦迪逊分校  |  计算机科学本科在读",
+            "meta": "2025 年 6 月至今  ·  预计 2027 年 5 月毕业  ·  GPA 3.724/4.000"
+          },
+          {
+            "title": "宾夕法尼亚州立大学  |  计算机科学本科课程",
+            "meta": "2023 年 8 月至 2025 年 6 月  ·  GPA 3.94/4.00  ·  后转学至 UW"
+          }
+        ]
+      },
+      {
+        "title": "游戏与交互项目",
+        "entries": [
+          {
+            "title": "Coal Echoes 煤火回声  |  叙事探索游戏",
+            "meta": "2026 年  ·  开发中  ·  Unity 6、HDRP、C#、Blender",
+            "bullets": [
+              "围绕宁夏石炭井的家庭记忆与工业遗址，设计第一人称探索体验，以摄影、祖父日记和手账串联叙事。",
+              "搭建拍照、相册、手账排版、物品检视与回响识别系统，接入照片、手账、日记及回响数据的本地存储。",
+              "整合 DEM 地形、厂区与索道场景，制作沙尘、热浪及报纸照片转入游戏的开场效果，支持叙事氛围与探索动线。"
+            ],
+            "links": [
+              {
+                "label": "GitHub 项目源码",
+                "url": "https://github.com/HowellWang04/Grad-App-Project-Coal"
+              }
+            ]
+          },
+          {
+            "title": "Project Fireflies  |  萤火虫交互装置",
+            "meta": "2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP",
+            "bullets": [
+              "将人体移动和环境光输入映射为萤火虫灯群的扰动与同步行为，连接 LD2410B 雷达、光照传感器及 WS2812B 灯带。",
+              "固件配置三组共 420 颗 LED，其中两组独立响应传感器，一组维持自然闪烁，并提供 Unity 通过 UDP 控制同步的接口。"
+            ]
+          },
+          {
+            "title": "Seafloor Revival  |  GMTK Game Jam 2025",
+            "meta": "2025 年 7 月至 8 月  ·  UI 开发与美术资源接入  ·  Unity、C#",
+            "bullets": [
+              "在六人署名团队中负责全部游戏 UI 构建、组件引用连接和相关 C# 实现，处理并接入界面美术资源。",
+              "作品为以循环污染灾难为主题的 2.5D 海底基地建造游戏，已发布浏览器试玩原型。"
+            ],
+            "links": [
+              {
+                "label": "浏览器试玩",
+                "url": "https://nikolai16.itch.io/seafloor-revival"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "其他项目与研究",
+        "entries": [
+          {
+            "title": "Mask  |  Global Game Jam 2026",
+            "meta": "2026 年  ·  团队参赛项目  ·  Unity、C#",
+            "bullets": [
+              "参与以身份与面具为主题的 2D 平台叙事游戏，项目结合家庭任务、地铁通勤中的分支手机对话，以及多重身份的回忆片段。"
+            ],
+            "links": [
+              {
+                "label": "参赛页面",
+                "url": "https://globalgamejam.org/games/2026/mask-6-4"
+              }
+            ]
+          },
+          {
+            "title": "计算机图形学线上项目  |  Mooncake",
+            "meta": "2025 年 2 月至 4 月  ·  Saty Raghavachary 教授指导课程  ·  Three.js、JavaScript",
+            "bullets": [
+              "学习并实践三维建模、渲染、动画与 GUI 交互，负责粒子系统及网页展示，可实时调整粒子数量和大小。",
+              "使用 Three.js 与 lil GUI 实现交互控制，并在项目报告中说明图形实现与技术思路。"
+            ],
+            "links": [
+              {
+                "label": "项目展示",
+                "url": "https://howellwang04.github.io/MooncakeProjectDemo/"
+              }
+            ]
+          },
+          {
+            "title": "独立游戏人机交互研究  |  已发表论文",
+            "meta": "2022 年 11 月至 2023 年 6 月开展研究  ·  2023 年发表  ·  独立作者",
+            "bullets": [
+              "以 FAR Lone Sails 为案例，结合官方艺术设定集与游戏场景分析，研究隐性引导、环境叙事、情绪构建以及玩家与载具之间的情感联系。",
+              "论文发表于 Lecture Notes in Education Psychology and Public Media，第 18 卷，第 194 至 199 页。"
+            ],
+            "links": [
+              {
+                "label": "论文与 DOI",
+                "url": "https://www.ewadirect.com/proceedings/lnep/article/view/5390"
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "实习经历",
+        "entries": [
+          {
+            "title": "IQVIA 艾昆纬  |  技术部门实习",
+            "meta": "2024 年 7 月至 8 月  ·  中国上海",
+            "bullets": [
+              "参与制药企业微信小程序平台升级，根据需求文档编制并维护超过 100 页操作手册，覆盖两类用户、四种场景和三种终端。",
+              "执行用户验收测试，通过 Jira 提交超过 10 项缺陷，并在项目会议中说明复现步骤和跨平台使用场景。",
+              "结合业务场景梳理超过 1,000 个数据标签与三层分类结构，为用户筛选和标签优先级设计提供支持。"
+            ],
+            "links": [
+              {
+                "label": "下载实习证明（PDF）",
+                "url": "/resume/guanhao-wang-iqvia-internship-certificate.pdf",
+                "download": true
+              }
+            ]
+          }
+        ]
+      },
+      {
+        "title": "技能与语言",
+        "entries": [
+          {
+            "title": "游戏与交互",
+            "description": "Unity、C#、HDRP、uGUI、TextMesh Pro、Shader Graph、Blender、ESP32、Arduino"
+          },
+          {
+            "title": "编程与工具",
+            "description": "Python、Java、C、JavaScript、Three.js、Git、Git LFS、Jira"
+          },
+          {
+            "title": "语言",
+            "description": "中文母语，英语流利，日语基础"
+          }
+        ]
+      }
+    ]
+  }
+}

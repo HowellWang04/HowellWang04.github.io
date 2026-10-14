@@ -35,9 +35,9 @@ const {
   <body>
     <div class="portfolio-canvas drawer lg:drawer-open">
       <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content portfolio-canvas">
+      <div class="drawer-content portfolio-canvas flex min-h-[100dvh] flex-col">
         <Header title={SITE_TITLE} />
-        <div class="md:flex md:justify-center">
+        <div class="flex-1 md:flex md:justify-center">
           <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]" transition:name="page-content" transition:animate="none">
             <slot />
           </main>

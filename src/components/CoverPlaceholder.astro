@@ -1,0 +1,14 @@
+---
+import LocalizedText from "./LocalizedText.astro";
+const { class: className = "", comingSoon = false } = Astro.props;
+---
+
+<div class:list={["flex flex-col items-center justify-center gap-2 aspect-video rounded-lg border border-base-content/20 bg-base-200 text-center px-3 py-5", className]}>
+  {comingSoon ? <>
+    <p class="text-sm font-semibold"><LocalizedText en="Cover art to be decided" zh="封面图未定" /></p>
+    <p class="text-xs opacity-60"><LocalizedText en="Coming soon" zh="敬请期待" /></p>
+  </> : <>
+    <p class="text-sm font-semibold"><LocalizedText en="In development" zh="开发中" /></p>
+    <p class="text-xs opacity-60"><LocalizedText en="Cover art to be decided" zh="封面图未定" /></p>
+  </>}
+</div>
