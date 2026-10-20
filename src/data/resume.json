@@ -12,7 +12,7 @@
         "url": "https://github.com/HowellWang04"
       }
     ],
-    "summary": "Computer science undergraduate focused on game level design, environmental storytelling, game interaction, and physical computing.",
+    "summary": "Computer science undergraduate focused on game development, environmental storytelling, and physical interaction.",
     "sections": [
       {
         "title": "Education",
@@ -34,9 +34,8 @@
             "title": "Coal Echoes  |  Narrative Exploration Game",
             "meta": "2026  ·  In development  ·  Unity 6, HDRP, C#, Blender",
             "bullets": [
-              "Developing a first person exploration game inspired by family memories of Shitanjing, Ningxia, using photography, a grandfather’s diary, and scrapbooking to tell a story about an abandoned coal plant.",
-              "Built photography, album, scrapbook layout, object inspection, and echo discovery systems, with local storage for photographs, layouts, diary progress, and discovered echoes.",
-              "Integrated DEM terrain, industrial buildings, and a moving cableway, and developed sandstorm, heat haze, and newspaper photo transition effects to support the setting."
+              "Designed a first person exploration game about family memories of an abandoned coal plant; built photography, album, scrapbook, and object inspection systems, enabling object discovery through the camera.",
+              "Built industrial environments with DEM terrain, a moving cableway, sandstorms, and heat haze; generated main menu newspaper photo materials at runtime from live HDRP Custom Pass camera captures, using HLSL halftone logic adapted from Daniel Ilett (MIT)."
             ],
             "links": [
               {
@@ -49,16 +48,21 @@
             "title": "Project Fireflies  |  Interactive Light Installation",
             "meta": "2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP",
             "bullets": [
-              "Mapped movement and ambient light inputs to firefly disturbance and synchronization behavior using LD2410B radar, light sensors, and WS2812B LEDs.",
-              "Configured firmware for 420 LEDs across three swarms, with two independently responsive zones, one ambient swarm, and a UDP interface for Unity synchronization commands."
+              "Programmed 420 LEDs across three swarms, using radar and light sensors to translate movement and ambient light into firefly disturbance and synchronization.",
+              "Implemented two independently responsive zones, one ambient swarm, and a UDP interface for Unity synchronization commands."
+            ],
+            "links": [
+              {
+                "label": "Source code on GitHub",
+                "url": "https://github.com/HowellWang04/Grad-App-Project-Fireflies"
+              }
             ]
           },
           {
             "title": "Seafloor Revival  |  GMTK Game Jam 2025",
             "meta": "July to August 2025  ·  UI Development and Art Integration  ·  Unity, C#",
             "bullets": [
-              "Built all game UI in a team of six credited creators, wired component references and related C# behavior, and processed and integrated interface art assets.",
-              "Contributed to a 2.5D underwater base building game about recurring pollution disasters, released as a playable browser prototype."
+              "Built all game UI and related C# behavior, integrated interface art in a six person team, and contributed to a released browser prototype of a 2.5D underwater building game."
             ],
             "links": [
               {
@@ -66,50 +70,17 @@
                 "url": "https://nikolai16.itch.io/seafloor-revival"
               }
             ]
-          }
-        ]
-      },
-      {
-        "title": "Additional Projects and Research",
-        "entries": [
-          {
-            "title": "Mask  |  Global Game Jam 2026",
-            "meta": "2026  ·  Team Game Jam Entry  ·  Unity, C#",
-            "bullets": [
-              "Participated in a 2D narrative platformer about identity and social roles. The project combines household tasks, branching phone conversations during a subway commute, and memories of different identities."
-            ],
-            "links": [
-              {
-                "label": "Game Jam entry",
-                "url": "https://globalgamejam.org/games/2026/mask-6-4"
-              }
-            ]
           },
           {
-            "title": "Online Computer Graphics Project  |  Mooncake",
-            "meta": "February to April 2025  ·  Course led by Prof. Saty Raghavachary  ·  Three.js, JavaScript",
+            "title": "Mooncake  |  Interactive Graphics",
+            "meta": "February to April 2025  ·  Three.js, JavaScript",
             "bullets": [
-              "Studied 3D modeling, rendering, animation, and GUI interaction; developed the particle system and web demonstration with controls for particle count and size.",
-              "Implemented interactive controls with Three.js and lil GUI and documented the graphics implementation and technical approach in a project report."
+              "Developed a Three.js particle system and web demo with live controls for particle count and size; documented the implementation in a technical report."
             ],
             "links": [
               {
                 "label": "Project demonstration",
                 "url": "https://howellwang04.github.io/MooncakeProjectDemo/"
-              }
-            ]
-          },
-          {
-            "title": "Human Computer Interaction in Indie Games  |  Published Paper",
-            "meta": "Research November 2022 to June 2023  ·  Published 2023  ·  Sole Author",
-            "bullets": [
-              "Analyzed FAR Lone Sails through its official artbook and gameplay, examining implicit guidance, environmental storytelling, mood building, and emotional attachment to a vehicle.",
-              "Published in Lecture Notes in Education Psychology and Public Media, volume 18, pages 194 to 199."
-            ],
-            "links": [
-              {
-                "label": "Publication and DOI",
-                "url": "https://www.ewadirect.com/proceedings/lnep/article/view/5390"
               }
             ]
           }
@@ -122,9 +93,8 @@
             "title": "IQVIA  |  Technology Solutions Intern",
             "meta": "July to August 2024  ·  Shanghai, China",
             "bullets": [
-              "Created and maintained over 100 pages of user documentation for a pharmaceutical company's WeChat Mini Program platform upgrade, covering two user types, four scenarios, and three device contexts.",
-              "Performed user acceptance testing, reported over 10 defects through Jira, and explained reproduction steps and cross platform scenarios in project meetings.",
-              "Organized over 1,000 data tags into a three level hierarchy tied to business scenarios to support user filtering and tag prioritization."
+              "Wrote and maintained 100+ pages of user guides for a pharmaceutical WeChat Mini Program upgrade, covering two user types, four scenarios, and three device contexts.",
+              "Performed user acceptance testing and reported 10+ defects in Jira with reproduction steps; organized 1,000+ data tags into a three level hierarchy for user filtering."
             ],
             "links": [
               {
@@ -137,15 +107,33 @@
         ]
       },
       {
+        "title": "Publication",
+        "entries": [
+          {
+            "title": "Human Computer Interaction in Indie Games",
+            "meta": "2023  ·  Sole Author",
+            "bullets": [
+              "Analyzed implicit guidance, environmental storytelling, and player attachment in FAR Lone Sails; published in Lecture Notes in Education Psychology and Public Media, vol. 18, pp. 194 to 199."
+            ],
+            "links": [
+              {
+                "label": "Publication and DOI",
+                "url": "https://www.ewadirect.com/proceedings/lnep/article/view/5390"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "title": "Skills and Languages",
         "entries": [
           {
             "title": "Games and interaction",
-            "description": "Unity, C#, HDRP, uGUI, TextMesh Pro, Shader Graph, Blender, ESP32, Arduino"
+            "description": "Unity, C#, HDRP, uGUI, Shader Graph, Blender, ESP32, Arduino"
           },
           {
             "title": "Programming and tools",
-            "description": "Python, Java, C, JavaScript, Three.js, Git, Git LFS, Jira"
+            "description": "Python, Java, C, JavaScript, Three.js, Git, Jira"
           },
           {
             "title": "Languages",
@@ -168,7 +156,7 @@
         "url": "https://github.com/HowellWang04"
       }
     ],
-    "summary": "关注游戏关卡设计、环境叙事、游戏交互与实体交互体验的计算机科学本科生。",
+    "summary": "计算机科学本科生，专注游戏开发、环境叙事与实体交互。",
     "sections": [
       {
         "title": "教育背景",
@@ -190,9 +178,8 @@
             "title": "Coal Echoes 煤火回声  |  叙事探索游戏",
             "meta": "2026 年  ·  开发中  ·  Unity 6、HDRP、C#、Blender",
             "bullets": [
-              "围绕宁夏石炭井的家庭记忆与工业遗址，设计第一人称探索体验，以摄影、祖父日记和手账串联叙事。",
-              "搭建拍照、相册、手账排版、物品检视与回响识别系统，接入照片、手账、日记及回响数据的本地存储。",
-              "整合 DEM 地形、厂区与索道场景，制作沙尘、热浪及报纸照片转入游戏的开场效果，支持叙事氛围与探索动线。"
+              "围绕废弃煤厂的家庭记忆设计第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。",
+              "整合 DEM 地形、工业建筑、动态索道及沙尘热浪效果；通过 HDRP Custom Pass 获取实时相机画面，运行时创建主菜单报纸照片材质，HLSL 半调网点部分改写自 Daniel Ilett（MIT）。"
             ],
             "links": [
               {
@@ -205,16 +192,21 @@
             "title": "Project Fireflies  |  萤火虫交互装置",
             "meta": "2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP",
             "bullets": [
-              "将人体移动和环境光输入映射为萤火虫灯群的扰动与同步行为，连接 LD2410B 雷达、光照传感器及 WS2812B 灯带。",
-              "固件配置三组共 420 颗 LED，其中两组独立响应传感器，一组维持自然闪烁，并提供 Unity 通过 UDP 控制同步的接口。"
+              "编程控制三组共 420 颗 LED，将雷达与光照传感器输入映射为萤火虫灯群的扰动和同步行为。",
+              "实现两个独立感应区域与一组自然闪烁灯群，提供 Unity 通过 UDP 控制同步的接口。"
+            ],
+            "links": [
+              {
+                "label": "GitHub 项目源码",
+                "url": "https://github.com/HowellWang04/Grad-App-Project-Fireflies"
+              }
             ]
           },
           {
             "title": "Seafloor Revival  |  GMTK Game Jam 2025",
             "meta": "2025 年 7 月至 8 月  ·  UI 开发与美术资源接入  ·  Unity、C#",
             "bullets": [
-              "在六人署名团队中负责全部游戏 UI 构建、组件引用连接和相关 C# 实现，处理并接入界面美术资源。",
-              "作品为以循环污染灾难为主题的 2.5D 海底基地建造游戏，已发布浏览器试玩原型。"
+              "在六人团队中负责全部游戏 UI、相关 C# 逻辑与界面美术接入，共同完成并发布 2.5D 海底建造游戏的浏览器试玩原型。"
             ],
             "links": [
               {
@@ -222,50 +214,17 @@
                 "url": "https://nikolai16.itch.io/seafloor-revival"
               }
             ]
-          }
-        ]
-      },
-      {
-        "title": "其他项目与研究",
-        "entries": [
-          {
-            "title": "Mask  |  Global Game Jam 2026",
-            "meta": "2026 年  ·  团队参赛项目  ·  Unity、C#",
-            "bullets": [
-              "参与以身份与面具为主题的 2D 平台叙事游戏，项目结合家庭任务、地铁通勤中的分支手机对话，以及多重身份的回忆片段。"
-            ],
-            "links": [
-              {
-                "label": "参赛页面",
-                "url": "https://globalgamejam.org/games/2026/mask-6-4"
-              }
-            ]
           },
           {
-            "title": "计算机图形学线上项目  |  Mooncake",
-            "meta": "2025 年 2 月至 4 月  ·  Saty Raghavachary 教授指导课程  ·  Three.js、JavaScript",
+            "title": "Mooncake  |  交互图形项目",
+            "meta": "2025 年 2 月至 4 月  ·  Three.js、JavaScript",
             "bullets": [
-              "学习并实践三维建模、渲染、动画与 GUI 交互，负责粒子系统及网页展示，可实时调整粒子数量和大小。",
-              "使用 Three.js 与 lil GUI 实现交互控制，并在项目报告中说明图形实现与技术思路。"
+              "使用 Three.js 开发粒子系统与网页演示，实现粒子数量和大小的实时调节，并撰写技术报告说明实现过程。"
             ],
             "links": [
               {
                 "label": "项目展示",
                 "url": "https://howellwang04.github.io/MooncakeProjectDemo/"
-              }
-            ]
-          },
-          {
-            "title": "独立游戏人机交互研究  |  已发表论文",
-            "meta": "2022 年 11 月至 2023 年 6 月开展研究  ·  2023 年发表  ·  独立作者",
-            "bullets": [
-              "以 FAR Lone Sails 为案例，结合官方艺术设定集与游戏场景分析，研究隐性引导、环境叙事、情绪构建以及玩家与载具之间的情感联系。",
-              "论文发表于 Lecture Notes in Education Psychology and Public Media，第 18 卷，第 194 至 199 页。"
-            ],
-            "links": [
-              {
-                "label": "论文与 DOI",
-                "url": "https://www.ewadirect.com/proceedings/lnep/article/view/5390"
               }
             ]
           }
@@ -278,9 +237,8 @@
             "title": "IQVIA 艾昆纬  |  技术部门实习",
             "meta": "2024 年 7 月至 8 月  ·  中国上海",
             "bullets": [
-              "参与制药企业微信小程序平台升级，根据需求文档编制并维护超过 100 页操作手册，覆盖两类用户、四种场景和三种终端。",
-              "执行用户验收测试，通过 Jira 提交超过 10 项缺陷，并在项目会议中说明复现步骤和跨平台使用场景。",
-              "结合业务场景梳理超过 1,000 个数据标签与三层分类结构，为用户筛选和标签优先级设计提供支持。"
+              "为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖两类用户、四种场景和三种终端。",
+              "执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理 1,000 多个数据标签，建立支持用户筛选的三层分类。"
             ],
             "links": [
               {
@@ -293,15 +251,33 @@
         ]
       },
       {
+        "title": "学术发表",
+        "entries": [
+          {
+            "title": "独立游戏人机交互研究",
+            "meta": "2023 年  ·  独立作者",
+            "bullets": [
+              "分析 FAR Lone Sails 的隐性引导、环境叙事与玩家情感联系；论文发表于 Lecture Notes in Education Psychology and Public Media，第 18 卷，第 194 至 199 页。"
+            ],
+            "links": [
+              {
+                "label": "论文与 DOI",
+                "url": "https://www.ewadirect.com/proceedings/lnep/article/view/5390"
+              }
+            ]
+          }
+        ]
+      },
+      {
         "title": "技能与语言",
         "entries": [
           {
             "title": "游戏与交互",
-            "description": "Unity、C#、HDRP、uGUI、TextMesh Pro、Shader Graph、Blender、ESP32、Arduino"
+            "description": "Unity、C#、HDRP、uGUI、Shader Graph、Blender、ESP32、Arduino"
           },
           {
             "title": "编程与工具",
-            "description": "Python、Java、C、JavaScript、Three.js、Git、Git LFS、Jira"
+            "description": "Python、Java、C、JavaScript、Three.js、Git、Jira"
           },
           {
             "title": "语言",
