@@ -26,7 +26,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 * 以废弃煤厂为舞台，围绕 1970 年代特定时代下的工人阶级记忆设计四个关卡的第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。
 * 通过 Blender MCP，由 AI Agent 辅助完成索道、门卫室等工业资产的参数化建模与材质烘焙，并导入 Unity 场景。
-* 通过 HDRP Custom Pass 获取实时相机画面，运行时创建主菜单报纸照片材质，HLSL 半调网点部分改写自 Daniel Ilett（MIT）。
+* 基于 USGS 实测高程数据在 MapMagic 中搭建地形，并以 Gradient Terrain Authoring 离线求解地形过渡；在 HDRP 中实现沙尘、热浪与运行时报纸半调效果（半调算法改写自 Daniel Ilett，MIT）。
 
 [GitHub 项目源码](https://github.com/HowellWang04/Grad-App-Project-Coal)
 

@@ -36,7 +36,7 @@
             "bullets": [
               "Designed a four-level first person exploration game about 1970s working class memories at an abandoned coal plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.",
               "Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.",
-              "Generated main menu newspaper photo materials at runtime from live HDRP Custom Pass camera captures, using HLSL halftone logic adapted from Daniel Ilett (MIT)."
+              "Built terrain from USGS elevation data in MapMagic with an offline Gradient Terrain Authoring transition; created HDRP sandstorm, heat haze, and runtime newspaper halftone effects (halftone adapted from Daniel Ilett, MIT)."
             ],
             "links": [
               {
@@ -181,7 +181,7 @@
             "bullets": [
               "以废弃煤厂为舞台，围绕 1970 年代特定时代下的工人阶级记忆设计四个关卡的第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。",
               "通过 Blender MCP，由 AI Agent 辅助完成索道、门卫室等工业资产的参数化建模与材质烘焙，并导入 Unity 场景。",
-              "通过 HDRP Custom Pass 获取实时相机画面，运行时创建主菜单报纸照片材质，HLSL 半调网点部分改写自 Daniel Ilett（MIT）。"
+              "基于 USGS 实测高程数据在 MapMagic 中搭建地形，并以 Gradient Terrain Authoring 离线求解地形过渡；在 HDRP 中实现沙尘、热浪与运行时报纸半调效果（半调算法改写自 Daniel Ilett，MIT）。"
             ],
             "links": [
               {
