@@ -9,9 +9,6 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 
 <div class="site-header relative z-10 flex h-20 w-full justify-center text-base-content">
   <div class="flex w-full items-center gap-2 px-4">
-    <div class="min-w-0">
-      <a class="block truncate text-sm font-semibold sm:text-xl" href="/">Guanhao Wang</a>
-    </div>
     <div class="ml-auto flex shrink-0 items-center gap-2">
       <nav class="header-links hidden sm:flex" aria-label="Pages">
         {pages.map((page) => (
