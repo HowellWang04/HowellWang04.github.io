@@ -25,7 +25,8 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 2026  ·  In development  ·  Unity 6, HDRP, C#, Blender
 
 * Designed a first person exploration game about family memories of an abandoned coal plant; built photography, album, scrapbook, and object inspection systems, enabling object discovery through the camera.
-* Built industrial environments with DEM terrain, a moving cableway, sandstorms, and heat haze; generated main menu newspaper photo materials at runtime from live HDRP Custom Pass camera captures, using HLSL halftone logic adapted from Daniel Ilett (MIT).
+* Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.
+* Generated main menu newspaper photo materials at runtime from live HDRP Custom Pass camera captures, using HLSL halftone logic adapted from Daniel Ilett (MIT).
 
 [Source code on GitHub](https://github.com/HowellWang04/Grad-App-Project-Coal)
 

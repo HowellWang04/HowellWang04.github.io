@@ -25,7 +25,8 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 2026 年  ·  开发中  ·  Unity 6、HDRP、C#、Blender
 
 * 围绕废弃煤厂的家庭记忆设计第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。
-* 整合 DEM 地形、工业建筑、动态索道及沙尘热浪效果；通过 HDRP Custom Pass 获取实时相机画面，运行时创建主菜单报纸照片材质，HLSL 半调网点部分改写自 Daniel Ilett（MIT）。
+* 通过 Blender MCP，由 AI Agent 辅助完成索道、门卫室等工业资产的参数化建模与材质烘焙，并导入 Unity 场景。
+* 通过 HDRP Custom Pass 获取实时相机画面，运行时创建主菜单报纸照片材质，HLSL 半调网点部分改写自 Daniel Ilett（MIT）。
 
 [GitHub 项目源码](https://github.com/HowellWang04/Grad-App-Project-Coal)
 
