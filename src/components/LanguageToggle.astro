@@ -4,7 +4,7 @@
 </div>
 
 <script>
-  const preferredLanguage = () => localStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
+  const preferredLanguage = () => sessionStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
   let transitionId = 0;
   let textAnimations: Animation[] = [];
 
@@ -35,7 +35,7 @@
     if (language === preferredLanguage()) return;
     cancelTextAnimations();
     const currentTransition = transitionId;
-    localStorage.setItem("portfolio-language", language);
+    sessionStorage.setItem("portfolio-language", language);
     updateControls(document, language);
 
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;

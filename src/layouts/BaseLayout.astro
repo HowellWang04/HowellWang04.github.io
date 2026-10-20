@@ -25,7 +25,7 @@ const {
       const initialTheme = storedTheme === "dark" ? "dark" : "portfolio-light";
       document.documentElement.dataset.theme = initialTheme;
       document.documentElement.style.colorScheme = initialTheme === "dark" ? "dark" : "light";
-      document.documentElement.lang = localStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
+      document.documentElement.lang = sessionStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
       // Astro's router restores the saved scroll position on a full load, so a reload would open mid page and skip
       // the home intro. Opening or reloading a page starts at the top; back/forward and #section links keep their place.
       if (history.state && !location.hash && performance.getEntriesByType("navigation")[0]?.type !== "back_forward") {
