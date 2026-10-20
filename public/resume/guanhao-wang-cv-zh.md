@@ -35,7 +35,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP
 
 * 编程控制三组共 420 颗 LED，通过雷达与光照传感器捕捉参与者的移动与人为光源，映射为萤火虫灯群的扰动和同步行为。
-* 实现两个独立感应区域与一组自然闪烁灯群，提供 Unity 通过 UDP 控制同步的接口。
+* 实现两个独立感应区域与一组自然闪烁灯群，并提供开发调试用的 UDP 接口，可由 Unity 发送同步控制指令。
 
 [GitHub 项目源码](https://github.com/HowellWang04/Grad-App-Project-Fireflies)
 

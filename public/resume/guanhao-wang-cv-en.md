@@ -35,7 +35,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP
 
 * Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.
-* Implemented two independently responsive zones, one ambient swarm, and a UDP interface for Unity synchronization commands.
+* Implemented two independently responsive zones, one ambient swarm, and a UDP interface for sending Unity synchronization commands during development and debugging.
 
 [Source code on GitHub](https://github.com/HowellWang04/Grad-App-Project-Fireflies)
 

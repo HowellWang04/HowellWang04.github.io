@@ -50,7 +50,7 @@
             "meta": "2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP",
             "bullets": [
               "Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.",
-              "Implemented two independently responsive zones, one ambient swarm, and a UDP interface for Unity synchronization commands."
+              "Implemented two independently responsive zones, one ambient swarm, and a UDP interface for sending Unity synchronization commands during development and debugging."
             ],
             "links": [
               {
@@ -195,7 +195,7 @@
             "meta": "2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP",
             "bullets": [
               "编程控制三组共 420 颗 LED，通过雷达与光照传感器捕捉参与者的移动与人为光源，映射为萤火虫灯群的扰动和同步行为。",
-              "实现两个独立感应区域与一组自然闪烁灯群，提供 Unity 通过 UDP 控制同步的接口。"
+              "实现两个独立感应区域与一组自然闪烁灯群，并提供开发调试用的 UDP 接口，可由 Unity 发送同步控制指令。"
             ],
             "links": [
               {
