@@ -191,8 +191,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
         },
         "tools": "HDRP · Shader Graph · VFX Graph · HLSL",
         "summary": {
-          "en": "Created sandstorm and heat haze effects, and applied a newspaper print effect to the existing camera output.",
-          "zh": "实现沙尘与热浪效果，并基于相机现有画面实现报纸纸墨效果。"
+          "en": "Created sandstorm and heat haze effects, and rendered the camera's live view of the scene in a newspaper ink style for the game's opening transition.",
+          "zh": "实现沙尘与热浪效果，并将相机在场景中的实际画面渲染为报纸纸墨效果，作为游戏开场的转场画面。"
         },
         "details": [
           {
@@ -200,8 +200,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
             "zh": "使用 HDRP 17.4.0、Shader Graph 与 VFX Graph，通过 Local Volumetric Fog 表现沙尘，通过 Custom Pass 实现热浪。"
           },
           {
-            "en": "The newspaper effect copies the menu camera color buffer after post processing and processes it on the GPU before displaying it in a RawImage, avoiding a second scene render. It combines grayscale, subtle halftone dots, paper grain, and uneven ink coverage. The halftone algorithm adapts Daniel Ilett's MIT licensed work.",
-            "zh": "报纸效果在后处理结束后复制菜单相机色缓冲，经 GPU 处理后交给 RawImage，避免重复渲染场景。效果结合灰阶、细网点、纸纹与缺墨处理，其中半调算法改写自 Daniel Ilett 的 MIT 许可作品。"
+            "en": "The newspaper effect copies the menu camera's color buffer after post processing, processes it on the GPU, and displays it in a RawImage. It combines grayscale, subtle halftone dots, paper grain, and uneven ink coverage. The halftone algorithm adapts Daniel Ilett's MIT licensed work.",
+            "zh": "报纸效果在后处理结束后复制菜单相机色缓冲，经 GPU 处理后交给 RawImage 显示。效果结合灰阶、细网点、纸纹与缺墨处理，其中半调算法改写自 Daniel Ilett 的 MIT 许可作品。"
           }
         ]
       },
@@ -359,6 +359,24 @@ export const projectDetails: Record<string, ProjectDetails> = {
         label: { en: "Jam submission", zh: "参赛页面" },
         url: "https://itch.io/jam/gmtk-2025/rate/3783873",
       },
+    ],
+  },
+  "la-luna": {
+    role: { en: "Gameplay & card design", zh: "游戏玩法与卡牌设计" },
+    team: { en: "3 person team", zh: "三人团队" },
+    stack: [
+      {
+        name: "Figma",
+        use: { en: "Designing and laying out the guidebook together with the team.", zh: "与团队协作设计和排版游戏说明书。" },
+      },
+    ],
+    contributions: [
+      { en: "Designed one third of the game's cards.", zh: "设计了游戏中三分之一的卡牌。" },
+      { en: "Drafted the first version of the gameplay.", zh: "制定了最初版本的游戏玩法。" },
+      { en: "Made the guidebook in Figma together with the team.", zh: "与团队合作，使用 Figma 制作游戏说明书。" },
+    ],
+    links: [
+      { label: { en: "Guidebook PDF", zh: "说明书 PDF" }, url: "/la-luna-guidebook.pdf" },
     ],
   },
 };
