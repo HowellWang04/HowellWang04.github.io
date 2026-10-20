@@ -24,7 +24,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 
 2026  ·  In development  ·  Unity 6, HDRP, C#, Blender
 
-* Designed a first person exploration game about family memories of an abandoned coal plant; built photography, album, scrapbook, and object inspection systems, enabling object discovery through the camera.
+* Designed a five level first person exploration game about 1970s working class memories at an abandoned coal plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.
 * Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.
 * Generated main menu newspaper photo materials at runtime from live HDRP Custom Pass camera captures, using HLSL halftone logic adapted from Daniel Ilett (MIT).
 
@@ -34,7 +34,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 
 2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP
 
-* Programmed 420 LEDs across three swarms, using radar and light sensors to translate movement and ambient light into firefly disturbance and synchronization.
+* Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.
 * Implemented two independently responsive zones, one ambient swarm, and a UDP interface for Unity synchronization commands.
 
 [Source code on GitHub](https://github.com/HowellWang04/Grad-App-Project-Fireflies)
@@ -51,7 +51,7 @@ July to August 2025  ·  UI Development and Art Integration  ·  Unity, C#
 
 February to April 2025  ·  Three.js, JavaScript
 
-* Developed a Three.js particle system and web demo with live controls for particle count and size; documented the implementation in a technical report.
+* Built a Three.js mooncake scene for the Mid Autumn Festival with STL models, shadowed spotlighting, and drifting star particles; added live controls for light, camera orbit, and particles, documented in a technical report.
 
 [Project demonstration](https://howellwang04.github.io/MooncakeProjectDemo/)
 
