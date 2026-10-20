@@ -34,7 +34,7 @@
             "title": "Coal Echoes  |  Narrative Exploration Game",
             "meta": "2026  ·  In development  ·  Unity 6, HDRP, C#, Blender",
             "bullets": [
-              "Designed a four level first person exploration game about 1970s working class memories at an abandoned coal plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.",
+              "Designed a four-level first person exploration game about 1970s working class memories at an abandoned coal plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.",
               "Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.",
               "Generated main menu newspaper photo materials at runtime from live HDRP Custom Pass camera captures, using HLSL halftone logic adapted from Daniel Ilett (MIT)."
             ],

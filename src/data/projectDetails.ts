@@ -267,7 +267,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
         },
         "details": [
           {
-            "en": "Designed the narrative framework and the four level exploration route around working class memories shaped by the 1970s, using photography, diary entries, and scrapbooking as the core interactions.",
+            "en": "Designed the narrative framework and the four-level exploration route around working class memories shaped by the 1970s, using photography, diary entries, and scrapbooking as the core interactions.",
             "zh": "围绕 1970 年代特定时代下的工人阶级记忆设计叙事框架和四个关卡的探索路线，以摄影、日记与手账组织核心交互。"
           },
           {
