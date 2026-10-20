@@ -45,9 +45,11 @@
         && bounds.bottom > 0 && bounds.top < window.innerHeight;
     });
 
+    // The crossfade uses filter opacity and translate, which stack on top of the text's own opacity and transform,
+    // so text that a page animation keeps hidden (like the home intro) never flashes up during the switch.
     if (!reducedMotion) {
       textAnimations = visibleText.map((element) => element.animate(
-        [{ opacity: 1, filter: "blur(0px)" }, { opacity: 0, filter: "blur(2px)" }],
+        [{ filter: "opacity(1) blur(0px)" }, { filter: "opacity(0) blur(2px)" }],
         { duration: 80, easing: "ease-in", fill: "forwards" },
       ));
       await Promise.all(textAnimations.map((animation) => animation.finished.catch(() => {})));
@@ -70,8 +72,8 @@
     if (!reducedMotion) {
       textAnimations = visibleText.map((element) => element.animate(
         [
-          { opacity: 0, filter: "blur(3px)", transform: "translateY(4px)" },
-          { opacity: 1, filter: "blur(0px)", transform: "translateY(0)" },
+          { filter: "opacity(0) blur(3px)", translate: "0 4px" },
+          { filter: "opacity(1) blur(0px)", translate: "0 0" },
         ],
         { duration: 180, easing: "cubic-bezier(0.22, 1, 0.36, 1)" },
       ));
