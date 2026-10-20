@@ -260,6 +260,11 @@ import HomeHero from "../components/HomeHero.astro";
       return;
     }
 
+    // On a rebuild (language switch) the teardown has just put back the plain, fully visible lines. Keep them
+    // hidden until the new letters are in place, or the whole sentence flashes up while the fonts load.
+    const rebuilding = name.classList.contains("is-revealed");
+    if (rebuilding) [subtitle, tagline].forEach((element) => { element.style.visibility = "hidden"; });
+
     // Letters are positioned from measured glyph widths, so wait for the web fonts (briefly) before measuring.
     await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]);
     if (!main.isConnected || run !== setupRun) return;
@@ -352,6 +357,7 @@ import HomeHero from "../components/HomeHero.astro";
     });
     intro.to(state, { progress: 1, duration: 1, ease: "none", onUpdate: () => render(state.progress) });
     render(0);
+    if (rebuilding) [subtitle, tagline].forEach((element) => { element.style.visibility = ""; });
 
     // 2. As the hero scrolls away, the lines drift up at different speeds and blur away.
     const layers = [...about.querySelectorAll<HTMLElement>(".hero-layer")];
