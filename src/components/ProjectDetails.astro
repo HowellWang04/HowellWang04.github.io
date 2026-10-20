@@ -15,7 +15,7 @@ const facts = [
 ---
 
 <project-details class="block">
-  <dialog id={dialogId} class="project-dialog" aria-labelledby={`${dialogId}-title`}>
+  <dialog id={dialogId} class="project-dialog" aria-labelledby={`${dialogId}-title`} data-lenis-prevent>
     <div class="project-sheet bg-base-100 text-base-content text-left">
       <header class="project-header border-b border-base-300 bg-base-100">
         <div>
@@ -34,7 +34,6 @@ const facts = [
           {coverPending ? <CoverPlaceholder class="w-36 shrink-0" comingSoon={coverComingSoon} /> : img && <img src={img} alt={title} class="project-cover rounded-xl" loading="lazy" />}
           <div>
             <p class="text-base leading-relaxed"><LocalizedText en={desc} zh={descZh ?? desc} /></p>
-            {details.context && <p class="text-sm leading-relaxed opacity-70 mt-3"><LocalizedText {...details.context} /></p>}
           </div>
         </div>
 
@@ -86,7 +85,7 @@ const facts = [
           ) : <p class="text-base opacity-60 mt-3"><LocalizedText en="My individual responsibilities and contributions will be added here." zh="我的具体职责与个人贡献尚待补充。" /></p>}
         </section>}
 
-        {details.links?.length && <div class="flex flex-wrap gap-3 mt-8">
+        {details.links?.length && <div class="project-links flex flex-wrap gap-3 mt-8">
           {details.links.map((link) => <a class="btn btn-sm btn-primary rounded-full" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
         </div>}
 
@@ -96,6 +95,8 @@ const facts = [
 </project-details>
 
 <script>
+  import { lenis } from "../scripts/smooth-scroll";
+
   class ProjectDetails extends HTMLElement {
     connectedCallback() {
       if (this.dataset.bound) return;
@@ -103,9 +104,118 @@ const facts = [
       const dialog = this.querySelector<HTMLDialogElement>("dialog")!;
       const trigger = this.parentElement!.querySelector<HTMLButtonElement>("[data-project-open]")!;
 
-      trigger.addEventListener("click", () => dialog.showModal());
+      // Start fetching the cover as soon as the card is hovered or focused, so it doesn't pop in mid-animation.
+      const preloadCover = () => dialog.querySelectorAll("img").forEach((img) => { img.loading = "eager"; });
+      trigger.addEventListener("pointerenter", preloadCover, { once: true });
+      trigger.addEventListener("focus", preloadCover, { once: true });
+
+      trigger.addEventListener("click", () => {
+        preloadCover();
+        // The dialog scrolls on its own (data-lenis-prevent); hold the page still behind it.
+        lenis?.stop();
+        dialog.showModal();
+        this.playOpenAnimation(dialog);
+      });
       dialog.addEventListener("click", (event) => {
         if (event.target === dialog) dialog.close();
+      });
+
+      dialog.querySelectorAll<HTMLDetailsElement>(".tech-details").forEach((details) => this.bindDetails(details));
+      // Start every visit with all details collapsed and the cards back to equal row heights.
+      dialog.addEventListener("close", () => {
+        lenis?.start();
+        dialog.querySelectorAll<HTMLDetailsElement>(".tech-details").forEach((details) => { details.open = false; });
+        dialog.querySelectorAll<HTMLElement>(".tech-grid").forEach((grid) => this.unlockCardHeights(grid));
+      });
+    }
+
+    // Cards in a row stretch to equal height. Before a card grows, pin each card's current height as its minimum
+    // and stop stretching, so only the expanding card gets taller and its neighbour keeps its size.
+    lockCardHeights(grid: HTMLElement) {
+      if (grid.dataset.locked) return;
+      grid.dataset.locked = "true";
+      grid.querySelectorAll<HTMLElement>(".tech-card").forEach((card) => {
+        card.style.minHeight = `${card.getBoundingClientRect().height}px`;
+      });
+      grid.style.alignItems = "start";
+    }
+
+    unlockCardHeights(grid: HTMLElement) {
+      delete grid.dataset.locked;
+      grid.style.alignItems = "";
+      grid.querySelectorAll<HTMLElement>(".tech-card").forEach((card) => { card.style.minHeight = ""; });
+    }
+
+    bindDetails(details: HTMLDetailsElement) {
+      const summary = details.querySelector("summary")!;
+      const body = details.querySelector<HTMLElement>(".tech-detail-body")!;
+      const easing = "cubic-bezier(0.22, 1, 0.36, 1)";
+      let animation: Animation | undefined;
+      let fade: Animation | undefined;
+      let expanded = details.open;
+
+      summary.addEventListener("click", (event) => {
+        event.preventDefault();
+        this.lockCardHeights(details.closest<HTMLElement>(".tech-grid")!);
+        const startHeight = details.getBoundingClientRect().height;
+        animation?.cancel();
+        fade?.cancel();
+        expanded = !expanded;
+
+        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+          details.open = expanded;
+          return;
+        }
+
+        details.open = true;
+        const openHeight = details.getBoundingClientRect().height;
+        const endHeight = expanded ? openHeight : openHeight - body.getBoundingClientRect().height;
+        details.style.overflow = "hidden";
+        animation = details.animate(
+          { height: [`${startHeight}px`, `${endHeight}px`] },
+          { duration: 420, easing },
+        );
+        // The text fades in as the panel opens, and fades out quickly before the panel finishes closing.
+        fade = body.animate(
+          expanded
+            ? [{ opacity: 0, transform: "translateY(-4px)" }, { opacity: 1, transform: "none" }]
+            : [{ opacity: 1 }, { opacity: 0 }],
+          { duration: expanded ? 420 : 200, easing, fill: "both" },
+        );
+        animation.onfinish = () => {
+          details.open = expanded;
+          details.style.overflow = "";
+          fade?.cancel();
+          animation = fade = undefined;
+        };
+      });
+    }
+
+    playOpenAnimation(dialog: HTMLDialogElement) {
+      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+      const easing = "cubic-bezier(0.22, 1, 0.36, 1)";
+
+      // No scale: scaling text makes it snap visibly when the animation ends.
+      dialog.animate(
+        [
+          { opacity: 0, transform: "translateY(12px)" },
+          { opacity: 1, transform: "none" },
+        ],
+        { duration: 420, easing },
+      );
+
+      // Sections cascade in one after another, then each contribution card follows in turn.
+      const items = dialog.querySelectorAll<HTMLElement>(
+        ".project-overview, .project-facts, .project-section > h3, .tech-card, .project-section li, .project-section > p, .project-links",
+      );
+      items.forEach((item, index) => {
+        item.animate(
+          [
+            { opacity: 0, transform: "translateY(8px)" },
+            { opacity: 1, transform: "none" },
+          ],
+          { duration: 520, delay: 120 + Math.min(index * 70, 700), easing, fill: "backwards" },
+        );
       });
     }
   }
@@ -132,6 +242,15 @@ const facts = [
   .project-dialog::backdrop {
     background: rgb(10 12 18 / 65%);
     backdrop-filter: blur(4px);
+    animation: backdrop-in 320ms ease;
+  }
+
+  @keyframes backdrop-in {
+    from { opacity: 0; }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .project-dialog::backdrop { animation: none; }
   }
 
   :global(html:has(.project-dialog[open])) {

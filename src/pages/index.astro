@@ -1,71 +1,470 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
-import HorizontalCard from "../components/HorizontalCard.astro";
 import LocalizedText from "../components/LocalizedText.astro";
+import GameCollage from "../components/GameCollage.astro";
+import HomeHero from "../components/HomeHero.astro";
 ---
 
-<BaseLayout sideBarActiveItemID="home">
-  <div class="pb-12 mt-5">
-    <div class="text-xl py-1"><LocalizedText en="Hey there 👋" zh="你好 👋" /></div>
-    <div class="text-5xl font-bold"><LocalizedText en="I'm Guanhao Wang" zh="我是 Guanhao Wang" /></div>
-    <div class="text-3xl py-3 font-bold"><LocalizedText en="A Computer Science Student & Game Developer" zh="是一名计算机科学专业学生与游戏开发者" /></div>
-    <div class="py-2">
-      <text class="text-lg">
+<BaseLayout>
+  <HomeHero slot="hero">
+  <div id="about">
+    <div class="hero-layer text-3xl lg:text-5xl font-bold font-heading" data-depth="1" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
+    <div
+      class="hero-layer hero-subtitle text-xl lg:text-3xl py-3 font-bold font-heading"
+      data-depth="0.6"
+      data-intro="subtitle"
+      data-code-en="Computer Science Student"
+      data-code-zh="计算机科学专业学生"
+      data-art-en="Game Developer"
+      data-art-zh="游戏开发者"
+    ><LocalizedText en="A Computer Science Student & Game Developer" zh="是一名计算机科学专业学生与游戏开发者" /></div>
+    <div class="hero-layer py-2" data-depth="0.3" data-intro="tagline">
+      <text class="text-sm lg:text-lg">
         <LocalizedText
           en="I love video games and interactive experiences, and I enjoy designing them. Through programming and design, I hope to turn that passion into creations of my own."
           zh="我热爱电子游戏与交互体验，也享受设计它们的过程。我希望通过编程与设计，将这份热爱转化为自己的作品。"
         />
       </text>
     </div>
-    <div class="mt-8">
-      <a class="btn btn-outline btn-primary" href="/projects"><LocalizedText en="View my projects" zh="查看我的项目" /></a>
-      <a href="/cv" class="btn btn-outline btn-primary ml-5">
-        <LocalizedText en="View my resume" zh="查看我的简历" />
-      </a>
+  </div>
+  </HomeHero>
+
+  <section id="games" class="scroll-mt-20 pt-12">
+    <div class="text-3xl w-full font-bold font-heading" data-reveal>
+      <!-- A line-drawn controller beside the heading.
+           The script places it next to the heading text, which changes with the language. -->
+      <span class="doodle-heading">
+        <LocalizedText en="Games I Love" zh="我喜欢的游戏" />
+        <svg class="doodle-stroke" aria-hidden="true">
+          <g class="doodle-pad">
+            <path d="M6.5 30C8.5 30 10 29 11.1 27.4L14 23H34L36.9 27.4C38 29 39.5 30 41.5 30C44.5 30 47.1 27.5 46.5 24L45 16C44 10 40 6 34 6H14C8 6 4 10 3 16L1.5 24C0.9 27.5 3.5 30 6.5 30Z" />
+            <path d="M13 12.5v6M10 15.5h6" />
+            <circle cx="32.5" cy="13" r="1.2" />
+            <circle cx="37.5" cy="18" r="1.2" />
+          </g>
+        </svg>
+      </span>
     </div>
-  </div>
-
-  <div>
-    <div class="text-3xl w-full font-bold mb-2"><LocalizedText en="Ongoing Projects" zh="进行中项目" /></div>
-  </div>
-
-  <HorizontalCard
-    title="Coal Echoes"
-    titleZh="Coal Echoes 煤火回声"
-    projectId="coal-echoes"
-    coverPending
-    desc="A narrative exploration game in development, set in an abandoned coal preparation plant. Use photography, a grandfather's diary, and a personal scrapbook to explore industrial and family memories."
-    descZh="开发中的第一人称叙事探索游戏。通过摄影、爷爷的日记与个人手账，探索废弃洗煤厂中的工业记忆与家庭往事。"
-    url="https://github.com/HowellWang04/Grad-App-Project-Coal"
-    category="personal"
-  />
-  <div>
-    <div class="text-3xl w-full font-bold mb-2 mt-10"><LocalizedText en="Completed Projects" zh="已完成项目" /></div>
-  </div>
-  <HorizontalCard
-    title="Project Fireflies"
-    titleZh="Project Fireflies 萤火虫"
-    projectId="project-fireflies"
-    coverPending
-    coverComingSoon
-    desc="An interactive light installation about ecological disturbance and recovery. Movement and bright light disrupt LED fireflies, while the Kuramoto model shapes their collective flashing rhythm. ESP32 sensing connects to Unity control and sound."
-    descZh="围绕生态扰动与恢复设计的灯光交互装置。人体移动与强光影响 LED 萤火虫的行为，藏本模型驱动群体闪烁节奏，通过 ESP32 传感与 Unity 控制连接灯光和声音。"
-    url="https://github.com/HowellWang04/Grad-App-Project-Fireflies"
-    category="personal"
-  />
-  <div class="divider my-0"></div>
-  <HorizontalCard
-    title="Project Sand"
-    titleZh="Project Sand 治沙模拟器"
-    projectId="project-sand"
-    coverPending
-    coverComingSoon
-    desc="A desert restoration simulation. Plant trees, build factories, and mine for resources while balancing income against ecological damage. Watch wind, sand, heat haze, and the sky respond to your decisions."
-    descZh="治沙模拟器。通过植树、建厂与采矿，在经济收益和生态损耗之间作出取舍，并观察风沙、热浪与天空随决策变化。"
-    url="https://github.com/hwx676767/0714-WGH-sand"
-    category="personal"
-  />
-  <a class="btn btn-sm btn-outline btn-primary rounded-full mt-4" href="/projects">
-    <LocalizedText en="More projects" zh="更多项目" /><span aria-hidden="true">→</span>
-  </a>
+    <p class="mt-1 opacity-70" data-reveal><LocalizedText en="A few worlds that shaped how I think about play." zh="这些游戏塑造了我对“玩”的理解。" /></p>
+    <GameCollage />
+  </section>
 </BaseLayout>
+
+<script>
+  import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
+  import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+
+  gsap.registerPlugin(DrawSVGPlugin);
+
+  // About Me lives on the right of the hero and is one scroll-driven sequence, built on GSAP ScrollTrigger:
+  //  1. The hero starts without it. While the hero holds still, scrolling plays it in: the name rises in,
+  //     "Computer Science Student" decodes out of flickering code behind a moving terminal caret,
+  //     the letters of "Game Developer" drop in painted, and the tagline appears word by word.
+  //  2. Once the hero scrolls away, the three lines drift up at different speeds and blur away as Games I Love arrives.
+  //  3. The controller doodle beside Games I Love draws itself in.
+  // Everything is scrubbed, so scrolling back up plays it in reverse.
+
+  // The letters live in a separate span next to the original text, so the language script can keep
+  // rewriting the original without wiping out the animation.
+  const cjk = /[\p{Script=Han}　-〿＀-￯]/u;
+  const splitIntoLetters = (original: HTMLElement) => {
+    const text = (document.documentElement.lang === "zh-CN" ? original.dataset.zh : original.dataset.en) ?? "";
+    const graphemes = "Segmenter" in Intl
+      ? [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)].map((part) => part.segment)
+      : Array.from(text);
+    const target = document.createElement("span");
+    const letters: HTMLElement[] = [];
+    const words: HTMLElement[] = [];
+    let word: HTMLElement | undefined;
+
+    // Separate letters lose the font's kerning (e.g. "Wa"), so record where each character sits in the original,
+    // kerned text and match it below.
+    const textNode = original.firstChild;
+    const kerned: DOMRect[] = [];
+    if (original.textContent === text && textNode?.nodeType === Node.TEXT_NODE) {
+      const range = document.createRange();
+      let offset = 0;
+      graphemes.forEach((grapheme) => {
+        if (!/\s/.test(grapheme)) {
+          range.setStart(textNode, offset);
+          range.setEnd(textNode, offset + grapheme.length);
+          kerned.push(range.getBoundingClientRect());
+        }
+        offset += grapheme.length;
+      });
+    }
+
+    original.style.display = "none";
+    original.after(target);
+    let at = 0;
+    graphemes.forEach((grapheme) => {
+      const start = at;
+      at += grapheme.length;
+      if (/\s/.test(grapheme)) {
+        target.append(grapheme);
+        word = undefined;
+        return;
+      }
+      // Words never break mid-word. Chinese has no spaces, so each character is its own word and lines can wrap.
+      const own = cjk.test(grapheme);
+      if (!word || own) {
+        word = document.createElement("span");
+        word.className = "intro-word";
+        target.append(word);
+        words.push(word);
+      }
+      const span = document.createElement("span");
+      span.textContent = grapheme;
+      span.dataset.at = String(start);
+      span.className = "intro-char";
+      letters.push(span);
+      word.append(span);
+      if (own) word = undefined;
+    });
+
+    // Nudge each letter onto its kerned position (left to right, so earlier nudges are already applied).
+    if (kerned.length === letters.length) {
+      const firstTop = letters[0]?.getBoundingClientRect().top ?? 0;
+      letters.forEach((letter, index) => {
+        const placed = letter.getBoundingClientRect();
+        const sameLine = Math.abs((placed.top - firstTop) - (kerned[index].top - kerned[0].top)) < 4;
+        if (sameLine) letter.style.marginLeft = `${kerned[index].left - placed.left}px`;
+      });
+    }
+
+    const restore = () => {
+      target.remove();
+      original.style.display = "";
+    };
+    return { text, letters, words, restore };
+  };
+
+  const clamp = (value: number) => Math.min(1, Math.max(0, value));
+  const easeOut = (t: number) => 1 - (1 - t) ** 3;
+  const scrambleCharacters = "01<>/{}[]#*+=_%$&";
+  const monospace = "ui-monospace, SFMono-Regular, Consolas, 'Courier New', monospace";
+  const artPalette = ["#C0643F", "#D9A441", "#7FA07A", "#4F8C9A", "#9B5C8F", "#D27A7A"];
+
+  // Where each phase sits along the held scroll (0 to 1).
+  const phases = {
+    name: [0, 0.08],
+    lead: [0.08, 0.13],
+    code: [0.13, 0.47],
+    plain: [0.48, 0.53],
+    art: [0.54, 0.75],
+    // The tagline finishes well before the hold ends, so it is fully written before Games I Love moves up.
+    tagline: [0.74, 0.9],
+  } as const;
+
+  // Each letter owns a slice [start, end] of the held scroll; t is how far through its slice the scroll is.
+  type Kind = "lead" | "code" | "plain" | "art";
+  type Slot = { letter: HTMLElement; kind: Kind; start: number; end: number; finalText: string; color: string };
+
+  // "Computer Science Student": flickering monospace code with an RGB split that settles into the real letter.
+  const drawCode = (slot: Slot, t: number) => {
+    const { letter } = slot;
+    if (t >= 1 || t <= 0) {
+      letter.textContent = slot.finalText;
+      letter.style.opacity = t <= 0 ? "0" : "";
+      letter.style.fontFamily = letter.style.color = letter.style.textShadow = letter.style.transform = "";
+      return;
+    }
+    const split = (1 - t) * 3;
+    letter.style.opacity = "1";
+    letter.textContent = scrambleCharacters[Math.floor(Math.random() * scrambleCharacters.length)];
+    letter.style.fontFamily = monospace;
+    letter.style.color = "oklch(var(--p))";
+    letter.style.textShadow = `${split}px 0 rgb(255 40 90 / 80%), ${-split}px 0 rgb(0 190 255 / 80%)`;
+    letter.style.transform = `translateX(${(Math.random() - 0.5) * split * 2}px) skewX(${(1 - t) * -14}deg)`;
+  };
+
+  // "Game Developer": letters drop in, each in its own colour, then settle into the text colour.
+  const drawArt = (slot: Slot, t: number) => {
+    const { letter } = slot;
+    const e = easeOut(t);
+    const settle = clamp((t - 0.6) / 0.4);
+    letter.style.opacity = String(clamp(t * 2));
+    letter.style.transform = `translateY(${(1 - e) * -0.6}em) rotate(${(1 - e) * 18}deg) scale(${0.6 + e * 0.4})`;
+    letter.style.filter = `blur(${(1 - e) * 4}px)`;
+    letter.style.color = t >= 1 ? "" : `color-mix(in oklab, ${slot.color} ${Math.round((1 - settle) * 100)}%, currentColor)`;
+  };
+
+  const drawPlain = (slot: Slot, t: number) => {
+    slot.letter.style.opacity = String(t);
+    slot.letter.style.transform = `translateY(${(1 - easeOut(t)) * 0.3}em)`;
+  };
+
+  const spread = <T extends { start: number; end: number }>(group: T[], [from, to]: readonly number[], length: number) => {
+    group.forEach((item, index) => {
+      item.start = group.length > 1 ? from + (index * (to - from - length)) / (group.length - 1) : from;
+      item.end = item.start + length;
+    });
+  };
+
+  // Fit the Games I Love doodle to the heading text: the controller sits just right of the words.
+  const layoutDoodle = (heading: HTMLElement) => {
+    const svg = heading.querySelector<SVGSVGElement>(".doodle-stroke")!;
+    const pad = svg.querySelector<SVGGElement>(".doodle-pad")!;
+    const range = document.createRange();
+    range.selectNodeContents(heading.querySelector("[data-en]")!);
+    const box = heading.getBoundingClientRect();
+    const text = range.getBoundingClientRect();
+    const em = parseFloat(getComputedStyle(heading).fontSize);
+    const left = text.left - box.left;
+    const top = text.top - box.top;
+    const { width: w, height: h } = text;
+
+    // The controller (drawn in a 48 x 32 box) sits right of the words, centred on them and tilted a little.
+    const scale = (1.3 * em) / 48;
+    const tilt = -8;
+    const padX = left + w + 0.45 * em;
+    const padY = top + h / 2 - 16 * scale;
+    pad.setAttribute("transform", `translate(${padX} ${padY}) scale(${scale}) rotate(${tilt} 24 16)`);
+
+    svg.setAttribute("width", String(box.width + em));
+    svg.setAttribute("height", String(box.height + em));
+    svg.setAttribute("viewBox", `0 0 ${box.width + em} ${box.height + em}`);
+  };
+
+  let teardownAbout: (() => void) | undefined;
+  let setupRun = 0;
+
+  const setupAbout = async () => {
+    teardownAbout?.();
+    teardownAbout = undefined;
+    // setupAbout runs on load and again on astro:page-load; only the latest run may finish setting up.
+    const run = ++setupRun;
+    const main = document.querySelector<HTMLElement>("main");
+    const hero = document.querySelector<HTMLElement>("[data-home-hero]");
+    const about = document.getElementById("about");
+    const name = about?.querySelector<HTMLElement>('[data-intro="name"]');
+    const subtitle = about?.querySelector<HTMLElement>('[data-intro="subtitle"]');
+    const tagline = about?.querySelector<HTMLElement>('[data-intro="tagline"]');
+    const doodle = main?.querySelector<HTMLElement>(".doodle-heading");
+    if (!main || !hero || !about || !name || !subtitle || !tagline || !doodle) return;
+    main.dataset.introStarted = "true";
+
+    // Nothing below the hero waits for this sequence.
+    const finish = () => {
+      if (main.dataset.introDone) return;
+      main.dataset.introDone = "true";
+      document.dispatchEvent(new Event("portfolio:intro-done"));
+    };
+
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      [name, subtitle, tagline].forEach((element) => element.classList.add("is-revealed"));
+      finish();
+      // No animation, but the doodle still needs fitting to the heading.
+      await document.fonts.ready;
+      if (main.isConnected && run === setupRun) layoutDoodle(doodle);
+      return;
+    }
+
+    // Letters are positioned from measured glyph widths, so wait for the web fonts (briefly) before measuring.
+    await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]);
+    if (!main.isConnected || run !== setupRun) return;
+
+    [name, subtitle, tagline].forEach((element) => element.classList.add("is-revealed"));
+    finish();
+    // The name rises in as a whole. Its inner text moves, so the exit below can still move the line itself.
+    const nameText = name.querySelector<HTMLElement>("[data-en]")!;
+
+    // Subtitle letters, sorted into the code part, the art part and the words around them.
+    const role = splitIntoLetters(subtitle.querySelector<HTMLElement>("[data-en]")!);
+    const chinese = document.documentElement.lang === "zh-CN";
+    const codeWord = (chinese ? subtitle.dataset.codeZh : subtitle.dataset.codeEn) ?? "";
+    const artWord = (chinese ? subtitle.dataset.artZh : subtitle.dataset.artEn) ?? "";
+    const codeAt = role.text.indexOf(codeWord);
+    const artAt = role.text.indexOf(artWord);
+    const kindOf = (letter: HTMLElement): Kind => {
+      const offset = Number(letter.dataset.at);
+      if (codeAt >= 0 && offset >= codeAt && offset < codeAt + codeWord.length) return "code";
+      if (artAt >= 0 && offset >= artAt && offset < artAt + artWord.length) return "art";
+      return codeAt >= 0 && offset < codeAt ? "lead" : "plain";
+    };
+    const slots: Slot[] = role.letters.map((letter) => ({
+      letter, kind: kindOf(letter), start: 0, end: 0, finalText: letter.textContent ?? "", color: "",
+    }));
+    const code = slots.filter((slot) => slot.kind === "code");
+    const art = slots.filter((slot) => slot.kind === "art");
+    spread(slots.filter((slot) => slot.kind === "lead"), phases.lead, 0.04);
+    spread(code, phases.code, 0.08);
+    spread(slots.filter((slot) => slot.kind === "plain"), phases.plain, 0.05);
+    spread(art, phases.art, 0.12);
+    art.forEach((slot, index) => { slot.color = artPalette[index % artPalette.length]; });
+
+    // Pin each code letter's width so swapping in narrower or wider code characters never shifts its neighbours.
+    code.forEach(({ letter }) => {
+      letter.style.width = `${letter.offsetWidth}px`;
+      letter.style.textAlign = "center";
+    });
+
+    // The tagline's words appear one after another.
+    const story = splitIntoLetters(tagline.querySelector<HTMLElement>("[data-en]")!);
+    const words = story.words.map((element) => ({ element, start: 0, end: 0 }));
+    spread(words, phases.tagline, 0.12);
+
+    // A terminal caret that rides along the code letters as they decode.
+    const caret = document.createElement("span");
+    caret.className = "code-caret";
+    caret.setAttribute("aria-hidden", "true");
+    subtitle.append(caret);
+
+    const render = (progress: number) => {
+      const rise = easeOut(clamp((progress - phases.name[0]) / (phases.name[1] - phases.name[0])));
+      nameText.style.opacity = String(rise);
+      nameText.style.transform = `translateY(${(1 - rise) * 0.3}em)`;
+
+      slots.forEach((slot) => {
+        const t = clamp((progress - slot.start) / (slot.end - slot.start));
+        if (slot.kind === "code") drawCode(slot, t);
+        else if (slot.kind === "art") drawArt(slot, t);
+        else drawPlain(slot, t);
+      });
+
+      // The caret sits just after the letter that is decoding, and goes away once the code part is done.
+      const decoding = [...code].reverse().find((slot) => progress > slot.start);
+      const codeDone = !code.length || progress >= code[code.length - 1].end;
+      if (decoding && !codeDone) {
+        const { letter } = decoding;
+        caret.style.opacity = "1";
+        caret.style.transform = `translate(${letter.offsetLeft + letter.offsetWidth + 2}px, ${letter.offsetTop + letter.offsetHeight * 0.15}px)`;
+        caret.style.height = `${letter.offsetHeight * 0.7}px`;
+      } else {
+        caret.style.opacity = "0";
+      }
+
+      words.forEach(({ element, start, end }) => {
+        element.style.opacity = String(easeOut(clamp((progress - start) / (end - start))));
+      });
+    };
+
+    // 1. About Me, scrubbed by scroll while the hero holds still (its content is sticky until its bottom arrives).
+    const state = { progress: 0 };
+    const intro = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: "top top",
+        end: "bottom bottom",
+        scrub: 0.4,
+        onRefresh: () => render(state.progress),
+      },
+    });
+    intro.to(state, { progress: 1, duration: 1, ease: "none", onUpdate: () => render(state.progress) });
+    render(0);
+
+    // 2. As the hero scrolls away, the lines drift up at different speeds and blur away.
+    const layers = [...about.querySelectorAll<HTMLElement>(".hero-layer")];
+    const exit = gsap.timeline({
+      scrollTrigger: {
+        trigger: hero,
+        start: "bottom bottom",
+        end: "bottom 40%",
+        scrub: 0.4,
+      },
+    });
+    layers.forEach((layer) => {
+      const depth = Number(layer.dataset.depth ?? 0.5);
+      exit.to(layer, { y: -140 * depth, opacity: 1 - 0.95 * depth, filter: `blur(${6 * depth}px)`, ease: "none" }, 0);
+    });
+
+    // 3. As Games I Love arrives, its controller doodle is drawn in: the outline, then the d-pad and buttons.
+    //    Each piece gets time in proportion to its length, so the pen moves at an even speed.
+    layoutDoodle(doodle);
+    const strokes = [...doodle.querySelectorAll<SVGGeometryElement>(".doodle-pad path, .doodle-pad circle")];
+    const lengths = strokes.map((stroke) => stroke.getTotalLength());
+    const total = lengths.reduce((sum, length) => sum + length, 0) || 1;
+    // Start undrawn: the from-values inside a scroll-linked timeline aren't applied until the first scroll.
+    gsap.set(strokes, { drawSVG: "0%" });
+    const draw = gsap.timeline({
+      scrollTrigger: {
+        trigger: doodle,
+        start: "top 90%",
+        end: "top 40%",
+        scrub: 0.4,
+        onRefresh: () => layoutDoodle(doodle),
+      },
+    });
+    strokes.forEach((stroke, index) => {
+      draw.fromTo(stroke, { drawSVG: "0%" }, { drawSVG: "100%", ease: "none", duration: lengths[index] / total });
+    });
+
+    // A language switch rewrites the text, so rebuild everything for the new language.
+    const rebuild = () => setupAbout();
+    document.addEventListener("portfolio:language-change", rebuild, { once: true });
+
+    teardownAbout = () => {
+      document.removeEventListener("portfolio:language-change", rebuild);
+      [intro, exit, draw].forEach((animation) => {
+        animation.scrollTrigger?.kill(true);
+        animation.kill();
+      });
+      gsap.set(layers, { clearProps: "transform,opacity,filter" });
+      nameText.style.opacity = nameText.style.transform = "";
+      gsap.set(strokes, { clearProps: "all" });
+      caret.remove();
+      role.restore();
+      story.restore();
+    };
+  };
+
+  setupAbout();
+  document.addEventListener("astro:page-load", setupAbout);
+  document.addEventListener("astro:before-swap", () => {
+    teardownAbout?.();
+    teardownAbout = undefined;
+  });
+</script>
+
+<style>
+  /* The subtitle hosts the caret, positioned over its letters. */
+  .hero-subtitle {
+    position: relative;
+    isolation: isolate;
+  }
+
+  .hero-subtitle :global(.code-caret) {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 0.09em;
+    background: oklch(var(--p));
+    pointer-events: none;
+    animation: caret-blink 0.9s steps(1) infinite;
+  }
+
+  @keyframes caret-blink {
+    50% {
+      visibility: hidden;
+    }
+  }
+
+  /* The heading leaves room on its right for the controller; the doodle's SVG is laid over it by the script. */
+  .doodle-heading {
+    position: relative;
+    display: inline-block;
+    padding-right: 1.9em;
+  }
+
+  .doodle-stroke {
+    position: absolute;
+    top: 0;
+    left: 0;
+    overflow: visible;
+    pointer-events: none;
+  }
+
+  .doodle-stroke :is(path, circle) {
+    fill: none;
+    stroke: oklch(var(--p));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* The controller is drawn scaled; keep its line weight in screen pixels. */
+    vector-effect: non-scaling-stroke;
+    stroke-width: 3;
+  }
+
+  .doodle-pad :is(path, circle) {
+    stroke-width: 2.5;
+  }
+</style>

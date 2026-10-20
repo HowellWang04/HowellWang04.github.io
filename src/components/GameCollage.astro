@@ -1,0 +1,447 @@
+---
+import LocalizedText from "./LocalizedText.astro";
+
+// A scrapbook wall: each game is a taped-down photo with a handwritten note, tilted and overlapping like a real page.
+// Hovering (or tapping) a photo flips it over to a handwritten page about the game.
+// Steam games use Steam's 600x900 library capsule art; other covers are cropped to the same 2:3 frame.
+const steamCover = (appId: number) => `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/library_600x900.jpg`;
+
+type Text = { en: string; zh: string };
+type Photo = {
+  title: string;
+  titleZh: string;
+  cover: string;
+  note: Text;
+  // The back of the card. Leave these out to show placeholder text until the real writing is ready.
+  reflection?: Text;
+  design?: Text;
+  // tilt in degrees; dx / dy nudge each photo off the grid so neighbours overlap a little.
+  tilt: number;
+  dx: string;
+  dy: string;
+};
+
+const photos: Photo[] = [
+  {
+    title: "Resident Evil 4",
+    titleZh: "生化危机 4",
+    cover: steamCover(2050650),
+    note: { en: "Tension, pacing, a touch of absurdity", zh: "紧张、节奏，和一点点荒诞" },
+    reflection: {
+      en: "Completely linear, yet I always knew what to do next. The action feels great, and the tension rises and falls so well I could never put it down.",
+      zh: "非常线性，但我总是清楚下一步该做什么。动作手感极好，紧张与放松交替的节奏让人一直停不下来。",
+    },
+    design: {
+      en: "Clear guidance keeps players in the flow. I try to shape a curve of pressure and release, with difficulty that keeps pulling you forward.",
+      zh: "清晰的线性引导能让玩家一直沉浸。我会刻意编排紧张与释放的曲线，让难度推着玩家不断向前。",
+    },
+    tilt: -5, dx: "1%", dy: "0%",
+  },
+  {
+    title: "Portal 2",
+    titleZh: "传送门 2",
+    cover: steamCover(620),
+    note: { en: "Puzzles that teach without a word", zh: "不用说明也能教会你的谜题" },
+    reflection: {
+      en: "A brilliant portal mechanic inside a world that tells its own story. The Aperture labs say more than any cutscene could.",
+      zh: "天才般的传送门玩法，加上极强的环境叙事。光圈科技实验室的设定与废墟本身就在讲故事。",
+    },
+    design: {
+      en: "It teaches one idea step by step, then keeps building on it. I want my mechanics to be learned by playing, not by reading.",
+      zh: "它一步步教会你一个玩法，再不断在此基础上拓展。我希望我的玩法也能让玩家在玩中学会。",
+    },
+    tilt: 3, dx: "-1%", dy: "-3%",
+  },
+  {
+    title: "Death Stranding",
+    titleZh: "死亡搁浅",
+    cover: steamCover(1850570),
+    note: { en: "Lonely, yet somehow connected", zh: "孤独，却又被连在一起" },
+    reflection: {
+      en: "A bold, strange setting that blends game and film seamlessly. Even walking and delivering grow straight out of its world.",
+      zh: "设定大胆而独特，游戏化与电影化结合得非常好。就连行走和送货这些玩法，也都源自它的世界观。",
+    },
+    design: {
+      en: "Setting and mechanics should explain each other. When the rules of play come from the world, every step carries meaning.",
+      zh: "设定与玩法应该互相成就。当玩法规则源自世界观本身，玩家的每一步都有意义。",
+    },
+    tilt: -2, dx: "-10%", dy: "2%",
+  },
+  {
+    title: "The Walking Dead",
+    titleZh: "行尸走肉",
+    cover: steamCover(1449690),
+    note: { en: "Choices that stay with you", zh: "会一直跟着你的选择" },
+    reflection: {
+      en: "First I was Lee, protecting Clementine. Later I became Clementine and watched her grow up. Every character pulled me in.",
+      zh: "第一季我是李，守护着克莱曼婷；后来我成了克莱曼婷，看着她一点点长大。每个角色都让人深陷其中。",
+    },
+    design: {
+      en: "Switching who the player is lets them live one relationship from both sides. Characters are what give choices their weight.",
+      zh: "切换主角，能让玩家从两边经历同一段关系。正是角色让每个选择都变得有分量。",
+    },
+    tilt: 4, dx: "8%", dy: "3%",
+  },
+  {
+    title: "The Last of Us Part I",
+    titleZh: "最后生还者 第一部",
+    cover: steamCover(1888930),
+    note: { en: "The quietest moments hit hardest", zh: "最安静的时刻最有分量" },
+    reflection: {
+      en: "Another linear journey I still remember vividly. The bond between Joel and Ellie carries the whole story.",
+      zh: "同样是线性的旅程，至今仍记忆犹新。乔尔和艾莉之间的羁绊撑起了整个故事。",
+    },
+    design: {
+      en: "A linear structure lets every story beat be placed with care. The quiet moments between fights are where players bond with characters.",
+      zh: "线性结构让每段剧情的节奏都能被精心编排。战斗之间的安静时刻，正是玩家与角色建立联系的地方。",
+    },
+    tilt: -3, dx: "-3%", dy: "0%",
+  },
+  {
+    title: "Breath of the Wild",
+    titleZh: "旷野之息",
+    cover: "https://upload.wikimedia.org/wikipedia/en/c/c6/The_Legend_of_Zelda_Breath_of_the_Wild.jpg",
+    note: { en: "Free to wander, free to wonder", zh: "想去哪里就去哪里" },
+    reflection: {
+      en: "A fantasy world that feels real, because it is built on rules from our own. Everything in it, its people included, feels connected.",
+      zh: "这是一个幻想世界，却真实可信，因为它建立在真实世界的规律之上。里面的一切，包括角色，都紧密相连。",
+    },
+    design: {
+      en: "Fantasy works best when grounded in reality. If the world behaves the way players expect, they believe in it and want to explore.",
+      zh: "幻想要扎根于现实。当世界的运作符合玩家的直觉，他们就会相信它，并想去探索。",
+    },
+    tilt: 6, dx: "0%", dy: "4%",
+  },
+];
+
+const placeholderReflection = (photo: Photo): Text => ({
+  en: `Placeholder: a longer reflection on ${photo.title} goes here, the moment that stayed with me and why it mattered.`,
+  zh: `占位文字：这里会写我对《${photo.titleZh}》的详细理解，让我印象最深的瞬间，以及它为什么重要。`,
+});
+
+const placeholderDesign = (photo: Photo): Text => ({
+  en: `Placeholder: how ${photo.title} shaped the way I think about pacing, space and player choice.`,
+  zh: `占位文字：《${photo.titleZh}》如何影响了我对节奏、空间和玩家选择的设计理念。`,
+});
+
+// The order the photos land in (0 lands first). Shuffled, so they don't arrive left to right like a list.
+const dealOrder = [2, 0, 4, 1, 5, 3];
+---
+
+<ul class="collage" data-collage>
+  {photos.map((photo, index) => (
+    <li
+      data-deal={dealOrder[index]}
+      style={`--tilt: ${photo.tilt}deg; --dx: ${photo.dx}; --dy: ${photo.dy}; --tape: ${index % 2 ? -4 : 3}deg; --spin: ${photo.tilt * -4}deg; --from-x: ${(index % 3 - 1) * 36}px; --deal-delay: ${dealOrder[index] * 90}ms`}
+    >
+      <div class="flip-card" tabindex="0" role="button" aria-pressed="false" aria-label={`${photo.title}: flip the card`}>
+        <div class="flip-card-inner">
+          <div class="face front">
+            <img src={photo.cover} alt={photo.title} width="600" height="900" loading="lazy" decoding="async" />
+            <span class="caption">
+              <span class="caption-title"><LocalizedText en={photo.title} zh={photo.titleZh} /></span>
+              <span class="caption-note"><LocalizedText {...photo.note} /></span>
+            </span>
+          </div>
+          <div class="face back">
+            <p class="back-title"><LocalizedText en={photo.title} zh={photo.titleZh} /></p>
+            <p class="back-label"><LocalizedText en="What it meant to me" zh="这款游戏对我" /></p>
+            <p class="back-text"><LocalizedText {...(photo.reflection ?? placeholderReflection(photo))} /></p>
+            <p class="back-label"><LocalizedText en="How it shaped my design" zh="它如何塑造了我的设计" /></p>
+            <p class="back-text"><LocalizedText {...(photo.design ?? placeholderDesign(photo))} /></p>
+          </div>
+        </div>
+      </div>
+    </li>
+  ))}
+</ul>
+<noscript><style>[data-collage] > li { --land: 1 !important; }</style></noscript>
+
+<script>
+  // Tap or press Enter / Space to flip a card. Hover flipping is pure CSS on devices with a mouse.
+  const setupCollage = () => {
+    document.querySelectorAll<HTMLElement>("[data-collage] .flip-card").forEach((card) => {
+      if (card.dataset.bound) return;
+      card.dataset.bound = "true";
+      const toggle = () => card.setAttribute("aria-pressed", String(card.getAttribute("aria-pressed") !== "true"));
+      // Mouse users already flip on hover, so a click shouldn't pin the card over.
+      card.addEventListener("click", (event) => {
+        if ((event as PointerEvent).pointerType !== "mouse") toggle();
+      });
+      card.addEventListener("keydown", (event) => {
+        if (event.key !== "Enter" && event.key !== " ") return;
+        event.preventDefault();
+        toggle();
+      });
+    });
+  };
+
+  setupCollage();
+  document.addEventListener("astro:page-load", setupCollage);
+
+  // Scroll-linked drop: each photo falls onto the page from above, lifted and spinning, and its tape sticks
+  // down as it lands. Scrolling back up lifts it off again. Nothing drops until the home intro is done.
+  let teardownDrop: (() => void) | undefined;
+
+  const setupDrop = () => {
+    teardownDrop?.();
+    teardownDrop = undefined;
+    const main = document.querySelector<HTMLElement>("main");
+    const collage = document.querySelector<HTMLElement>("[data-collage]");
+    if (!main || !collage) return;
+    const items = [...collage.children] as HTMLElement[];
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
+      items.forEach((item) => item.style.setProperty("--land", "1"));
+      return;
+    }
+
+    const clamp = (value: number) => Math.min(1, Math.max(0, value));
+    let frame = 0;
+    let dealt = false;
+    const update = () => {
+      frame = 0;
+      const ready = Boolean(main.dataset.introDone);
+      // The first drop after the intro plays photo by photo; after that the photos follow the scroll directly.
+      if (ready && !dealt) {
+        dealt = true;
+        collage.classList.add("is-dealing");
+        setTimeout(() => collage.classList.remove("is-dealing"), 1400);
+      }
+      items.forEach((item) => {
+        const top = item.getBoundingClientRect().top;
+        // Each photo lands a little after the one before it in the shuffled deal order.
+        const lag = (Number(item.dataset.deal ?? 0) / Math.max(items.length - 1, 1)) * 0.35;
+        const land = ready ? clamp((window.innerHeight * 0.98 - top) / (window.innerHeight * 0.4) - lag) : 0;
+        item.style.setProperty("--land", land.toFixed(3));
+      });
+    };
+
+    const schedule = () => {
+      if (!frame) frame = requestAnimationFrame(update);
+    };
+    window.addEventListener("scroll", schedule, { passive: true });
+    window.addEventListener("resize", schedule);
+    document.addEventListener("portfolio:intro-done", schedule);
+    update();
+
+    teardownDrop = () => {
+      cancelAnimationFrame(frame);
+      window.removeEventListener("scroll", schedule);
+      window.removeEventListener("resize", schedule);
+      document.removeEventListener("portfolio:intro-done", schedule);
+    };
+  };
+
+  setupDrop();
+  document.addEventListener("astro:page-load", setupDrop);
+</script>
+
+<style>
+  .collage {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 2.75rem 1rem;
+    max-width: 40rem;
+    margin-top: 2rem;
+    padding: 1rem 0.5rem 2rem;
+  }
+
+  /* 0 = still in the air, 1 = taped down. Registered so it can ease smoothly between scroll updates. */
+  @property --land {
+    syntax: "<number>";
+    inherits: true;
+    initial-value: 0;
+  }
+
+  .collage > li {
+    --lift: calc(1 - var(--land));
+    position: relative;
+    opacity: clamp(0, calc(var(--land) * 2.5), 1);
+    transform: translate(calc(var(--lift) * var(--from-x)), calc(var(--lift) * -56px)) rotate(calc(var(--lift) * var(--spin))) scale(calc(1 + var(--lift) * 0.2));
+    transition: --land 650ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  /* The transform gives each photo its own stacking layer, so lift the hovered one above its neighbours here. */
+  .collage > li:is(:hover, :focus-within) {
+    z-index: 2;
+  }
+
+  .collage.is-dealing > li {
+    transition-delay: var(--deal-delay);
+  }
+
+  /* The tilt lives on the card, not on the revealed <li>, so the reveal animation never fights it. */
+  .flip-card {
+    position: relative;
+    display: block;
+    cursor: pointer;
+    perspective: 1200px;
+    transform: translate(var(--dx), var(--dy)) rotate(var(--tilt));
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .flip-card-inner {
+    position: relative;
+    transform-style: preserve-3d;
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
+  .face {
+    background: #f6f1e7;
+    color: #2e2a27;
+    /* The shadow spreads while the photo is still in the air. */
+    box-shadow: 0 1px 2px rgb(40 28 20 / 18%), 0 calc(10px + var(--lift, 0) * 28px) calc(22px + var(--lift, 0) * 26px) -12px rgb(40 28 20 / 45%);
+    backface-visibility: hidden;
+  }
+
+  .front {
+    position: relative;
+    padding: 0.5rem 0.5rem 0;
+  }
+
+  /* A strip of semi-transparent tape holding each photo to the page. Once the photo has landed, the tape is
+     pressed on in one go: it comes down slightly larger and askew, then settles flat onto the paper. */
+  .front::before {
+    --stick: clamp(0, calc((var(--land) - 0.82) * 5.5), 1);
+    content: "";
+    position: absolute;
+    top: -0.6rem;
+    left: 50%;
+    width: 42%;
+    height: 1.25rem;
+    background: rgb(232 214 170 / 70%);
+    box-shadow: 0 1px 2px rgb(40 28 20 / 12%);
+    opacity: var(--stick);
+    transform: translateX(-50%) rotate(calc(var(--tape) + (1 - var(--stick)) * 9deg)) scale(calc(1.35 - var(--stick) * 0.35));
+  }
+
+  /* The back is a lined notebook page the same size as the photo. */
+  .back {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    padding: 0.9rem 0.85rem;
+    overflow: hidden;
+    background-image: repeating-linear-gradient(transparent 0 1.35rem, rgb(120 150 170 / 22%) 1.35rem calc(1.35rem + 1px));
+    transform: rotateY(180deg);
+  }
+
+  .flip-card:hover,
+  .flip-card:focus-visible,
+  .flip-card[aria-pressed="true"] {
+    z-index: 2;
+    transform: translate(var(--dx), calc(var(--dy) - 6px)) rotate(0deg) scale(1.12);
+  }
+
+  .flip-card:focus-visible {
+    outline: none;
+  }
+
+  .flip-card:focus-visible .face {
+    outline: 2px solid oklch(var(--p));
+    outline-offset: 3px;
+  }
+
+  .flip-card[aria-pressed="true"] .flip-card-inner,
+  .flip-card:focus-visible .flip-card-inner {
+    transform: rotateY(180deg);
+  }
+
+  @media (hover: hover) {
+    .flip-card:hover .flip-card-inner {
+      transform: rotateY(180deg);
+    }
+  }
+
+  .front img {
+    display: block;
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    object-fit: cover;
+    filter: sepia(0.15) saturate(0.9);
+  }
+
+  .caption {
+    display: grid;
+    gap: 0.15rem;
+    padding: 0.5rem 0.15rem 0.65rem;
+  }
+
+  .caption-title,
+  .back-title,
+  .back-label {
+    font-family: var(--font-heading);
+    font-weight: 700;
+  }
+
+  .caption-title {
+    font-size: 0.7rem;
+    letter-spacing: 0.04em;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+
+  .caption-note,
+  .back-text {
+    font-family: var(--font-hand);
+  }
+
+  .caption-note {
+    font-size: 1rem;
+    line-height: 1.15;
+    opacity: 0.85;
+  }
+
+  .back-title {
+    font-size: 0.75rem;
+    letter-spacing: 0.04em;
+    padding-bottom: 0.3rem;
+    border-bottom: 1px solid rgb(46 42 39 / 35%);
+  }
+
+  .back-label {
+    margin-top: 0.25rem;
+    font-size: 0.55rem;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    opacity: 0.6;
+  }
+
+  .back-text {
+    font-size: 0.95rem;
+    line-height: 1.35rem;
+  }
+
+  @media (max-width: 600px) {
+    .collage {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+
+    /* Narrower cards: tighten the notebook page so the full writing still fits on the back. */
+    .back {
+      gap: 0.15rem;
+      padding: 0.6rem 0.55rem;
+      background-image: repeating-linear-gradient(transparent 0 1.05rem, rgb(120 150 170 / 22%) 1.05rem calc(1.05rem + 1px));
+    }
+
+    .back-label {
+      margin-top: 0.1rem;
+    }
+
+    .back-text {
+      font-size: 0.78rem;
+      line-height: 1.05rem;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .flip-card,
+    .flip-card-inner,
+    .collage > li {
+      transition: none;
+    }
+  }
+</style>

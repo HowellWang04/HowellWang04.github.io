@@ -1,7 +1,6 @@
 ---
-import BaseLayout from "../layouts/BaseLayout.astro";
-import LocalizedText from "../components/LocalizedText.astro";
-import resumes from "../data/resume.json";
+import LocalizedText from "../LocalizedText.astro";
+import resumes from "../../data/resume.json";
 
 const versions = [
   { language: "en", resume: resumes.en, mdLabel: "Download Markdown", pdfLabel: "Download PDF" },
@@ -9,17 +8,16 @@ const versions = [
 ];
 ---
 
-<BaseLayout title="Resume" sideBarActiveItemID="cv">
-  <div class="resume-page">
+<section id="resume" class="resume-page scroll-mt-20">
     <header class="resume-toolbar">
-      <h1 class="text-3xl font-bold"><LocalizedText en="Resume" zh="个人简历" /></h1>
+      <h2 class="text-3xl font-bold" data-reveal><LocalizedText en="Resume" zh="个人简历" /></h2>
       {versions.map(({ language, mdLabel, pdfLabel }) => (
         <div class="resume-downloads" data-resume-lang={language}>
-          <a class="btn btn-sm btn-outline btn-primary" href={`/resume/guanhao-wang-cv-${language}.md`} download>
+          <a class="btn btn-sm btn-outline btn-primary" data-reveal href={`/resume/guanhao-wang-cv-${language}.md`} download>
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5" /></svg>
             {mdLabel}
           </a>
-          <a class="btn btn-sm btn-outline btn-primary" href={`/resume/guanhao-wang-cv-${language}.pdf`} download>
+          <a class="btn btn-sm btn-outline btn-primary" data-reveal href={`/resume/guanhao-wang-cv-${language}.pdf`} download>
             <svg aria-hidden="true" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v12m-5-5 5 5 5-5M5 16v5h14v-5" /></svg>
             {pdfLabel}
           </a>
@@ -30,20 +28,20 @@ const versions = [
     {versions.map(({ language, resume }) => (
       <article class="resume-document" data-resume-lang={language} lang={language === "zh" ? "zh-CN" : "en"}>
         <header class="resume-intro border-b border-base-300">
-          <h2 class="text-3xl font-bold">{resume.name}</h2>
-          <p class="resume-contact">{resume.contact}</p>
-          <div class="resume-links">
+          <h2 class="text-3xl font-bold" data-reveal>{resume.name}</h2>
+          <p class="resume-contact" data-reveal>{resume.contact}</p>
+          <div class="resume-links" data-reveal>
             {resume.links.map((link) => <a href={link.url} target="_blank" rel="noopener noreferrer">{link.label} <span aria-hidden="true">↗</span></a>)}
           </div>
-          <p class="resume-summary">{resume.summary}</p>
+          <p class="resume-summary" data-reveal>{resume.summary}</p>
         </header>
 
         {resume.sections.map((section) => (
           <section class="resume-section">
-            <h2 class="text-xl font-bold border-b border-base-300 pb-3">{section.title}</h2>
+            <h2 class="text-xl font-bold border-b border-base-300 pb-3" data-reveal>{section.title}</h2>
             <div class="resume-entries">
               {section.entries.map((entry) => (
-                <div class="resume-entry">
+                <div class="resume-entry" data-reveal>
                   <h3 class="font-semibold text-base">{entry.title}</h3>
                   {"meta" in entry && <p class="resume-meta">{entry.meta}</p>}
                   {"description" in entry && <p class="mt-1 leading-relaxed">{entry.description}</p>}
@@ -60,8 +58,7 @@ const versions = [
         ))}
       </article>
     ))}
-  </div>
-</BaseLayout>
+</section>
 
 <style>
   .resume-page { width: 100%; }

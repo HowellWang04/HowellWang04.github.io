@@ -5,7 +5,7 @@ const { class: className = "" } = Astro.props;
 <button
   type="button"
   class:list={[
-    "theme-toggle btn btn-circle btn-ghost shadow-md transition duration-300 ease-in-out hover:scale-110 hover:bg-base-300",
+    "theme-toggle",
     className,
   ]}
   data-theme-toggle
@@ -13,35 +13,23 @@ const { class: className = "" } = Astro.props;
   aria-pressed="false"
   title="Switch theme"
 >
-  <svg
-    class="theme-icon theme-icon-moon"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke-width="1.8"
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M21.75 15.75A9 9 0 0 1 8.25 2.25a9 9 0 1 0 13.5 13.5Z"
-    ></path>
-  </svg>
-  <svg
-    class="theme-icon theme-icon-sun"
-    xmlns="http://www.w3.org/2000/svg"
-    fill="none"
-    viewBox="0 0 24 24"
-    stroke-width="1.8"
-    stroke="currentColor"
-    aria-hidden="true"
-  >
-    <path
-      stroke-linecap="round"
-      stroke-linejoin="round"
-      d="M12 3v1.5m0 15V21m9-9h-1.5M4.5 12H3m15.364-6.364-1.061 1.061M6.697 17.303l-1.061 1.061m12.728 0-1.061-1.061M6.697 6.697 5.636 5.636M16.5 12a4.5 4.5 0 1 1-9 0 4.5 4.5 0 0 1 9 0Z"
-    ></path>
+  <!-- One icon that morphs: the bite slides off the moon, the disc shrinks and the rays spin out into a sun -->
+  <svg class="theme-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" aria-hidden="true">
+    <mask id="theme-moon-mask">
+      <rect width="24" height="24" fill="white"></rect>
+      <circle class="moon-bite" cx="18" cy="6" r="7" fill="black"></circle>
+    </mask>
+    <circle class="sun-core" cx="12" cy="12" r="9" fill="currentColor" mask="url(#theme-moon-mask)"></circle>
+    <g class="sun-rays" stroke="currentColor" stroke-width="2" stroke-linecap="round">
+      <line x1="12" y1="4" x2="12" y2="1.5"></line>
+      <line x1="17.66" y1="6.34" x2="19.43" y2="4.57"></line>
+      <line x1="20" y1="12" x2="22.5" y2="12"></line>
+      <line x1="17.66" y1="17.66" x2="19.43" y2="19.43"></line>
+      <line x1="12" y1="20" x2="12" y2="22.5"></line>
+      <line x1="6.34" y1="17.66" x2="4.57" y2="19.43"></line>
+      <line x1="4" y1="12" x2="1.5" y2="12"></line>
+      <line x1="6.34" y1="6.34" x2="4.57" y2="4.57"></line>
+    </g>
   </svg>
 </button>
 
@@ -99,31 +87,114 @@ const { class: className = "" } = Astro.props;
 </script>
 
 <style>
+  /* Matches the language switch: hairline outline, no shadow, same height */
+  .theme-toggle {
+    display: inline-grid;
+    place-items: center;
+    box-sizing: content-box;
+    width: calc(1.75rem + 6px);
+    height: calc(1.75rem + 6px);
+    border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    border-radius: 999px;
+    opacity: 0.8;
+    /* Release springs back with a slight overshoot */
+    transition: opacity 180ms ease, background-color 180ms ease, transform 420ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .theme-toggle:hover {
+    opacity: 1;
+    background-color: color-mix(in srgb, currentColor 6%, transparent);
+  }
+
+  .theme-toggle:focus-visible {
+    outline: 2px solid currentColor;
+    outline-offset: 4px;
+  }
+
+  /* Press sinks in quickly and eases to a stop */
+  .theme-toggle:active {
+    transform: scale(0.9);
+    transition-duration: 180ms, 180ms, 140ms;
+    transition-timing-function: ease, ease, cubic-bezier(0.22, 1, 0.36, 1);
+  }
+
   .theme-icon {
-    width: 1.4rem;
-    height: 1.4rem;
-    transition: opacity 200ms ease, transform 300ms ease;
+    --spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+    width: 1.1rem;
+    height: 1.1rem;
+    overflow: visible;
+    transition: transform 600ms var(--spring);
   }
 
-  .theme-icon-sun {
-    display: none;
+  .sun-core,
+  .sun-rays {
+    transform-box: view-box;
+    transform-origin: 12px 12px;
   }
 
-  :global(html[data-theme="dark"]) .theme-icon-moon {
-    display: none;
+  /* Moon (light theme) */
+  .sun-core {
+    transition: transform 500ms var(--spring);
   }
 
-  :global(html[data-theme="dark"]) .theme-icon-sun {
-    display: block;
+  .moon-bite {
+    transition: transform 450ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  .theme-toggle:active .theme-icon {
-    transform: rotate(18deg) scale(0.9);
+  .sun-rays {
+    opacity: 0;
+    transform: rotate(-120deg) scale(0.3);
+    transition: opacity 200ms ease, transform 400ms ease-in;
   }
+
+  .sun-rays line {
+    opacity: 0;
+    transition: opacity 150ms ease;
+  }
+
+  /* Sun (dark theme) */
+  :global(html[data-theme="dark"]) .theme-icon {
+    transform: rotate(180deg);
+  }
+
+  :global(html[data-theme="dark"]) .sun-core {
+    transform: scale(0.55);
+  }
+
+  :global(html[data-theme="dark"]) .moon-bite {
+    transform: translate(9px, -9px);
+  }
+
+  :global(html[data-theme="dark"]) .sun-rays {
+    opacity: 1;
+    transform: none;
+    transition: opacity 250ms ease 120ms, transform 700ms var(--spring) 120ms;
+  }
+
+  /* Rays light up one after another around the disc (transitions only run on an actual toggle) */
+  :global(html[data-theme="dark"]) .sun-rays line {
+    opacity: 1;
+    transition: opacity 220ms ease calc(120ms + var(--ray) * 45ms);
+  }
+
+  .sun-rays line:nth-child(2) { --ray: 1; }
+  .sun-rays line:nth-child(3) { --ray: 2; }
+  .sun-rays line:nth-child(4) { --ray: 3; }
+  .sun-rays line:nth-child(5) { --ray: 4; }
+  .sun-rays line:nth-child(6) { --ray: 5; }
+  .sun-rays line:nth-child(7) { --ray: 6; }
+  .sun-rays line:nth-child(8) { --ray: 7; }
+  .sun-rays line:nth-child(1) { --ray: 0; }
 
   @media (prefers-reduced-motion: reduce) {
     .theme-toggle,
-    .theme-icon {
+    .theme-icon,
+    .sun-core,
+    .moon-bite,
+    .sun-rays,
+    .sun-rays line,
+    :global(html[data-theme="dark"]) .sun-rays,
+    :global(html[data-theme="dark"]) .sun-rays line {
       transition: none;
     }
   }

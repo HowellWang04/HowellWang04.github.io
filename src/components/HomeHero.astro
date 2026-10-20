@@ -1,0 +1,189 @@
+---
+import LocalizedText from "./LocalizedText.astro";
+
+const portrait = "/portrait/guanhao-portrait-selected-171840.png";
+const name = { en: "Guanhao Wang", zh: "王冠豪" };
+---
+
+<!-- Full-screen opening: the cutout portrait stands on the page background, the name runs across it as an
+     endless marquee, and the page's About text (the slot) sits on the right. The section is taller than the
+     screen and its content sticks in place, so the page can play the About text in while the hero holds still. -->
+<section class="home-hero" data-home-hero aria-label="Guanhao Wang">
+  <div class="hero-inner" data-hero-inner>
+    <img
+      class="hero-portrait"
+      src={portrait}
+      alt="Portrait of Guanhao Wang"
+      width="1026"
+      height="1280"
+      fetchpriority="high"
+      decoding="async"
+      data-hero-portrait
+    />
+
+    <div class="hero-about">
+      <slot />
+    </div>
+
+    <div class="hero-marquee" aria-hidden="true">
+      <div class="hero-marquee-track" data-hero-marquee>
+        {/* Two identical halves, so sliding the track by half its width loops seamlessly. */}
+        {[0, 1].map(() => (
+          <span class="hero-marquee-half">
+            {[0, 1].map(() => (
+              <span class="hero-name"><LocalizedText en={name.en} zh={name.zh} /><span class="hero-dash">—</span></span>
+            ))}
+          </span>
+        ))}
+      </div>
+    </div>
+  </div>
+</section>
+
+<script>
+  import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
+
+  // The marquee runs on its own and flips direction with the scroll, like turning a reel.
+  // Once the hero stops holding and scrolls away, its content drifts down a little slower than the page (parallax).
+  let teardownHero: (() => void) | undefined;
+
+  const setupHero = () => {
+    teardownHero?.();
+    teardownHero = undefined;
+    const hero = document.querySelector<HTMLElement>("[data-home-hero]");
+    const track = hero?.querySelector<HTMLElement>("[data-hero-marquee]");
+    const inner = hero?.querySelector<HTMLElement>("[data-hero-inner]");
+    const portrait = hero?.querySelector<HTMLElement>("[data-hero-portrait]");
+    if (!hero || !track || !inner || !portrait) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+
+    const marquee = gsap.to(track, { xPercent: -50, duration: 28, ease: "none", repeat: -1 });
+    // Start far into the loop so running it backwards never hits the beginning.
+    marquee.totalTime(marquee.duration() * 1000);
+
+    const direction = ScrollTrigger.create({
+      start: 0,
+      end: "max",
+      onUpdate: (self) => gsap.to(marquee, { timeScale: self.direction, duration: 0.6, overwrite: true }),
+    });
+
+    const parallax = gsap.to(inner, {
+      yPercent: 22,
+      ease: "none",
+      scrollTrigger: { trigger: hero, start: "bottom bottom", end: "bottom top", scrub: true },
+    });
+
+    const intro = gsap.timeline();
+    if (!hero.dataset.played) {
+      hero.dataset.played = "true";
+      intro
+        .from(portrait, { yPercent: 8, autoAlpha: 0, duration: 1.2, ease: "power3.out" })
+        .from(track, { y: 60, autoAlpha: 0, duration: 1.1, ease: "power3.out" }, 0.15)
+        .from(hero.querySelectorAll("[data-hero-fade]"), { y: 20, autoAlpha: 0, duration: 0.9, ease: "power3.out", stagger: 0.1 }, 0.35);
+    }
+
+    teardownHero = () => {
+      intro.progress(1).kill();
+      marquee.kill();
+      direction.kill();
+      parallax.scrollTrigger?.kill();
+      parallax.kill();
+      gsap.set([track, inner], { clearProps: "transform" });
+    };
+  };
+
+  setupHero();
+  document.addEventListener("astro:page-load", setupHero);
+  document.addEventListener("astro:before-swap", () => {
+    teardownHero?.();
+    teardownHero = undefined;
+  });
+</script>
+
+<style>
+  .home-hero {
+    position: relative;
+    /* Slide up under the 5rem header so the hero runs to the top of the window. */
+    margin-top: -5rem;
+    /* One screen of hero, plus the scroll distance the About text plays over while the hero holds still. */
+    height: calc(max(100svh, 34rem) + 180vh);
+    /* clip, not hidden: hidden would make this a scroll container and stop the content from sticking. */
+    overflow: clip;
+    background: var(--portfolio-canvas);
+  }
+
+  .hero-inner {
+    position: sticky;
+    top: 0;
+    height: 100svh;
+    min-height: 34rem;
+    overflow: hidden;
+  }
+
+  .hero-portrait {
+    position: absolute;
+    bottom: 0;
+    left: 50%;
+    height: 90%;
+    width: auto;
+    max-width: none;
+    transform: translateX(-50%);
+    user-select: none;
+    pointer-events: none;
+  }
+
+  .hero-about {
+    position: absolute;
+    left: 60%;
+    right: 3vw;
+    top: 24%;
+  }
+
+  .hero-marquee {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 4%;
+    font-family: var(--font-heading);
+    font-size: clamp(5rem, 14vw, 15rem);
+    font-weight: 400;
+    line-height: 1;
+    white-space: nowrap;
+    pointer-events: none;
+  }
+
+  .hero-marquee-track {
+    display: inline-flex;
+    will-change: transform;
+  }
+
+  .hero-name {
+    display: inline-flex;
+    align-items: center;
+    padding-right: 0.35em;
+  }
+
+  .hero-dash {
+    padding-left: 0.35em;
+  }
+
+  @media (max-width: 767px) {
+    .hero-portrait {
+      height: 78%;
+    }
+
+    .hero-about {
+      left: 1.25rem;
+      right: 1.25rem;
+      top: auto;
+      bottom: calc(4% + clamp(5rem, 14vw, 15rem) + 1rem);
+    }
+  }
+
+  /* Without the scroll-played sequence there is nothing to hold for. */
+  @media (prefers-reduced-motion: reduce) {
+    .home-hero {
+      height: max(100svh, 34rem);
+    }
+  }
+</style>

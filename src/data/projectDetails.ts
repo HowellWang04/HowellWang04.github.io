@@ -1,7 +1,6 @@
 export type ProjectText = { en: string; zh: string };
 
 export type ProjectDetails = {
-  context?: ProjectText;
   role?: ProjectText;
   team?: ProjectText;
   duration?: ProjectText;
@@ -15,13 +14,9 @@ export type ProjectDetails = {
 // Describe contributions as an action, the work you owned, and its impact.
 export const projectDetails: Record<string, ProjectDetails> = {
   "project-fireflies": {
-    context: {
-      en: "An interactive installation about light pollution and ecological loss and recovery. Two responsive firefly swarms contrast with an undisturbed background swarm, making human impact visible through light, rhythm, and sound.",
-      zh: "围绕光污染、生态消退与恢复设计的交互装置。两组可交互萤火虫灯群与一组不受干扰的自然背景形成对照，通过光、节奏与声音呈现人类活动的影响。",
-    },
     role: { en: "Interaction design, hardware integration, firmware & Unity control", zh: "交互设计、硬件整合、固件与 Unity 控制端开发" },
     team: { en: "Solo project", zh: "个人独立完成" },
-    duration: { en: "Completed", zh: "已完成" },
+    duration: { en: "In development", zh: "开发中" },
     contributionGroups: [
       {
         title: { en: "Kuramoto synchronization", zh: "Kuramoto 藏本同步模型" },
@@ -103,13 +98,9 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
   },
   "project-sand": {
-    context: {
-      en: "An interactive desert restoration prototype that connects resource management with visible environmental change. Industrial income funds planting, while pollution and mining reduce tree cover.",
-      zh: "将资源管理与可见环境变化连接起来的治沙交互原型。工业收入为植树提供资金，污染与采矿则会破坏植被。",
-    },
     role: { en: "Gameplay systems & environmental effects", zh: "玩法系统与环境效果开发" },
     team: { en: "Personal project", zh: "个人项目" },
-    duration: { en: "Completed", zh: "已完成" },
+    duration: { en: "In development", zh: "开发中" },
     contributionGroups: [
       {
         title: { en: "Economy & ecological tradeoffs", zh: "经济与生态取舍" },
@@ -189,10 +180,6 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
   },
   "coal-echoes": {
-    context: {
-      en: "Set in a fictional mining community in northwestern China, the story follows a return to a grandfather's former workplace and an unfinished promise to a coworker.",
-      zh: "故事发生在中国西北的虚构矿区。主人公重返爷爷曾工作的洗煤厂，沿旧照片与日记寻找爷爷和工友未能完成的约定。",
-    },
     role: { en: "Game design, interaction systems & environment integration", zh: "游戏设计、交互系统与场景整合" },
     team: { en: "Personal portfolio project with AI assistance and third party assets", zh: "个人作品集项目，结合 AI 辅助开发与第三方美术资源" },
     duration: { en: "2026 · In development", zh: "2026 年 · 开发中" },
@@ -322,10 +309,6 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
   },
   "mask": {
-    context: {
-      en: "A Global Game Jam 2026 entry from the CiGA online jam site in China, built around the theme of Mask.",
-      zh: "Global Game Jam 2026 中国 CiGA 线上站点参赛作品，围绕 Mask 主题展开。",
-    },
     links: [
       {
         label: { en: "Jam submission", zh: "参赛页面" },
@@ -334,10 +317,6 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
   },
   "seafloor-revival": {
-    context: {
-      en: "A team project for GMTK Game Jam 2025, exploring civilization building through recurring environmental disasters.",
-      zh: "GMTK Game Jam 2025 团队作品，围绕循环来袭的环境灾难，探索文明建设与重建。",
-    },
     role: { en: "UI development", zh: "UI 开发" },
     team: { en: "6 credited creators", zh: "6 位署名作者" },
     duration: {

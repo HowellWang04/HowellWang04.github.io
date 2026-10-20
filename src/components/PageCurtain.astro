@@ -1,0 +1,121 @@
+---
+---
+
+<!-- Page transition: when you go to another page, this curtain sweeps up from the bottom with a curved edge
+     and shows the destination's name, the new page loads behind it, then it carries on up and off the top. -->
+<!-- Its own view-transition name keeps the curtain painted above the page content during the browser's swap;
+     without it the incoming page flashes on top of the curtain for a moment. -->
+<div
+  class="page-curtain"
+  aria-hidden="true"
+  data-page-curtain
+  transition:persist="page-curtain"
+  transition:name="page-curtain"
+  transition:animate="none"
+>
+  <p class="page-curtain-label"><span class="page-curtain-dot"></span><span data-curtain-label></span></p>
+</div>
+
+<script>
+  import { gsap } from "../scripts/smooth-scroll";
+  import { pages } from "../data/navigation";
+
+  const curtain = document.querySelector<HTMLElement>("[data-page-curtain]")!;
+  const label = curtain.querySelector<HTMLElement>("[data-curtain-label]")!;
+  const reducedMotion = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  let covering = false;
+
+  // Start below the window; the extra 12vh hides the curved cap that leads the curtain in.
+  gsap.set(curtain, { y: "112vh" });
+
+  const nameFor = (url: URL) => {
+    const path = url.pathname.replace(/\/$/, "") || "/";
+    const page = pages.find((entry) => entry.href === path);
+    if (!page) return "";
+    return document.documentElement.lang === "zh-CN" ? page.zh : page.en;
+  };
+
+  const cover = (name: string) => new Promise<void>((resolve) => {
+    label.textContent = name;
+    covering = true;
+    gsap.timeline({ onComplete: () => resolve() })
+      .fromTo(curtain, { y: "112vh" }, { y: 0, duration: 0.75, ease: "power3.inOut" })
+      .fromTo(label.parentElement, { autoAlpha: 0, y: 30 }, { autoAlpha: 1, y: 0, duration: 0.45, ease: "power3.out" }, 0.3);
+  });
+
+  const uncover = () => {
+    if (!covering) return;
+    covering = false;
+    gsap.timeline()
+      .to(label.parentElement, { autoAlpha: 0, y: -30, duration: 0.35, ease: "power2.in" }, 0.15)
+      .to(curtain, { y: "-112vh", duration: 0.8, ease: "power3.inOut" }, 0.2)
+      .set(curtain, { y: "112vh" });
+  };
+
+  // Hold Astro's page load until the curtain has covered the window, so the swap happens out of sight.
+  document.addEventListener("astro:before-preparation", (event) => {
+    if (reducedMotion() || event.from.pathname === event.to.pathname) return;
+    const load = event.loader;
+    const name = nameFor(event.to);
+    event.loader = async () => {
+      // Never let a stalled animation hold the navigation up for more than a moment.
+      const covered = Promise.race([cover(name), new Promise((resolve) => setTimeout(resolve, 1200))]);
+      await Promise.all([covered, load()]);
+    };
+  });
+
+  // The new page is in place: lift the curtain away.
+  document.addEventListener("astro:page-load", uncover);
+</script>
+
+<style>
+  .page-curtain {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: grid;
+    place-items: center;
+    background: oklch(var(--bc));
+    color: oklch(var(--b1));
+    pointer-events: none;
+  }
+
+  /* Curved caps above and below give the curtain a rounded leading edge going up and a rounded trailing edge. */
+  .page-curtain::before,
+  .page-curtain::after {
+    content: "";
+    position: absolute;
+    left: -10%;
+    width: 120%;
+    height: 24vh;
+    border-radius: 50%;
+    background: inherit;
+  }
+
+  .page-curtain::before {
+    top: -12vh;
+  }
+
+  .page-curtain::after {
+    bottom: -12vh;
+  }
+
+  .page-curtain-label {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    gap: 0.9rem;
+    font-family: var(--font-heading);
+    font-size: clamp(2rem, 6vw, 4rem);
+    font-weight: 700;
+    opacity: 0;
+  }
+
+  .page-curtain-dot {
+    width: 0.6rem;
+    height: 0.6rem;
+    border-radius: 9999px;
+    background: currentColor;
+  }
+</style>

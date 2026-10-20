@@ -15,7 +15,8 @@ const CardContent = projectId ? "div" : "a";
 ---
 
 <div
-  class="reveal-card relative rounded-lg bg-base-100 hover:shadow-xl transition ease-in-out hover:scale-[102%]"
+  data-reveal
+  class="reveal-card relative rounded-lg bg-base-100 hover:shadow-xl transition-[transform,box-shadow] ease-in-out hover:scale-[102%]"
 >
   {projectId && <button type="button" class="absolute inset-0 rounded-lg cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4" data-project-open aria-haspopup="dialog" aria-controls={`project-details-${projectId}`}>
     <span class="sr-only"><LocalizedText en={`View ${title} details`} zh={`查看 ${titleZh ?? title} 项目详情`} /></span>
@@ -70,66 +71,3 @@ const CardContent = projectId ? "div" : "a";
   </div>}
   {projectId && <ProjectDetails {projectId} {title} {titleZh} {desc} {descZh} {img} {coverPending} {coverComingSoon} />}
 </div>
-
-<script>
-  let observer: IntersectionObserver | undefined;
-
-  const setupCardReveal = () => {
-    const cards = document.querySelectorAll<HTMLElement>(".reveal-card");
-    if (!cards.length || cards[0].dataset.revealBound) return;
-    observer?.disconnect();
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
-
-    observer = new IntersectionObserver((entries) => {
-      const visibleCards = entries
-        .filter((entry) => entry.isIntersecting)
-        .map((entry) => entry.target as HTMLElement)
-        .sort((a, b) => a.compareDocumentPosition(b) & Node.DOCUMENT_POSITION_FOLLOWING ? -1 : 1);
-
-      visibleCards.forEach((card, index) => {
-        observer!.unobserve(card);
-        if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-          card.classList.remove("card-pending");
-          return;
-        }
-        card.animate(
-          [
-            { opacity: 0, transform: "translateY(-10px)" },
-            { opacity: 1, transform: "translateY(0)" },
-          ],
-          {
-            duration: 560,
-            delay: Math.min(index * 90, 360),
-            easing: "cubic-bezier(0.22, 1, 0.36, 1)",
-            fill: "backwards",
-          },
-        );
-        card.classList.remove("card-pending");
-      });
-    }, { threshold: 0.1 });
-
-    cards.forEach((card) => {
-      card.dataset.revealBound = "true";
-      card.classList.add("card-pending");
-      observer!.observe(card);
-      card.addEventListener("focusin", () => {
-        card.classList.remove("card-pending");
-        observer?.unobserve(card);
-      });
-    });
-
-    document.querySelectorAll<HTMLDetailsElement>(".expandable-section").forEach((section) => {
-      section.addEventListener("toggle", () => {
-        if (section.open) return;
-        section.querySelectorAll<HTMLElement>(".reveal-card").forEach((card) => {
-          card.classList.add("card-pending");
-          observer!.observe(card);
-        });
-      });
-    });
-  };
-
-  setupCardReveal();
-  document.addEventListener("astro:page-load", setupCardReveal);
-  document.addEventListener("astro:before-swap", () => observer?.disconnect());
-</script>

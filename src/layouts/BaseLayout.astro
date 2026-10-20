@@ -2,7 +2,8 @@
 import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
-import SideBar from "../components/SideBar.astro";
+import SiteMenu from "../components/SiteMenu.astro";
+import PageCurtain from "../components/PageCurtain.astro";
 import { ViewTransitions } from "astro:transitions";
 
 import { SITE_TITLE, SITE_DESCRIPTION, TRANSITION_API } from "../config";
@@ -11,8 +12,6 @@ const {
   image,
   title = SITE_TITLE,
   description = SITE_DESCRIPTION,
-  includeSidebar = true,
-  sideBarActiveItemID,
   ogType,
 } = Astro.props;
 ---
@@ -31,25 +30,29 @@ const {
     </script>
     <BaseHead title={title} description={description} image={image} , ogType={ogType} />
     {TRANSITION_API && <ViewTransitions />}
+    <noscript><style>:is([data-reveal], [data-intro]):not(.is-revealed) { opacity: 1 !important; }</style></noscript>
   </head>
   <body>
-    <div class="portfolio-canvas drawer lg:drawer-open">
-      <input id="my-drawer" type="checkbox" class="drawer-toggle" />
-      <div class="drawer-content portfolio-canvas flex min-h-[100dvh] flex-col">
-        <Header title={SITE_TITLE} />
-        <div class="flex-1 md:flex md:justify-center">
-          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]" transition:name="page-content" transition:animate="none">
-            <slot />
-          </main>
-        </div>
-        <Footer />
+    <div class="portfolio-canvas flex min-h-[100dvh] flex-col">
+      <Header title={SITE_TITLE} />
+      <!-- Full-width opening that sits outside the centred column (used by the home page). -->
+      <slot name="hero" />
+      <div class="flex-1 md:flex md:justify-center">
+        <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]" transition:name="page-content" transition:animate="none">
+          <slot />
+        </main>
       </div>
-      {includeSidebar && <SideBar sideBarActiveItemID={sideBarActiveItemID} />}
+      <Footer />
     </div>
+    <!-- Both persist across page changes (transition:persist on their root elements). -->
+    <SiteMenu />
+    <PageCurtain />
   </body>
 </html>
 
 <script>
+  import "../scripts/smooth-scroll";
+
   document.addEventListener("astro:before-preparation", (event) => {
     const loadPage = event.loader;
     event.loader = async () => {
@@ -65,4 +68,88 @@ const {
       }
     };
   });
+
+  // Reveal [data-reveal] blocks as they enter the viewport. Each batch plays in reading order:
+  // rows from top to bottom, and items within a row from left to right.
+  let revealObserver: IntersectionObserver | undefined;
+
+  const markRevealed = (element: HTMLElement) => {
+    // Skip any CSS opacity transition (e.g. on .btn) so it can't fight the animation below.
+    element.style.transition = "none";
+    element.classList.add("is-revealed");
+    getComputedStyle(element).opacity;
+    element.style.transition = "";
+  };
+
+  const revealInOrder = (elements: HTMLElement[]) => {
+    const animate = !window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const ordered = elements
+      .map((element) => ({ element, rect: element.getBoundingClientRect() }))
+      .sort((a, b) => Math.round(a.rect.top / 24) - Math.round(b.rect.top / 24) || a.rect.left - b.rect.left);
+
+    ordered.forEach(({ element }, index) => {
+      revealObserver?.unobserve(element);
+      markRevealed(element);
+      if (!animate) return;
+      element.animate(
+        [
+          { opacity: 0, transform: "translateY(8px)" },
+          { opacity: 1, transform: "none" },
+        ],
+        {
+          duration: 520,
+          delay: Math.min(index * 60, 600),
+          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          fill: "backwards",
+        },
+      );
+    });
+  };
+
+  const setupReveal = () => {
+    revealObserver?.disconnect();
+    const main = document.querySelector<HTMLElement>("main");
+    if (!main) return;
+
+    // A page with an intro animation ([data-intro]) holds the rest of its reveal until the intro signals it is done.
+    if (main.querySelector("[data-intro]") && !main.dataset.introDone) {
+      const release = () => {
+        main.dataset.introDone = "true";
+        if (main.isConnected) setupReveal();
+      };
+      // Safety net in case the intro script never runs or breaks. A running intro gets far longer than it needs,
+      // so this never cuts it short.
+      let fallback = 0;
+      const armFallback = (delay: number) => {
+        fallback = window.setTimeout(() => {
+          if (main.dataset.introStarted && delay < 15000) armFallback(15000);
+          else release();
+        }, delay);
+      };
+      armFallback(3000);
+      document.addEventListener("portfolio:intro-done", () => { clearTimeout(fallback); release(); }, { once: true });
+      return;
+    }
+    // Intro parts that didn't animate themselves (intro skipped or failed) join the normal reveal.
+    main.querySelectorAll("[data-intro]:not(.is-revealed)").forEach((element) => element.setAttribute("data-reveal", ""));
+
+    const pending = [...document.querySelectorAll<HTMLElement>("main [data-reveal]:not(.is-revealed)")];
+    if (!pending.length) return;
+
+    revealObserver = new IntersectionObserver((entries) => {
+      const visible = entries.filter((entry) => entry.isIntersecting).map((entry) => entry.target as HTMLElement);
+      if (visible.length) revealInOrder(visible);
+    }, { threshold: 0.1 });
+    pending.forEach((element) => revealObserver!.observe(element));
+  };
+
+  // Keyboard users tabbing ahead of the scroll still see what they focus.
+  document.addEventListener("focusin", (event) => {
+    const element = (event.target as HTMLElement).closest<HTMLElement>("[data-reveal]:not(.is-revealed)");
+    if (element) revealInOrder([element]);
+  });
+
+  setupReveal();
+  document.addEventListener("astro:page-load", setupReveal);
+  document.addEventListener("astro:before-swap", () => revealObserver?.disconnect());
 </script>

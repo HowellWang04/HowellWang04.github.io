@@ -1,3 +1,28 @@
+/* Source Serif 4 for body text, Courier Prime for headings (loaded in BaseHead). Neither has Chinese glyphs,
+   so Chinese text uses LXGW WenKai GB: Regular in body text, Medium in headings. */
+:root {
+    --font-body: "Source Serif 4", "LXGW WenKai GB", Georgia, serif;
+    /* The web package names its Medium weight as a separate family. */
+    --font-heading: "Courier Prime", "LXGW WenKai GB Medium", "LXGW WenKai GB", "Courier New", monospace;
+    /* Handwritten notes: Caveat for English, Long Cang for Chinese. */
+    --font-hand: "Caveat", "Long Cang", cursive;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-family: var(--font-heading);
+}
+
+/* Bold headings get WenKai Medium as-is; don't let the browser smear a fake bold on top. */
+h1, h2, h3, h4, h5, h6, .font-heading {
+    font-synthesis-weight: none;
+}
+
+/* WenKai glyphs sit high in a 20px badge; give Chinese badges more room and nudge the text down. */
+html[lang="zh-CN"] .badge:has([data-zh]) {
+    height: auto;
+    padding: 0.1875rem 0.75rem 0.0625rem;
+}
+
 .time-line-container>div:last-child .education__time>.education__line {
     display: none;
 }
@@ -6,8 +31,27 @@
     --animation-btn: 0s;
 }
 
+/* Reserve the scrollbar's space on every page so short pages don't shift the layout sideways.
+   !important beats daisyUI's lg:drawer-open rule, which resets the gutter to auto on wide screens. */
+html {
+    scrollbar-gutter: stable !important;
+}
+
+/* Scroll nav links glide to their section. */
+@media (prefers-reduced-motion: no-preference) {
+    html {
+        scroll-behavior: smooth;
+    }
+}
+
+/* Once Lenis is smoothing the scroll, the browser's own smooth scrolling would fight it. */
+html.lenis {
+    scroll-behavior: auto;
+}
+
 html[data-theme="portfolio-light"] {
-    --portfolio-canvas: #EDE8DE;
+    --portfolio-canvas: #F6F2EB;
+    --portfolio-hairline: #E6DED1;
 }
 
 html[data-theme="dark"] {
@@ -18,32 +62,34 @@ html[data-theme="dark"] {
     background-color: var(--portfolio-canvas);
 }
 
-html[data-theme="portfolio-light"] .sidebar-link {
-    color: #292B2A;
+/* Light mode surfaces: hairline edges and soft warm shadows instead of flat tan blocks */
+html[data-theme="portfolio-light"] :is(.reveal-card, .card) {
+    border: 1px solid var(--portfolio-hairline);
+    box-shadow: 0 1px 2px rgba(60, 38, 28, 0.04);
 }
 
-html[data-theme="portfolio-light"] .sidebar-link:is(:hover, :focus, :active, [aria-current="page"]) {
-    background-color: #8B4935;
-    color: #FFFFFF;
-    box-shadow: none;
+html[data-theme="portfolio-light"] :is(.reveal-card, .card):hover {
+    box-shadow: 0 18px 40px -20px rgba(60, 38, 28, 0.28);
 }
 
-html[data-theme="portfolio-light"] .sidebar-dot {
-    background-color: #292B2A;
-    opacity: 0.3;
-}
-
-html[data-theme="portfolio-light"] .sidebar-link:is(:hover, :focus, :active, [aria-current="page"]) .sidebar-dot {
-    background-color: currentColor;
-    opacity: 1;
-}
-
-.card-pending {
+/* Page reveal: [data-reveal] blocks start hidden in the HTML and are revealed by BaseLayout's script,
+   top to bottom and left to right. */
+:is([data-reveal], [data-intro]):not(.is-revealed) {
     opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    .card-pending {
+    :is([data-reveal], [data-intro]):not(.is-revealed) {
         opacity: 1;
     }
+}
+
+/* Home intro: the script splits the name and subtitle into per-letter spans. Words never break mid-word. */
+.intro-word {
+    display: inline-block;
+    white-space: nowrap;
+}
+
+.intro-char {
+    display: inline-block;
 }
