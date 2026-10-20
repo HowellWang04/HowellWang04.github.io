@@ -118,6 +118,14 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     height: 100svh;
     min-height: 34rem;
     overflow: hidden;
+    --marquee-size: clamp(5rem, 14vw, 15rem);
+    /* How far the bottom of the marquee's letters sits above its line box, in em: the Latin baseline,
+       or the bottom of the Chinese characters, which hang a little below it. */
+    --marquee-foot: 0.5;
+  }
+
+  :global(html[lang="zh-CN"]) .hero-inner {
+    --marquee-foot: 0.39;
   }
 
   .hero-portrait {
@@ -128,6 +136,8 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     width: auto;
     max-width: none;
     transform: translateX(-50%);
+    /* The photo ends where the marquee's letters stand: 4% of the hero (the marquee's bottom) plus the foot. */
+    clip-path: inset(0 0 calc(max(100svh, 34rem) * 0.04 + var(--marquee-foot) * var(--marquee-size)) 0);
     user-select: none;
     pointer-events: none;
   }
@@ -145,7 +155,7 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     right: 0;
     bottom: 4%;
     font-family: var(--font-heading);
-    font-size: clamp(5rem, 14vw, 15rem);
+    font-size: var(--marquee-size);
     font-weight: 400;
     line-height: 1;
     white-space: nowrap;
