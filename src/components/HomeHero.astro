@@ -2,7 +2,7 @@
 import LocalizedText from "./LocalizedText.astro";
 
 const portrait = "/portrait/guanhao-portrait-selected-171840.png";
-const name = { en: "Guanhao Wang", zh: "王冠豪" };
+const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
 ---
 
 <!-- Full-screen opening: the cutout portrait stands on the page background, the name runs across it as an
@@ -165,6 +165,15 @@ const name = { en: "Guanhao Wang", zh: "王冠豪" };
 
   .hero-dash {
     padding-left: 0.35em;
+  }
+
+  /* The Chinese greeting runs on with just a wide gap between repeats, no dash. */
+  :global(html[lang="zh-CN"]) .hero-name {
+    padding-right: 1.5em;
+  }
+
+  :global(html[lang="zh-CN"]) .hero-dash {
+    display: none;
   }
 
   @media (max-width: 767px) {

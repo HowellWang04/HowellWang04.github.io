@@ -37,9 +37,8 @@ const { class: className = "" } = Astro.props;
   const storageKey = "astrofy-theme";
 
   const getPreferredTheme = (): "portfolio-light" | "dark" => {
-    const storedTheme = localStorage.getItem(storageKey);
-    if (storedTheme) return storedTheme === "dark" ? "dark" : "portfolio-light";
-    return window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "portfolio-light";
+    // Light by default; dark only when the visitor has chosen it with the toggle.
+    return localStorage.getItem(storageKey) === "dark" ? "dark" : "portfolio-light";
   };
 
   const setTheme = (root: HTMLElement, theme: "portfolio-light" | "dark") => {

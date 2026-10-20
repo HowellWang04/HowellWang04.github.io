@@ -21,9 +21,8 @@ const {
   <head>
     <script is:inline>
       const storedTheme = localStorage.getItem("astrofy-theme");
-      const initialTheme = storedTheme
-        ? (storedTheme === "dark" ? "dark" : "portfolio-light")
-        : (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "portfolio-light");
+      // Light by default; dark only when the visitor has chosen it with the toggle.
+      const initialTheme = storedTheme === "dark" ? "dark" : "portfolio-light";
       document.documentElement.dataset.theme = initialTheme;
       document.documentElement.style.colorScheme = initialTheme === "dark" ? "dark" : "light";
       document.documentElement.lang = localStorage.getItem("portfolio-language") === "zh-CN" ? "zh-CN" : "en";
