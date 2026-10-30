@@ -3,7 +3,7 @@ import LocalizedText from "./LocalizedText.astro";
 import { pages } from "../data/navigation";
 ---
 
-<!-- Once the header has scrolled away (or on small screens), a round button floats in at the top right
+<!-- On small screens, where the header hides its page links, a round button floats at the top right
      and opens a side menu with the page links. -->
 <div class="site-menu" data-site-menu transition:persist="site-menu">
   <button type="button" class="menu-toggle" aria-expanded="false" aria-controls="site-menu-panel" aria-label="Open menu" data-menu-toggle>
@@ -44,9 +44,9 @@ import { pages } from "../data/navigation";
     const reducedMotion = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
     let open = false;
 
-    // The button floats in once the header is out of view; it is always there on small screens.
+    // The header always shows the page links on wider screens, so the button is only there on small screens.
     const updateVisibility = () => {
-      const show = open || window.scrollY > 96 || window.innerWidth < 640;
+      const show = open || window.innerWidth < 640;
       root.classList.toggle("is-visible", show);
     };
 
@@ -92,7 +92,6 @@ import { pages } from "../data/navigation";
     // Choosing a page closes the menu as the page transition starts.
     root.querySelectorAll("[data-menu-link]").forEach((link) => link.addEventListener("click", () => setOpen(false)));
 
-    window.addEventListener("scroll", updateVisibility, { passive: true });
     window.addEventListener("resize", updateVisibility);
     document.addEventListener("astro:page-load", () => {
       markCurrent();

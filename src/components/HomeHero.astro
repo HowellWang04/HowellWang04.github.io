@@ -6,8 +6,7 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
 ---
 
 <!-- Full-screen opening: the cutout portrait stands on the page background, the name runs across it as an
-     endless marquee, and the page's About text (the slot) sits on the right. The section is taller than the
-     screen and its content sticks in place, so the page can play the About text in while the hero holds still. -->
+     endless marquee, and the page's About text (the slot) sits on the right and plays in by itself. -->
 <section class="home-hero" data-home-hero aria-label="Guanhao Wang">
   <div class="hero-inner" data-hero-inner>
     <img
@@ -105,8 +104,7 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     position: relative;
     /* Slide up under the 5rem header so the hero runs to the top of the window. */
     margin-top: -5rem;
-    /* One screen of hero, plus the scroll distance the About text plays over while the hero holds still. */
-    height: calc(max(100svh, 34rem) + 180vh);
+    height: max(100svh, 34rem);
     /* clip, not hidden: hidden would make this a scroll container and stop the content from sticking. */
     overflow: clip;
     background: var(--portfolio-canvas);
@@ -195,13 +193,6 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
       top: auto;
       /* Just above the marquee. */
       bottom: calc(var(--marquee-size) + 1rem);
-    }
-  }
-
-  /* Without the scroll-played sequence there is nothing to hold for. */
-  @media (prefers-reduced-motion: reduce) {
-    .home-hero {
-      height: max(100svh, 34rem);
     }
   }
 </style>

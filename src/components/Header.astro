@@ -7,7 +7,7 @@ import { pages } from "../data/navigation";
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 ---
 
-<div class="site-header relative z-10 flex h-20 w-full justify-center text-base-content">
+<div class="site-header sticky top-0 z-50 flex h-20 w-full justify-center text-base-content" data-site-header>
   <div class="flex w-full items-center gap-2 px-4">
     <div class="ml-auto flex shrink-0 items-center gap-2">
       <nav class="header-links hidden sm:flex" aria-label="Pages">
@@ -33,7 +33,29 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
   </div>
 </div>
 
+<script>
+  // The header stays at the top. It is clear at the very top of the page (the home hero runs up under it) and
+  // takes the page colour once anything scrolls beneath it.
+  const updateHeader = () => {
+    document.querySelector("[data-site-header]")?.classList.toggle("is-solid", window.scrollY > 0);
+  };
+
+  window.addEventListener("scroll", updateHeader, { passive: true });
+  document.addEventListener("astro:page-load", updateHeader);
+  updateHeader();
+</script>
+
 <style>
+  .site-header {
+    border-bottom: 1px solid transparent;
+    transition: background-color 240ms ease, border-color 240ms ease;
+  }
+
+  .site-header.is-solid {
+    background-color: var(--portfolio-canvas);
+    border-bottom-color: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
   .header-links {
     gap: 1.75rem;
     margin-right: 1.25rem;

@@ -26,6 +26,9 @@ import HomeHero from "../components/HomeHero.astro";
         />
       </text>
     </div>
+    <div class="hero-layer pt-4" data-depth="0.15" data-intro="cta">
+      <a class="btn btn-primary rounded-full" href="/projects"><LocalizedText en="My Projects" zh="我的项目" /><span aria-hidden="true">→</span></a>
+    </div>
   </div>
   </HomeHero>
 
@@ -56,13 +59,14 @@ import HomeHero from "../components/HomeHero.astro";
 
   gsap.registerPlugin(DrawSVGPlugin);
 
-  // About Me lives on the right of the hero and is one scroll-driven sequence, built on GSAP ScrollTrigger:
-  //  1. The hero starts without it. While the hero holds still, scrolling plays it in: the name rises in,
+  // About Me lives on the right of the hero and is one sequence, built on GSAP:
+  //  1. The hero starts without it. Shortly after the page opens it plays in by itself: the name rises in,
   //     "Computer Science Student" decodes out of flickering code behind a moving terminal caret,
-  //     the letters of "Game Developer" drop in painted, and the tagline appears word by word.
-  //  2. Once the hero scrolls away, the three lines drift up at different speeds and blur away as Games I Love arrives.
+  //     the letters of "Game Developer" drop in painted, the tagline appears word by word, and the
+  //     My Projects button comes in last.
+  //  2. Once the hero scrolls away, the lines drift up at different speeds and blur away as Games I Love arrives.
   //  3. The controller doodle beside Games I Love draws itself in.
-  // Everything is scrubbed, so scrolling back up plays it in reverse.
+  // Steps 2 and 3 are scrubbed, so scrolling back up plays them in reverse.
 
   // The letters live in a separate span next to the original text, so the language script can keep
   // rewriting the original without wiping out the animation.
@@ -145,18 +149,19 @@ import HomeHero from "../components/HomeHero.astro";
   const monospace = "ui-monospace, SFMono-Regular, Consolas, 'Courier New', monospace";
   const artPalette = ["#C0643F", "#D9A441", "#7FA07A", "#4F8C9A", "#9B5C8F", "#D27A7A"];
 
-  // Where each phase sits along the held scroll (0 to 1).
+  // Where each phase sits along the intro (0 to 1), and how long the whole intro plays.
   const phases = {
     name: [0, 0.08],
     lead: [0.08, 0.13],
     code: [0.13, 0.47],
     plain: [0.48, 0.53],
     art: [0.54, 0.75],
-    // The tagline finishes well before the hold ends, so it is fully written before Games I Love moves up.
     tagline: [0.74, 0.9],
+    cta: [0.9, 1],
   } as const;
+  const introSeconds = 5;
 
-  // Each letter owns a slice [start, end] of the held scroll; t is how far through its slice the scroll is.
+  // Each letter owns a slice [start, end] of the intro; t is how far through its slice the intro is.
   type Kind = "lead" | "code" | "plain" | "art";
   type Slot = { letter: HTMLElement; kind: Kind; start: number; end: number; finalText: string; color: string };
 
@@ -240,8 +245,9 @@ import HomeHero from "../components/HomeHero.astro";
     const name = about?.querySelector<HTMLElement>('[data-intro="name"]');
     const subtitle = about?.querySelector<HTMLElement>('[data-intro="subtitle"]');
     const tagline = about?.querySelector<HTMLElement>('[data-intro="tagline"]');
+    const cta = about?.querySelector<HTMLElement>('[data-intro="cta"]');
     const doodle = main?.querySelector<HTMLElement>(".doodle-heading");
-    if (!main || !hero || !about || !name || !subtitle || !tagline || !doodle) return;
+    if (!main || !hero || !about || !name || !subtitle || !tagline || !cta || !doodle) return;
     main.dataset.introStarted = "true";
 
     // Nothing below the hero waits for this sequence.
@@ -252,7 +258,7 @@ import HomeHero from "../components/HomeHero.astro";
     };
 
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-      [name, subtitle, tagline].forEach((element) => element.classList.add("is-revealed"));
+      [name, subtitle, tagline, cta].forEach((element) => element.classList.add("is-revealed"));
       finish();
       // No animation, but the doodle still needs fitting to the heading.
       await document.fonts.ready;
@@ -263,16 +269,17 @@ import HomeHero from "../components/HomeHero.astro";
     // On a rebuild (language switch) the teardown has just put back the plain, fully visible lines. Keep them
     // hidden until the new letters are in place, or the whole intro flashes up while the fonts load.
     const rebuilding = name.classList.contains("is-revealed");
-    if (rebuilding) [name, subtitle, tagline].forEach((element) => { element.style.visibility = "hidden"; });
+    if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = "hidden"; });
 
     // Letters are positioned from measured glyph widths, so wait for the web fonts (briefly) before measuring.
     await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]);
     if (!main.isConnected || run !== setupRun) return;
 
-    [name, subtitle, tagline].forEach((element) => element.classList.add("is-revealed"));
+    [name, subtitle, tagline, cta].forEach((element) => element.classList.add("is-revealed"));
     finish();
-    // The name rises in as a whole. Its inner text moves, so the exit below can still move the line itself.
+    // The name and the button rise in as a whole. Their inner parts move, so the exit below can still move the lines.
     const nameText = name.querySelector<HTMLElement>("[data-en]")!;
+    const ctaButton = cta.querySelector<HTMLElement>("a")!;
 
     // Subtitle letters, sorted into the code part, the art part and the words around them.
     const role = splitIntoLetters(subtitle.querySelector<HTMLElement>("[data-en]")!);
@@ -342,22 +349,23 @@ import HomeHero from "../components/HomeHero.astro";
       words.forEach(({ element, start, end }) => {
         element.style.opacity = String(easeOut(clamp((progress - start) / (end - start))));
       });
+
+      const pop = easeOut(clamp((progress - phases.cta[0]) / (phases.cta[1] - phases.cta[0])));
+      ctaButton.style.opacity = String(pop);
+      ctaButton.style.transform = `translateY(${(1 - pop) * 0.6}em)`;
     };
 
-    // 1. About Me, scrubbed by scroll while the hero holds still (its content is sticky until its bottom arrives).
-    const state = { progress: 0 };
-    const intro = gsap.timeline({
-      scrollTrigger: {
-        trigger: hero,
-        start: "top top",
-        end: "bottom bottom",
-        scrub: 0.4,
-        onRefresh: () => render(state.progress),
-      },
+    // 1. About Me plays in by itself, just after the portrait. A language switch shows it already finished.
+    const state = { progress: rebuilding ? 1 : 0 };
+    const intro = gsap.to(state, {
+      progress: 1,
+      duration: rebuilding ? 0 : introSeconds,
+      delay: rebuilding ? 0 : 0.6,
+      ease: "none",
+      onUpdate: () => render(state.progress),
     });
-    intro.to(state, { progress: 1, duration: 1, ease: "none", onUpdate: () => render(state.progress) });
-    render(0);
-    if (rebuilding) [name, subtitle, tagline].forEach((element) => { element.style.visibility = ""; });
+    render(state.progress);
+    if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = ""; });
 
     // 2. As the hero scrolls away, the lines drift up at different speeds and blur away.
     const layers = [...about.querySelectorAll<HTMLElement>(".hero-layer")];
@@ -407,6 +415,7 @@ import HomeHero from "../components/HomeHero.astro";
       });
       gsap.set(layers, { clearProps: "transform,opacity,filter" });
       nameText.style.opacity = nameText.style.transform = "";
+      ctaButton.style.opacity = ctaButton.style.transform = "";
       gsap.set(strokes, { clearProps: "all" });
       caret.remove();
       role.restore();
