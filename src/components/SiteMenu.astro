@@ -106,15 +106,16 @@ import { pages } from "../data/navigation";
 </script>
 
 <style>
+  /* Centred in the 3.5rem header, which leaves room for it on small screens. */
   .menu-toggle {
     position: fixed;
-    top: 1rem;
+    top: 0.625rem;
     right: 1rem;
     z-index: 61;
     display: grid;
     place-items: center;
-    width: 3.5rem;
-    height: 3.5rem;
+    width: 2.25rem;
+    height: 2.25rem;
     border-radius: 9999px;
     background: oklch(var(--bc));
     color: oklch(var(--b1));

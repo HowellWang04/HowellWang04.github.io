@@ -60,6 +60,8 @@ html[data-theme="dark"] {
 
 .portfolio-canvas {
     background-color: var(--portfolio-canvas);
+    /* Photos in the air swing past the window edge. clip, not hidden: hidden would stop the header from sticking. */
+    overflow-x: clip;
 }
 
 /* Light mode surfaces: hairline edges and soft warm shadows instead of flat tan blocks */

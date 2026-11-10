@@ -8,9 +8,9 @@ import HomeHero from "../components/HomeHero.astro";
 <BaseLayout>
   <HomeHero slot="hero">
   <div id="about">
-    <div class="hero-layer text-3xl lg:text-5xl font-bold font-heading" data-depth="1" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
+    <div class="hero-layer hero-title font-bold font-heading" data-depth="1" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
     <div
-      class="hero-layer hero-subtitle text-xl lg:text-3xl py-3 font-bold font-heading"
+      class="hero-layer hero-subtitle py-3 font-bold font-heading"
       data-depth="0.6"
       data-intro="subtitle"
       data-code-en="Computer Science Student"
@@ -18,8 +18,8 @@ import HomeHero from "../components/HomeHero.astro";
       data-art-en="Game Developer"
       data-art-zh="游戏开发者"
     ><LocalizedText en="A Computer Science Student & Game Developer" zh="是一名计算机科学专业学生与游戏开发者" /></div>
-    <div class="hero-layer py-2" data-depth="0.3" data-intro="tagline">
-      <text class="text-sm lg:text-lg">
+    <div class="hero-layer hero-tagline py-2" data-depth="0.3" data-intro="tagline">
+      <text>
         <LocalizedText
           en="I love video games and interactive experiences, and I enjoy designing them. Through programming and design, I hope to turn that passion into creations of my own."
           zh="我热爱电子游戏与交互体验，也享受设计它们的过程。我希望通过编程与设计，将这份热爱转化为自己的作品。"
@@ -432,10 +432,22 @@ import HomeHero from "../components/HomeHero.astro";
 </script>
 
 <style>
+  .hero-title {
+    font-size: calc(var(--about-text) * 2.6);
+    line-height: 1.2;
+  }
+
   /* The subtitle hosts the caret, positioned over its letters. */
   .hero-subtitle {
     position: relative;
     isolation: isolate;
+    font-size: calc(var(--about-text) * 1.6);
+    line-height: 1.35;
+  }
+
+  .hero-tagline {
+    font-size: var(--about-text);
+    line-height: 1.5;
   }
 
   .hero-subtitle :global(.code-caret) {

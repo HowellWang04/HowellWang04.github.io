@@ -101,10 +101,11 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
 
 <style>
   .home-hero {
+    --hero-height: max(100svh, 34rem);
     position: relative;
-    /* Slide up under the 5rem header so the hero runs to the top of the window. */
-    margin-top: -5rem;
-    height: max(100svh, 34rem);
+    /* Slide up under the 3.5rem header so the hero runs to the top of the window. */
+    margin-top: -3.5rem;
+    height: var(--hero-height);
     /* clip, not hidden: hidden would make this a scroll container and stop the content from sticking. */
     overflow: clip;
     background: var(--portfolio-canvas);
@@ -113,31 +114,42 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
   .hero-inner {
     position: sticky;
     top: 0;
-    height: 100svh;
-    min-height: 34rem;
+    /* The portrait and the About text share this grid, so they can't overlap. The portrait stays centred
+       while the text has its minimum width; after that the left column gives way and the portrait moves left. */
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto minmax(26rem, 1fr);
+    grid-template-rows: minmax(0, 1fr);
+    height: var(--hero-height);
     overflow: hidden;
     /* The marquee blends with what is behind it, so this layer needs the page colour behind it too. */
     background: var(--portfolio-canvas);
-    --marquee-size: clamp(5rem, 14vw, 15rem);
+    --marquee-size: clamp(5rem, min(14vw, calc(var(--hero-height) * 0.24)), 15rem);
+    /* The base size of the About text, which grows with the hero so it fits between the header and the marquee. */
+    --about-text: clamp(0.8125rem, calc(var(--hero-height) * 0.025), 1.125rem);
   }
 
   .hero-portrait {
-    position: absolute;
-    bottom: 0;
-    left: 50%;
-    height: 90%;
+    grid-column: 2;
+    grid-row: 1;
+    align-self: end;
+    /* Short windows keep a fixed gap between the head and the header's line, and narrow ones shrink the
+       portrait (1026 x 1280) so the text column always fits beside it. */
+    height: min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24));
     width: auto;
     max-width: none;
-    transform: translateX(-50%);
     user-select: none;
     pointer-events: none;
   }
 
   .hero-about {
-    position: absolute;
-    left: 60%;
-    right: 3vw;
-    top: 24%;
+    grid-column: 3;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-width: 0;
+    /* Between the header and the marquee. */
+    margin: 5rem 3vw calc(var(--marquee-size) + 1rem) 1rem;
   }
 
   .hero-marquee {
@@ -182,17 +194,25 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     display: none;
   }
 
-  @media (max-width: 767px) {
+  /* Too narrow for the two columns: the text sits just above the marquee and the portrait fills what is left. */
+  @media (max-width: 767px), (max-aspect-ratio: 4/3) {
+    .hero-inner {
+      display: flex;
+      flex-direction: column;
+      padding: 5rem 0 calc(var(--marquee-size) + 1rem);
+      --about-text: clamp(0.8125rem, 3.8vw, 1.125rem);
+    }
+
     .hero-portrait {
-      height: 78%;
+      flex: 1 1 0;
+      min-height: 0;
+      width: 100%;
+      object-fit: contain;
+      object-position: bottom;
     }
 
     .hero-about {
-      left: 1.25rem;
-      right: 1.25rem;
-      top: auto;
-      /* Just above the marquee. */
-      bottom: calc(var(--marquee-size) + 1rem);
+      margin: 1rem 1.25rem 0;
     }
   }
 </style>
