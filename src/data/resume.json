@@ -95,7 +95,7 @@
             "meta": "July to August 2024  ·  Shanghai, China",
             "bullets": [
               "Wrote and maintained 100+ pages of user guides for a pharmaceutical WeChat Mini Program upgrade, covering two user types, four scenarios, and three device contexts.",
-              "Performed user acceptance testing and reported 10+ defects in Jira with reproduction steps; organized 1,000+ data tags into a three level hierarchy for user filtering."
+              "Performed user acceptance testing on the Mini Program and reported 10+ defects in Jira with reproduction steps; organized its 1,000+ data tags into a three level hierarchy for user filtering."
             ],
             "links": [
               {
@@ -240,7 +240,7 @@
             "meta": "2024 年 7 月至 8 月  ·  中国上海",
             "bullets": [
               "为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖两类用户、四种场景和三种终端。",
-              "执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理 1,000 多个数据标签，建立支持用户筛选的三层分类。"
+              "对该小程序执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理小程序内 1,000 多个数据标签，建立支持用户筛选的三层分类。"
             ],
             "links": [
               {

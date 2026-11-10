@@ -62,7 +62,7 @@ February to April 2025  ·  Three.js, JavaScript
 July to August 2024  ·  Shanghai, China
 
 * Wrote and maintained 100+ pages of user guides for a pharmaceutical WeChat Mini Program upgrade, covering two user types, four scenarios, and three device contexts.
-* Performed user acceptance testing and reported 10+ defects in Jira with reproduction steps; organized 1,000+ data tags into a three level hierarchy for user filtering.
+* Performed user acceptance testing on the Mini Program and reported 10+ defects in Jira with reproduction steps; organized its 1,000+ data tags into a three level hierarchy for user filtering.
 
 [Download internship certificate (PDF)](https://howellwang04.github.io/resume/guanhao-wang-iqvia-internship-certificate.pdf)
 
