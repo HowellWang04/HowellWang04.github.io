@@ -9,15 +9,12 @@ import HomeHero from "../components/HomeHero.astro";
   <HomeHero slot="hero">
   <div id="about">
     <div class="hero-layer hero-title font-bold font-heading" data-depth="1" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
-    <div
-      class="hero-layer hero-subtitle py-3 font-bold font-heading"
-      data-depth="0.6"
-      data-intro="subtitle"
-      data-code-en="Computer Science Student"
-      data-code-zh="计算机科学专业学生"
-      data-art-en="Game Developer"
-      data-art-zh="游戏开发者"
-    ><LocalizedText en="A Computer Science Student & Game Developer" zh="是一名计算机科学专业学生与游戏开发者" /></div>
+    <!-- The fields are typed out and deleted one after another on their own line. The static list stays for
+         screen readers, and is what shows without JavaScript or with reduced motion. -->
+    <div class="hero-layer hero-subtitle py-3 font-bold font-heading" data-depth="0.6" data-intro="subtitle">
+      <span class="subtitle-lead"><LocalizedText en="A Computer Science student focused on" zh="计算机科学专业学生，专注于" /></span>
+      <span class="typewriter" data-typewriter><LocalizedText en="Game Design / Game Development" zh="游戏设计 / 游戏开发" /></span>
+    </div>
     <div class="hero-layer hero-tagline py-2" data-depth="0.3" data-intro="tagline">
       <text>
         <LocalizedText
@@ -27,7 +24,7 @@ import HomeHero from "../components/HomeHero.astro";
       </text>
     </div>
     <div class="hero-layer pt-4" data-depth="0.15" data-intro="cta">
-      <a class="btn btn-primary rounded-full" href="/projects"><LocalizedText en="My Projects" zh="我的项目" /><span aria-hidden="true">→</span></a>
+      <a class="btn btn-primary rounded-full" href="/portfolio"><LocalizedText en="View Portfolio" zh="查看作品集" /><span aria-hidden="true">→</span></a>
     </div>
   </div>
   </HomeHero>
@@ -60,10 +57,9 @@ import HomeHero from "../components/HomeHero.astro";
 
   // About Me lives on the right of the hero and is one sequence, built on GSAP:
   //  1. The hero starts without it. Shortly after the page opens it plays in by itself: the name rises in,
-  //     "Computer Science Student" decodes out of flickering code behind a moving terminal caret,
-  //     the letters of "Game Developer" drop in painted, the tagline appears word by word, and the
-  //     My Projects button comes in last.
-  //  2. Once the hero scrolls away, the lines drift up at different speeds and blur away as My Favorite Video Games arrives.
+  //     then "A Computer Science student focused on" rises in and the fields start typing out and deleting one after another behind a caret,
+  //     the tagline appears word by word, and the View Portfolio button comes in last.
+  //  2. Once the hero scrolls away, the lines drift up at different speeds and fade away as My Favorite Video Games arrives.
   //  3. The controller doodle beside My Favorite Video Games draws itself in.
   // Steps 2 and 3 are scrubbed, so scrolling back up plays them in reverse.
 
@@ -144,58 +140,58 @@ import HomeHero from "../components/HomeHero.astro";
 
   const clamp = (value: number) => Math.min(1, Math.max(0, value));
   const easeOut = (t: number) => 1 - (1 - t) ** 3;
-  const scrambleCharacters = "01<>/{}[]#*+=_%$&";
-  const monospace = "ui-monospace, SFMono-Regular, Consolas, 'Courier New', monospace";
-  const artPalette = ["#C0643F", "#D9A441", "#7FA07A", "#4F8C9A", "#9B5C8F", "#D27A7A"];
 
   // Where each phase sits along the intro (0 to 1), and how long the whole intro plays.
   const phases = {
-    name: [0, 0.08],
-    lead: [0.08, 0.13],
-    code: [0.13, 0.47],
-    plain: [0.48, 0.53],
-    art: [0.54, 0.75],
-    tagline: [0.74, 0.9],
-    cta: [0.9, 1],
+    name: [0, 0.2],
+    subtitle: [0.15, 0.35],
+    tagline: [0.4, 0.85],
+    cta: [0.85, 1],
   } as const;
-  const introSeconds = 5;
+  const introSeconds = 3;
 
-  // Each letter owns a slice [start, end] of the intro; t is how far through its slice the intro is.
-  type Kind = "lead" | "code" | "plain" | "art";
-  type Slot = { letter: HTMLElement; kind: Kind; start: number; end: number; finalText: string; color: string };
+  // The fields the subtitle types out, each in its own colour.
+  const roles = [
+    { en: "Game Design", zh: "游戏设计", color: "#C0643F" },
+    { en: "Game Development", zh: "游戏开发", color: "#4F8C9A" },
+  ];
+  const typeMs = 100;
+  const deleteMs = 50;
+  const holdMs = 2200;
+  const gapMs = 400;
 
-  // "Computer Science Student": flickering monospace code with an RGB split that settles into the real letter.
-  const drawCode = (slot: Slot, t: number) => {
-    const { letter } = slot;
-    if (t >= 1 || t <= 0) {
-      letter.textContent = slot.finalText;
-      letter.style.opacity = t <= 0 ? "0" : "";
-      letter.style.fontFamily = letter.style.color = letter.style.textShadow = letter.style.transform = "";
-      return;
-    }
-    const split = (1 - t) * 3;
-    letter.style.opacity = "1";
-    letter.textContent = scrambleCharacters[Math.floor(Math.random() * scrambleCharacters.length)];
-    letter.style.fontFamily = monospace;
-    letter.style.color = "oklch(var(--p))";
-    letter.style.textShadow = `${split}px 0 rgb(255 40 90 / 80%), ${-split}px 0 rgb(0 190 255 / 80%)`;
-    letter.style.transform = `translateX(${(Math.random() - 0.5) * split * 2}px) skewX(${(1 - t) * -14}deg)`;
-  };
-
-  // "Game Developer": letters drop in, each in its own colour, then settle into the text colour.
-  const drawArt = (slot: Slot, t: number) => {
-    const { letter } = slot;
-    const e = easeOut(t);
-    const settle = clamp((t - 0.6) / 0.4);
-    letter.style.opacity = String(clamp(t * 2));
-    letter.style.transform = `translateY(${(1 - e) * -0.6}em) rotate(${(1 - e) * 18}deg) scale(${0.6 + e * 0.4})`;
-    letter.style.filter = `blur(${(1 - e) * 4}px)`;
-    letter.style.color = t >= 1 ? "" : `color-mix(in oklab, ${slot.color} ${Math.round((1 - settle) * 100)}%, currentColor)`;
-  };
-
-  const drawPlain = (slot: Slot, t: number) => {
-    slot.letter.style.opacity = String(t);
-    slot.letter.style.transform = `translateY(${(1 - easeOut(t)) * 0.3}em)`;
+  // Types a role out, holds it, deletes it, and moves on to the next one, forever. Returns a stop function.
+  const startTypewriter = (typed: HTMLElement, caret: HTMLElement) => {
+    const chinese = document.documentElement.lang === "zh-CN";
+    let role = 0;
+    let length = 0;
+    let deleting = false;
+    let timer = 0;
+    const step = () => {
+      const { color } = roles[role];
+      const letters = Array.from(chinese ? roles[role].zh : roles[role].en);
+      typed.style.color = caret.style.background = color;
+      if (!deleting) {
+        length += 1;
+        typed.textContent = letters.slice(0, length).join("");
+        if (length < letters.length) timer = window.setTimeout(step, typeMs);
+        else {
+          deleting = true;
+          timer = window.setTimeout(step, holdMs);
+        }
+        return;
+      }
+      length -= 1;
+      typed.textContent = letters.slice(0, length).join("");
+      if (length > 0) timer = window.setTimeout(step, deleteMs);
+      else {
+        deleting = false;
+        role = (role + 1) % roles.length;
+        timer = window.setTimeout(step, gapMs);
+      }
+    };
+    step();
+    return () => clearTimeout(timer);
   };
 
   const spread = <T extends { start: number; end: number }>(group: T[], [from, to]: readonly number[], length: number) => {
@@ -280,70 +276,34 @@ import HomeHero from "../components/HomeHero.astro";
     const nameText = name.querySelector<HTMLElement>("[data-en]")!;
     const ctaButton = cta.querySelector<HTMLElement>("a")!;
 
-    // Subtitle letters, sorted into the code part, the art part and the words around them.
-    const role = splitIntoLetters(subtitle.querySelector<HTMLElement>("[data-en]")!);
-    const chinese = document.documentElement.lang === "zh-CN";
-    const codeWord = (chinese ? subtitle.dataset.codeZh : subtitle.dataset.codeEn) ?? "";
-    const artWord = (chinese ? subtitle.dataset.artZh : subtitle.dataset.artEn) ?? "";
-    const codeAt = role.text.indexOf(codeWord);
-    const artAt = role.text.indexOf(artWord);
-    const kindOf = (letter: HTMLElement): Kind => {
-      const offset = Number(letter.dataset.at);
-      if (codeAt >= 0 && offset >= codeAt && offset < codeAt + codeWord.length) return "code";
-      if (artAt >= 0 && offset >= artAt && offset < artAt + artWord.length) return "art";
-      return codeAt >= 0 && offset < codeAt ? "lead" : "plain";
-    };
-    const slots: Slot[] = role.letters.map((letter) => ({
-      letter, kind: kindOf(letter), start: 0, end: 0, finalText: letter.textContent ?? "", color: "",
-    }));
-    const code = slots.filter((slot) => slot.kind === "code");
-    const art = slots.filter((slot) => slot.kind === "art");
-    spread(slots.filter((slot) => slot.kind === "lead"), phases.lead, 0.04);
-    spread(code, phases.code, 0.08);
-    spread(slots.filter((slot) => slot.kind === "plain"), phases.plain, 0.05);
-    spread(art, phases.art, 0.12);
-    art.forEach((slot, index) => { slot.color = artPalette[index % artPalette.length]; });
-
-    // Pin each code letter's width so swapping in narrower or wider code characters never shifts its neighbours.
-    code.forEach(({ letter }) => {
-      letter.style.width = `${letter.offsetWidth}px`;
-      letter.style.textAlign = "center";
-    });
+    // The subtitle's lead rises in like the name; the typed fields replace the static list, which stays for screen readers.
+    const lead = subtitle.querySelector<HTMLElement>(".subtitle-lead")!;
+    const typewriter = subtitle.querySelector<HTMLElement>("[data-typewriter]")!;
+    const roleList = typewriter.querySelector<HTMLElement>("[data-en]")!;
+    const typed = document.createElement("span");
+    const caret = document.createElement("span");
+    typed.className = "typewriter-text";
+    caret.className = "typewriter-caret";
+    typed.setAttribute("aria-hidden", "true");
+    caret.setAttribute("aria-hidden", "true");
+    roleList.classList.add("sr-only");
+    typewriter.append(typed, caret);
+    let stopTyping: (() => void) | undefined;
 
     // The tagline's words appear one after another.
     const story = splitIntoLetters(tagline.querySelector<HTMLElement>("[data-en]")!);
     const words = story.words.map((element) => ({ element, start: 0, end: 0 }));
     spread(words, phases.tagline, 0.12);
 
-    // A terminal caret that rides along the code letters as they decode.
-    const caret = document.createElement("span");
-    caret.className = "code-caret";
-    caret.setAttribute("aria-hidden", "true");
-    subtitle.append(caret);
-
     const render = (progress: number) => {
       const rise = easeOut(clamp((progress - phases.name[0]) / (phases.name[1] - phases.name[0])));
       nameText.style.opacity = String(rise);
       nameText.style.transform = `translateY(${(1 - rise) * 0.3}em)`;
 
-      slots.forEach((slot) => {
-        const t = clamp((progress - slot.start) / (slot.end - slot.start));
-        if (slot.kind === "code") drawCode(slot, t);
-        else if (slot.kind === "art") drawArt(slot, t);
-        else drawPlain(slot, t);
-      });
-
-      // The caret sits just after the letter that is decoding, and goes away once the code part is done.
-      const decoding = [...code].reverse().find((slot) => progress > slot.start);
-      const codeDone = !code.length || progress >= code[code.length - 1].end;
-      if (decoding && !codeDone) {
-        const { letter } = decoding;
-        caret.style.opacity = "1";
-        caret.style.transform = `translate(${letter.offsetLeft + letter.offsetWidth + 2}px, ${letter.offsetTop + letter.offsetHeight * 0.15}px)`;
-        caret.style.height = `${letter.offsetHeight * 0.7}px`;
-      } else {
-        caret.style.opacity = "0";
-      }
+      const leadRise = easeOut(clamp((progress - phases.subtitle[0]) / (phases.subtitle[1] - phases.subtitle[0])));
+      lead.style.opacity = caret.style.opacity = String(leadRise);
+      lead.style.transform = `translateY(${(1 - leadRise) * 0.3}em)`;
+      if (!stopTyping && progress >= phases.subtitle[1]) stopTyping = startTypewriter(typed, caret);
 
       words.forEach(({ element, start, end }) => {
         element.style.opacity = String(easeOut(clamp((progress - start) / (end - start))));
@@ -366,7 +326,7 @@ import HomeHero from "../components/HomeHero.astro";
     render(state.progress);
     if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = ""; });
 
-    // 2. As the hero scrolls away, the lines drift up at different speeds and blur away.
+    // 2. As the hero scrolls away, the lines drift up at different speeds and fade away (no blur: a blur filter repaints the text every frame).
     const layers = [...about.querySelectorAll<HTMLElement>(".hero-layer")];
     const exit = gsap.timeline({
       scrollTrigger: {
@@ -378,7 +338,7 @@ import HomeHero from "../components/HomeHero.astro";
     });
     layers.forEach((layer) => {
       const depth = Number(layer.dataset.depth ?? 0.5);
-      exit.to(layer, { y: -140 * depth, opacity: 1 - 0.95 * depth, filter: `blur(${6 * depth}px)`, ease: "none" }, 0);
+      exit.to(layer, { y: -140 * depth, opacity: 1 - 0.95 * depth, ease: "none" }, 0);
     });
 
     // 3. As My Favorite Video Games arrives, its controller doodle is drawn in: the outline, then the d-pad and buttons.
@@ -412,12 +372,15 @@ import HomeHero from "../components/HomeHero.astro";
         animation.scrollTrigger?.kill(true);
         animation.kill();
       });
-      gsap.set(layers, { clearProps: "transform,opacity,filter" });
+      gsap.set(layers, { clearProps: "transform,opacity" });
       nameText.style.opacity = nameText.style.transform = "";
+      lead.style.opacity = lead.style.transform = "";
       ctaButton.style.opacity = ctaButton.style.transform = "";
       gsap.set(strokes, { clearProps: "all" });
+      stopTyping?.();
+      typed.remove();
       caret.remove();
-      role.restore();
+      roleList.classList.remove("sr-only");
       story.restore();
     };
   };
@@ -436,10 +399,7 @@ import HomeHero from "../components/HomeHero.astro";
     line-height: 1.2;
   }
 
-  /* The subtitle hosts the caret, positioned over its letters. */
   .hero-subtitle {
-    position: relative;
-    isolation: isolate;
     font-size: calc(var(--about-text) * 1.6);
     line-height: 1.35;
   }
@@ -449,13 +409,25 @@ import HomeHero from "../components/HomeHero.astro";
     line-height: 1.5;
   }
 
-  .hero-subtitle :global(.code-caret) {
-    position: absolute;
-    top: 0;
-    left: 0;
+  /* A smaller lead line, so it fits the narrow column in one line; the typed field below stays large. */
+  .subtitle-lead {
+    display: block;
+    font-size: 0.7em;
+  }
+
+  /* The typed field gets its own line, so typing and deleting never rewraps the lead or shifts the tagline. */
+  .typewriter {
+    display: block;
+  }
+
+  /* A thin caret after the typed field, in the field's colour (set by the script). */
+  .hero-subtitle :global(.typewriter-caret) {
+    display: inline-block;
     width: 0.09em;
+    height: 1em;
+    margin-left: 0.08em;
+    vertical-align: -0.12em;
     background: oklch(var(--p));
-    pointer-events: none;
     animation: caret-blink 0.9s steps(1) infinite;
   }
 
