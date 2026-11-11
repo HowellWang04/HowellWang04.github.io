@@ -28,7 +28,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 * Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.
 * Built terrain from USGS elevation data in MapMagic with an offline Gradient Terrain Authoring transition; created HDRP sandstorm, heat haze, and runtime newspaper halftone effects (halftone adapted from Daniel Ilett, MIT).
 
-[Source code on GitHub](https://github.com/HowellWang04/Grad-App-Project-Coal)
+[Source code on GitHub](https://github.com/HowellWang04/Coal-Echoes)
 
 ### Vanishing Fireflies  |  Interactive Light Installation
 
@@ -37,7 +37,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 * Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.
 * Implemented two independently responsive zones, one ambient swarm, and a UDP interface for sending Unity synchronization commands during development and debugging.
 
-[Source code on GitHub](https://github.com/HowellWang04/Grad-App-Project-Fireflies)
+[Source code on GitHub](https://github.com/HowellWang04/Vanishing-Fireflies)
 
 ### Seafloor Revival  |  GMTK Game Jam 2025
 

@@ -92,8 +92,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Grad-App-Project-Fireflies" },
-      { label: { en: "Firmware documentation", zh: "固件文档" }, url: "https://github.com/HowellWang04/Grad-App-Project-Fireflies/blob/main/firmware/fireflies_main/README.md" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Vanishing-Fireflies" },
+      { label: { en: "Firmware documentation", zh: "固件文档" }, url: "https://github.com/HowellWang04/Vanishing-Fireflies/blob/main/firmware/fireflies_main/README.md" },
       { label: { en: "Kuramoto model reference", zh: "藏本模型参考文献" }, url: "https://arxiv.org/html/2602.20505v1#S3" },
     ],
   },
@@ -303,8 +303,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
       }
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Grad-App-Project-Coal" },
-      { label: { en: "Technical documentation", zh: "技术栈文档" }, url: "https://github.com/HowellWang04/Grad-App-Project-Coal/blob/main/Docs/tech-stack.md" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Coal-Echoes" },
+      { label: { en: "Technical documentation", zh: "技术栈文档" }, url: "https://github.com/HowellWang04/Coal-Echoes/blob/main/Docs/tech-stack.en.md" },
       { label: { en: "Halftone algorithm source", zh: "半调算法来源" }, url: "https://github.com/daniel-ilett/shaders-halftone" },
     ],
   },

@@ -28,7 +28,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 * 通过 Blender MCP，由 AI Agent 辅助完成索道、门卫室等工业资产的参数化建模与材质烘焙，并导入 Unity 场景。
 * 基于 USGS 实测高程数据在 MapMagic 中搭建地形，并以 Gradient Terrain Authoring 离线求解地形过渡；在 HDRP 中实现沙尘、热浪与运行时报纸半调效果（半调算法改写自 Daniel Ilett，MIT）。
 
-[GitHub 项目源码](https://github.com/HowellWang04/Grad-App-Project-Coal)
+[GitHub 项目源码](https://github.com/HowellWang04/Coal-Echoes)
 
 ### Vanishing Fireflies 消逝的萤火虫  |  萤火虫交互装置
 
@@ -37,7 +37,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 * 编程控制三组共 420 颗 LED，通过雷达与光照传感器捕捉参与者的移动与人为光源，映射为萤火虫灯群的扰动和同步行为。
 * 实现两个独立感应区域与一组自然闪烁灯群，并提供开发调试用的 UDP 接口，可由 Unity 发送同步控制指令。
 
-[GitHub 项目源码](https://github.com/HowellWang04/Grad-App-Project-Fireflies)
+[GitHub 项目源码](https://github.com/HowellWang04/Vanishing-Fireflies)
 
 ### Seafloor Revival  |  GMTK Game Jam 2025
 
