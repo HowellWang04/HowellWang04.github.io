@@ -176,7 +176,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
       },
     ],
     links: [
-      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/hwx676767/0714-WGH-sand" },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Desert-Restoration-Simulator" },
     ],
   },
   "coal-echoes": {
