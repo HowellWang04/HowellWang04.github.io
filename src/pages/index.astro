@@ -37,7 +37,7 @@ import HomeHero from "../components/HomeHero.astro";
       <!-- A line-drawn controller beside the heading.
            The script places it next to the heading text, which changes with the language. -->
       <span class="doodle-heading">
-        <LocalizedText en="Games I Love" zh="我喜欢的游戏" />
+        <LocalizedText en="My Favorite Video Games" zh="我最喜欢的电子游戏作品" />
         <svg class="doodle-stroke" aria-hidden="true">
           <g class="doodle-pad">
             <path d="M6.5 30C8.5 30 10 29 11.1 27.4L14 23H34L36.9 27.4C38 29 39.5 30 41.5 30C44.5 30 47.1 27.5 46.5 24L45 16C44 10 40 6 34 6H14C8 6 4 10 3 16L1.5 24C0.9 27.5 3.5 30 6.5 30Z" />
@@ -48,7 +48,6 @@ import HomeHero from "../components/HomeHero.astro";
         </svg>
       </span>
     </div>
-    <p class="mt-1 opacity-70" data-reveal><LocalizedText en="A few worlds that shaped how I think about play." zh="这些游戏塑造了我对“玩”的理解。" /></p>
     <GameCollage />
   </section>
 </BaseLayout>
@@ -64,8 +63,8 @@ import HomeHero from "../components/HomeHero.astro";
   //     "Computer Science Student" decodes out of flickering code behind a moving terminal caret,
   //     the letters of "Game Developer" drop in painted, the tagline appears word by word, and the
   //     My Projects button comes in last.
-  //  2. Once the hero scrolls away, the lines drift up at different speeds and blur away as Games I Love arrives.
-  //  3. The controller doodle beside Games I Love draws itself in.
+  //  2. Once the hero scrolls away, the lines drift up at different speeds and blur away as My Favorite Video Games arrives.
+  //  3. The controller doodle beside My Favorite Video Games draws itself in.
   // Steps 2 and 3 are scrubbed, so scrolling back up plays them in reverse.
 
   // The letters live in a separate span next to the original text, so the language script can keep
@@ -206,7 +205,7 @@ import HomeHero from "../components/HomeHero.astro";
     });
   };
 
-  // Fit the Games I Love doodle to the heading text: the controller sits just right of the words.
+  // Fit the My Favorite Video Games doodle to the heading text: the controller sits just right of the words.
   const layoutDoodle = (heading: HTMLElement) => {
     const svg = heading.querySelector<SVGSVGElement>(".doodle-stroke")!;
     const pad = svg.querySelector<SVGGElement>(".doodle-pad")!;
@@ -382,7 +381,7 @@ import HomeHero from "../components/HomeHero.astro";
       exit.to(layer, { y: -140 * depth, opacity: 1 - 0.95 * depth, filter: `blur(${6 * depth}px)`, ease: "none" }, 0);
     });
 
-    // 3. As Games I Love arrives, its controller doodle is drawn in: the outline, then the d-pad and buttons.
+    // 3. As My Favorite Video Games arrives, its controller doodle is drawn in: the outline, then the d-pad and buttons.
     //    Each piece gets time in proportion to its length, so the pen moves at an even speed.
     layoutDoodle(doodle);
     const strokes = [...doodle.querySelectorAll<SVGGeometryElement>(".doodle-pad path, .doodle-pad circle")];
