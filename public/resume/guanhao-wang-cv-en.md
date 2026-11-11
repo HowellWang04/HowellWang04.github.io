@@ -30,7 +30,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 
 [Source code on GitHub](https://github.com/HowellWang04/Grad-App-Project-Coal)
 
-### Project Fireflies  |  Interactive Light Installation
+### Vanishing Fireflies  |  Interactive Light Installation
 
 2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP
 

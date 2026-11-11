@@ -30,7 +30,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 [GitHub 项目源码](https://github.com/HowellWang04/Grad-App-Project-Coal)
 
-### Project Fireflies  |  萤火虫交互装置
+### Vanishing Fireflies 消逝的萤火虫  |  萤火虫交互装置
 
 2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP
 

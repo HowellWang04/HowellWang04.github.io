@@ -46,7 +46,7 @@
             ]
           },
           {
-            "title": "Project Fireflies  |  Interactive Light Installation",
+            "title": "Vanishing Fireflies  |  Interactive Light Installation",
             "meta": "2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP",
             "bullets": [
               "Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.",
@@ -191,7 +191,7 @@
             ]
           },
           {
-            "title": "Project Fireflies  |  萤火虫交互装置",
+            "title": "Vanishing Fireflies 消逝的萤火虫  |  萤火虫交互装置",
             "meta": "2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP",
             "bullets": [
               "编程控制三组共 420 颗 LED，通过雷达与光照传感器捕捉参与者的移动与人为光源，映射为萤火虫灯群的扰动和同步行为。",
