@@ -9,7 +9,8 @@ const tag_url = url.split("/").slice(0, -1).join("/") + "/tag";
 const categories = {
   "game-jam": { en: "Game Jam", zh: "Game Jam", color: "badge-secondary" },
   university: { en: "University Project", zh: "校内项目", color: "badge-info" },
-  personal: { en: "Personal Project", zh: "个人项目", color: "badge-info" },
+  "personal-game": { en: "Personal Game Project", zh: "个人游戏项目", color: "badge-info" },
+  "personal-interactive": { en: "Personal Interactive Project", zh: "个人交互项目", color: "badge-info" },
 };
 const categoryInfo = category && categories[category];
 const CardContent = projectId ? "div" : "a";
