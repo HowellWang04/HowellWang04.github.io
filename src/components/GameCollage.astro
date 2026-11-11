@@ -249,7 +249,7 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     padding: 1rem 0.5rem 2rem;
   }
 
-  /* 0 = still in the air, 1 = taped down. Registered so it can ease smoothly between scroll updates. */
+  /* 0 = still in the air, 1 = taped down. Registered so the first deal can ease each photo down. */
   @property --land {
     syntax: "<number>";
     inherits: true;
@@ -261,7 +261,8 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     position: relative;
     opacity: clamp(0, calc(var(--land) * 2.5), 1);
     transform: translate(calc(var(--lift) * var(--from-x)), calc(var(--lift) * -56px)) rotate(calc(var(--lift) * var(--spin))) scale(calc(1 + var(--lift) * 0.2));
-    transition: --land 650ms cubic-bezier(0.22, 1, 0.36, 1);
+    /* Each photo gets its own GPU layer, so following the scroll only moves the layer instead of repainting the photo. */
+    will-change: transform, opacity;
   }
 
   /* The transform gives each photo its own stacking layer, so lift the hovered one above its neighbours here. */
@@ -269,7 +270,10 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     z-index: 2;
   }
 
+  /* Only the first drop eases photo by photo. After that the photos follow the (already smoothed) scroll directly:
+     a transition on a custom property runs on the main thread and restarted on every scroll frame. */
   .collage.is-dealing > li {
+    transition: --land 650ms cubic-bezier(0.22, 1, 0.36, 1);
     transition-delay: var(--deal-delay);
   }
 
@@ -283,6 +287,19 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
+  /* The shadow spreads while the photo is still in the air. A fixed wide shadow fades in on its own layer, instead of
+     the faces' shadows growing, so a falling photo never has to be repainted. */
+  .flip-card::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    box-shadow: 0 38px 48px -12px rgb(40 28 20 / 45%);
+    opacity: var(--lift, 0);
+    will-change: opacity;
+    pointer-events: none;
+  }
+
   .flip-card-inner {
     position: relative;
     transform-style: preserve-3d;
@@ -292,8 +309,7 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
   .face {
     background: #f6f1e7;
     color: #2e2a27;
-    /* The shadow spreads while the photo is still in the air. */
-    box-shadow: 0 1px 2px rgb(40 28 20 / 18%), 0 calc(10px + var(--lift, 0) * 28px) calc(22px + var(--lift, 0) * 26px) -12px rgb(40 28 20 / 45%);
+    box-shadow: 0 1px 2px rgb(40 28 20 / 18%), 0 10px 22px -12px rgb(40 28 20 / 45%);
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
   }

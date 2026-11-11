@@ -60,10 +60,24 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     // Start far into the loop so running it backwards never hits the beginning.
     marquee.totalTime(marquee.duration() * 1000);
 
+    // Only turn the reel when the scroll changes direction, not on every scroll frame.
+    let scrollDirection = 1;
     const direction = ScrollTrigger.create({
       start: 0,
       end: "max",
-      onUpdate: (self) => gsap.to(marquee, { timeScale: self.direction, duration: 0.6, overwrite: true }),
+      onUpdate: (self) => {
+        if (self.direction === scrollDirection) return;
+        scrollDirection = self.direction;
+        gsap.to(marquee, { timeScale: self.direction, duration: 0.6, overwrite: true });
+      },
+    });
+
+    // The marquee is blended over the hero, which costs a full recomposite every frame, so stop it once the hero is off screen.
+    const visibility = ScrollTrigger.create({
+      trigger: hero,
+      start: "top bottom",
+      end: "bottom top",
+      onToggle: (self) => (self.isActive ? marquee.resume() : marquee.pause()),
     });
 
     const parallax = gsap.to(inner, {
@@ -85,6 +99,7 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
       intro.progress(1).kill();
       marquee.kill();
       direction.kill();
+      visibility.kill();
       parallax.scrollTrigger?.kill();
       parallax.kill();
       gsap.set([track, inner], { clearProps: "transform" });
@@ -133,8 +148,8 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     grid-row: 1;
     align-self: end;
     /* Short windows keep a fixed gap between the head and the header's line, and narrow ones shrink the
-       portrait (1026 x 1280) so the text column always fits beside it. The whole size is then scaled down by 0.85. */
-    height: calc(min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24)) * 0.85);
+       portrait (1026 x 1280) so the text column always fits beside it. */
+    height: min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24));
     width: auto;
     max-width: none;
     user-select: none;
@@ -203,14 +218,8 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
       --about-text: clamp(0.8125rem, 3.8vw, 1.125rem);
     }
 
-    /* An empty spacer above the portrait takes 15% of the free height, so the portrait gets the other 85%. */
-    .hero-inner::before {
-      content: "";
-      flex: 15 1 0;
-    }
-
     .hero-portrait {
-      flex: 85 1 0;
+      flex: 1 1 0;
       min-height: 0;
       width: 100%;
       object-fit: contain;
