@@ -133,8 +133,8 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     grid-row: 1;
     align-self: end;
     /* Short windows keep a fixed gap between the head and the header's line, and narrow ones shrink the
-       portrait (1026 x 1280) so the text column always fits beside it. */
-    height: min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24));
+       portrait (1026 x 1280) so the text column always fits beside it. The whole size is then scaled down by 0.85. */
+    height: calc(min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24)) * 0.85);
     width: auto;
     max-width: none;
     user-select: none;
@@ -203,8 +203,14 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
       --about-text: clamp(0.8125rem, 3.8vw, 1.125rem);
     }
 
+    /* An empty spacer above the portrait takes 15% of the free height, so the portrait gets the other 85%. */
+    .hero-inner::before {
+      content: "";
+      flex: 15 1 0;
+    }
+
     .hero-portrait {
-      flex: 1 1 0;
+      flex: 85 1 0;
       min-height: 0;
       width: 100%;
       object-fit: contain;
