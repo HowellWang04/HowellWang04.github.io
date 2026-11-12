@@ -270,6 +270,20 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     z-index: 2;
   }
 
+  /* When the pointer leaves, a card waits a moment before it flips back and settles, so brushing past
+     a card doesn't snap it shut. It stays above its neighbours until then. */
+  .collage {
+    --unflip-delay: 200ms;
+  }
+
+  .collage:not(.is-dealing) > li {
+    transition: z-index 0s var(--unflip-delay);
+  }
+
+  .collage:not(.is-dealing) > li:is(:hover, :focus-within) {
+    transition-delay: 0s;
+  }
+
   /* Only the first drop eases photo by photo. After that the photos follow the (already smoothed) scroll directly:
      a transition on a custom property runs on the main thread and restarted on every scroll frame. */
   .collage.is-dealing > li {
@@ -284,7 +298,7 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     cursor: pointer;
     perspective: 1200px;
     transform: translate(var(--dx), var(--dy)) rotate(var(--tilt));
-    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1) var(--unflip-delay);
   }
 
   /* The shadow spreads while the photo is still in the air. A fixed wide shadow fades in on its own layer, instead of
@@ -303,7 +317,7 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
   .flip-card-inner {
     position: relative;
     transform-style: preserve-3d;
-    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1);
+    transition: transform 700ms cubic-bezier(0.22, 1, 0.36, 1) var(--unflip-delay);
   }
 
   .face {
@@ -370,6 +384,12 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
     transform: rotateY(180deg);
   }
 
+  /* Only flipping back waits; flipping over starts at once. */
+  .flip-card:is(:focus-visible, [aria-pressed="true"]),
+  .flip-card:is(:focus-visible, [aria-pressed="true"]) .flip-card-inner {
+    transition-delay: 0s;
+  }
+
   /* Hover only on devices with a mouse: on phones a hover style makes iOS take the first tap as a hover
      and drop the click, so the card would lift without flipping. */
   @media (hover: hover) {
@@ -380,6 +400,11 @@ const dealOrder = [2, 0, 4, 1, 5, 3];
 
     .flip-card:hover .flip-card-inner {
       transform: rotateY(180deg);
+    }
+
+    .flip-card:hover,
+    .flip-card:hover .flip-card-inner {
+      transition-delay: 0s;
     }
   }
 
