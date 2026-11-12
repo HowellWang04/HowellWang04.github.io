@@ -53,7 +53,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 * 使用 Three.js 搭建中秋月饼场景，导入 STL 月饼与餐盘模型，实现聚光灯阴影与漂浮星光粒子，提供灯光、相机环绕与粒子的实时调节面板，并撰写技术报告说明实现过程。
 
-[项目展示](https://howellwang04.github.io/MooncakeProjectDemo/)
+[项目展示](https://howellwang04.github.io/Mooncake-Project-Demo/)
 
 ## 实习经历
 

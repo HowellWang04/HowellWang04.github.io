@@ -53,7 +53,7 @@ February to April 2025  ·  Three.js, JavaScript
 
 * Built a Three.js mooncake scene for the Mid Autumn Festival with STL models, shadowed spotlighting, and drifting star particles; added live controls for light, camera orbit, and particles, documented in a technical report.
 
-[Project demonstration](https://howellwang04.github.io/MooncakeProjectDemo/)
+[Project demonstration](https://howellwang04.github.io/Mooncake-Project-Demo/)
 
 ## Professional Experience
 
