@@ -52,6 +52,7 @@ import HomeHero from "../components/HomeHero.astro";
 <script>
   import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
   import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+  import { afterCurtain } from "../scripts/curtain";
 
   gsap.registerPlugin(DrawSVGPlugin);
 
@@ -267,7 +268,11 @@ import HomeHero from "../components/HomeHero.astro";
     if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = "hidden"; });
 
     // Letters are positioned from measured glyph widths, so wait for the web fonts (briefly) before measuring.
-    await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]);
+    // After a page change, also wait for the curtain to lift, or the intro plays behind it.
+    await Promise.all([
+      Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]),
+      afterCurtain(),
+    ]);
     if (!main.isConnected || run !== setupRun) return;
 
     [name, subtitle, tagline, cta].forEach((element) => element.classList.add("is-revealed"));
@@ -386,7 +391,15 @@ import HomeHero from "../components/HomeHero.astro";
   };
 
   setupAbout();
-  document.addEventListener("astro:page-load", setupAbout);
+  // Astro fires astro:page-load on the first visit too, but only at window load. Setting up again then would
+  // cut the intro short and show it already finished, so only a page that hasn't been set up yet gets set up.
+  let setUpMain = document.querySelector("main");
+  document.addEventListener("astro:page-load", () => {
+    const main = document.querySelector("main");
+    if (main === setUpMain) return;
+    setUpMain = main;
+    setupAbout();
+  });
   document.addEventListener("astro:before-swap", () => {
     teardownAbout?.();
     teardownAbout = undefined;

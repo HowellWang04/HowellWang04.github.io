@@ -41,15 +41,21 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
 
 <script>
   import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
+  import { afterCurtain } from "../scripts/curtain";
 
   // The marquee runs on its own and flips direction with the scroll, like turning a reel.
   // Once the hero stops holding and scrolls away, its content drifts down a little slower than the page (parallax).
   let teardownHero: (() => void) | undefined;
+  let setUpHero: HTMLElement | undefined;
 
   const setupHero = () => {
+    const hero = document.querySelector<HTMLElement>("[data-home-hero]");
+    // Astro fires astro:page-load on the first visit too, but only at window load. Restarting the hero then would
+    // jump its opening animation straight to the end.
+    if (hero && hero === setUpHero) return;
+    setUpHero = hero ?? undefined;
     teardownHero?.();
     teardownHero = undefined;
-    const hero = document.querySelector<HTMLElement>("[data-home-hero]");
     const track = hero?.querySelector<HTMLElement>("[data-hero-marquee]");
     const inner = hero?.querySelector<HTMLElement>("[data-hero-inner]");
     const portrait = hero?.querySelector<HTMLElement>("[data-hero-portrait]");
@@ -86,7 +92,9 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
       scrollTrigger: { trigger: hero, start: "bottom bottom", end: "bottom top", scrub: true },
     });
 
-    const intro = gsap.timeline();
+    // Paused until the page curtain lifts; the from() states apply right away, so nothing shows early.
+    const intro = gsap.timeline({ paused: true });
+    afterCurtain().then(() => intro.play());
     if (!hero.dataset.played) {
       hero.dataset.played = "true";
       intro

@@ -56,6 +56,7 @@ const {
 
 <script>
   import "../scripts/smooth-scroll";
+  import { afterCurtain } from "../scripts/curtain";
 
   document.addEventListener("astro:before-preparation", (event) => {
     const loadPage = event.loader;
@@ -110,7 +111,9 @@ const {
     });
   };
 
-  const setupReveal = () => {
+  const setupReveal = async () => {
+    // After a page change, hold the reveal until the curtain lifts, or it plays out of sight behind it.
+    await afterCurtain();
     revealObserver?.disconnect();
     const main = document.querySelector<HTMLElement>("main");
     if (!main) return;
