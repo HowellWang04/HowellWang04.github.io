@@ -5,7 +5,7 @@
     "links": [
       {
         "label": "Portfolio",
-        "url": "https://howellwang04.github.io/"
+        "url": "https://guanhao.me/"
       },
       {
         "label": "GitHub",
@@ -32,9 +32,9 @@
         "entries": [
           {
             "title": "Coal Echoes  |  Narrative Exploration Game",
-            "meta": "2026  ·  In development  ·  Unity 6, HDRP, C#, Blender",
+            "meta": "August 2026  ·  Solo Project  ·  Unity 6, HDRP, C#, Blender",
             "bullets": [
-              "Designed a four-level first person exploration game about 1970s working class memories at an abandoned coal plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.",
+              "Designed a four-level first person exploration game around a grandfather's diary at an abandoned coal washing plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.",
               "Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.",
               "Built terrain from USGS elevation data in MapMagic with an offline Gradient Terrain Authoring transition; created HDRP sandstorm, heat haze, and runtime newspaper halftone effects (halftone adapted from Daniel Ilett, MIT)."
             ],
@@ -47,7 +47,7 @@
           },
           {
             "title": "Vanishing Fireflies  |  Interactive Light Installation",
-            "meta": "2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP",
+            "meta": "June 2026  ·  Solo Project  ·  ESP32, Arduino, Unity, UDP",
             "bullets": [
               "Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.",
               "Implemented two independently responsive zones, one ambient swarm, and a UDP interface for sending Unity synchronization commands during development and debugging."
@@ -150,7 +150,7 @@
     "links": [
       {
         "label": "作品集",
-        "url": "https://howellwang04.github.io/"
+        "url": "https://guanhao.me/"
       },
       {
         "label": "GitHub",
@@ -177,9 +177,9 @@
         "entries": [
           {
             "title": "Coal Echoes 煤火回声  |  叙事探索游戏",
-            "meta": "2026 年  ·  开发中  ·  Unity 6、HDRP、C#、Blender",
+            "meta": "2026 年 8 月  ·  个人独立完成  ·  Unity 6、HDRP、C#、Blender",
             "bullets": [
-              "以废弃煤厂为舞台，围绕 1970 年代特定时代下的工人阶级记忆设计四个关卡的第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。",
+              "以废弃洗煤厂为舞台，围绕已故爷爷的日记和一张 1980 年的合影设计四个关卡的第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。",
               "通过 Blender MCP，由 AI Agent 辅助完成索道、门卫室等工业资产的参数化建模与材质烘焙，并导入 Unity 场景。",
               "基于 USGS 实测高程数据在 MapMagic 中搭建地形，并以 Gradient Terrain Authoring 离线求解地形过渡；在 HDRP 中实现沙尘、热浪与运行时报纸半调效果（半调算法改写自 Daniel Ilett，MIT）。"
             ],
@@ -192,7 +192,7 @@
           },
           {
             "title": "Vanishing Fireflies 消逝的萤火虫  |  萤火虫交互装置",
-            "meta": "2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP",
+            "meta": "2026 年 6 月  ·  个人独立完成  ·  ESP32、Arduino、Unity、UDP",
             "bullets": [
               "编程控制三组共 420 颗 LED，通过雷达与光照传感器捕捉参与者的移动与人为光源，映射为萤火虫灯群的扰动和同步行为。",
               "实现两个独立感应区域与一组自然闪烁灯群，并提供开发调试用的 UDP 接口，可由 Unity 发送同步控制指令。"

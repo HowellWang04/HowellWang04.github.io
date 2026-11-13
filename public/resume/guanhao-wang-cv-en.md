@@ -2,7 +2,7 @@
 
 gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
-[Portfolio](https://howellwang04.github.io/) · [GitHub](https://github.com/HowellWang04)
+[Portfolio](https://guanhao.me/) · [GitHub](https://github.com/HowellWang04)
 
 Computer science undergraduate focused on game development, environmental storytelling, and physical interaction.
 
@@ -22,9 +22,9 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 
 ### Coal Echoes  |  Narrative Exploration Game
 
-2026  ·  In development  ·  Unity 6, HDRP, C#, Blender
+August 2026  ·  Solo Project  ·  Unity 6, HDRP, C#, Blender
 
-* Designed a four-level first person exploration game about 1970s working class memories at an abandoned coal plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.
+* Designed a four-level first person exploration game around a grandfather's diary at an abandoned coal washing plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.
 * Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.
 * Built terrain from USGS elevation data in MapMagic with an offline Gradient Terrain Authoring transition; created HDRP sandstorm, heat haze, and runtime newspaper halftone effects (halftone adapted from Daniel Ilett, MIT).
 
@@ -32,7 +32,7 @@ August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
 
 ### Vanishing Fireflies  |  Interactive Light Installation
 
-2026  ·  Completed  ·  ESP32, Arduino, Unity, UDP
+June 2026  ·  Solo Project  ·  ESP32, Arduino, Unity, UDP
 
 * Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.
 * Implemented two independently responsive zones, one ambient swarm, and a UDP interface for sending Unity synchronization commands during development and debugging.
@@ -64,7 +64,7 @@ July to August 2024  ·  Shanghai, China
 * Wrote and maintained 100+ pages of user guides for a pharmaceutical WeChat Mini Program upgrade, covering two user types, four scenarios, and three device contexts.
 * Performed user acceptance testing on the Mini Program and reported 10+ defects in Jira with reproduction steps; organized its 1,000+ data tags into a three level hierarchy for user filtering.
 
-[Download internship certificate (PDF)](https://howellwang04.github.io/resume/guanhao-wang-iqvia-internship-certificate.pdf)
+[Download internship certificate (PDF)](https://guanhao.me/resume/guanhao-wang-iqvia-internship-certificate.pdf)
 
 ## Publication
 

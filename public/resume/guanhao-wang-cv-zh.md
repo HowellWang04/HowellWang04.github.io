@@ -2,7 +2,7 @@
 
 gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
-[作品集](https://howellwang04.github.io/) · [GitHub](https://github.com/HowellWang04)
+[作品集](https://guanhao.me/) · [GitHub](https://github.com/HowellWang04)
 
 计算机科学本科生，专注游戏开发、环境叙事与实体交互。
 
@@ -22,9 +22,9 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 ### Coal Echoes 煤火回声  |  叙事探索游戏
 
-2026 年  ·  开发中  ·  Unity 6、HDRP、C#、Blender
+2026 年 8 月  ·  个人独立完成  ·  Unity 6、HDRP、C#、Blender
 
-* 以废弃煤厂为舞台，围绕 1970 年代特定时代下的工人阶级记忆设计四个关卡的第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。
+* 以废弃洗煤厂为舞台，围绕已故爷爷的日记和一张 1980 年的合影设计四个关卡的第一人称探索体验，搭建摄影、相册、手账编辑与物品检视系统，实现通过相机发现物品的交互。
 * 通过 Blender MCP，由 AI Agent 辅助完成索道、门卫室等工业资产的参数化建模与材质烘焙，并导入 Unity 场景。
 * 基于 USGS 实测高程数据在 MapMagic 中搭建地形，并以 Gradient Terrain Authoring 离线求解地形过渡；在 HDRP 中实现沙尘、热浪与运行时报纸半调效果（半调算法改写自 Daniel Ilett，MIT）。
 
@@ -32,7 +32,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 ### Vanishing Fireflies 消逝的萤火虫  |  萤火虫交互装置
 
-2026 年  ·  已完成  ·  ESP32、Arduino、Unity、UDP
+2026 年 6 月  ·  个人独立完成  ·  ESP32、Arduino、Unity、UDP
 
 * 编程控制三组共 420 颗 LED，通过雷达与光照传感器捕捉参与者的移动与人为光源，映射为萤火虫灯群的扰动和同步行为。
 * 实现两个独立感应区域与一组自然闪烁灯群，并提供开发调试用的 UDP 接口，可由 Unity 发送同步控制指令。
@@ -64,7 +64,7 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 * 为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖两类用户、四种场景和三种终端。
 * 对该小程序执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理小程序内 1,000 多个数据标签，建立支持用户筛选的三层分类。
 
-[下载实习证明（PDF）](https://howellwang04.github.io/resume/guanhao-wang-iqvia-internship-certificate.pdf)
+[下载实习证明（PDF）](https://guanhao.me/resume/guanhao-wang-iqvia-internship-certificate.pdf)
 
 ## 学术发表
 

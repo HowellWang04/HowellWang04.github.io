@@ -5,7 +5,7 @@ import LocalizedText from "../LocalizedText.astro";
 
 <section id="projects" class="scroll-mt-20">
   <div>
-    <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Ongoing Projects" zh="进行中项目" /></div>
+    <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Featured Projects" zh="主要作品" /></div>
   </div>
 
   <HorizontalCard
@@ -13,8 +13,8 @@ import LocalizedText from "../LocalizedText.astro";
     titleZh="Coal Echoes 煤火回声"
     projectId="coal-echoes"
     img="/coal-echoes-cover.jpg"
-    desc="A four-level narrative exploration game in development, set in an abandoned coal preparation plant. Use photography, a grandfather's diary, and a personal scrapbook to explore working class memories shaped by the 1970s."
-    descZh="开发中的第一人称叙事探索游戏，共四个关卡。通过摄影、爷爷的日记与个人手账，在废弃洗煤厂中探寻 1970 年代特定时代下的工人阶级记忆。"
+    desc="A first-person narrative exploration game set in an abandoned coal washing plant in northwest China. Carrying a late grandfather's diary and a 1980 group photo, photograph traces of the past, keep a scrapbook, and ride the old ropeway to the ridge where two workers once planned to watch the plant's lights."
+    descZh="第一人称叙事探索游戏，故事发生在中国西北一座废弃的洗煤厂。带着已故爷爷的日记和一张 1980 年的合影，拍下过去的痕迹、整理手账，乘上老索道，去往两位工人当年约好看厂区灯火的山脊。"
     url="https://github.com/HowellWang04/Coal-Echoes"
     category="personal-game"
   />
@@ -23,8 +23,7 @@ import LocalizedText from "../LocalizedText.astro";
     title="Vanishing Fireflies"
     titleZh="Vanishing Fireflies 消逝的萤火虫"
     projectId="project-fireflies"
-    coverPending
-    coverComingSoon
+    img="/vanishing-fireflies-cover.jpg"
     desc="An interactive light installation about ecological disturbance and recovery. Visitor movement and bright light disrupt LED fireflies, while the Kuramoto model shapes their collective flashing rhythm. ESP32 sensing connects to Unity control and sound."
     descZh="围绕生态扰动与恢复设计的灯光交互装置。参与者的移动与强光影响 LED 萤火虫的行为，藏本模型驱动群体闪烁节奏，通过 ESP32 传感与 Unity 控制连接灯光和声音。"
     url="https://github.com/HowellWang04/Vanishing-Fireflies"
@@ -32,18 +31,26 @@ import LocalizedText from "../LocalizedText.astro";
   />
   <div class="divider my-0" data-reveal></div>
   <HorizontalCard
+    title="Against the Current"
+    projectId="against-the-current"
+    img="/against-the-current-cover.jpg"
+    desc="A 3D environment study of the Three Gorges on the Yangtze River and the river trackers who once hauled wooden boats upstream. Steep cliffs, a narrow working bank, and a towline tell the story of their labor through composition alone."
+    descZh="以长江三峡和曾经拉船逆流而上的纤夫为题材的三维环境作品。陡峭崖壁、狭窄纤道与连接船只的纤绳，仅靠构图讲述纤夫的劳作。"
+    category="personal-art"
+  />
+  <div class="divider my-0" data-reveal></div>
+  <HorizontalCard
     title="Desert Restoration Simulator"
     titleZh="Desert Restoration Simulator"
     projectId="project-sand"
-    coverPending
-    coverComingSoon
+    img="/desert-restoration-cover.jpg"
     desc="A desert restoration simulation. Plant trees, build factories, and mine for resources while balancing income against ecological damage. Watch wind, sand, heat haze, and the sky respond to your decisions."
     descZh="一款治沙模拟经营游戏。通过植树、建厂与采矿，在经济收益和生态损耗之间作出取舍，并观察风沙、热浪与天空随决策变化。"
     url="https://github.com/HowellWang04/Desert-Restoration-Simulator"
     category="personal-game"
   />
   <div>
-    <div class="text-3xl w-full font-bold font-heading mb-5 mt-10" data-reveal><LocalizedText en="Completed Projects" zh="已完成项目" /></div>
+    <div class="text-3xl w-full font-bold font-heading mb-5 mt-10" data-reveal><LocalizedText en="Team & Jam Projects" zh="团队与 Game Jam 项目" /></div>
   </div>
   <HorizontalCard
     title="Seafloor Revival"

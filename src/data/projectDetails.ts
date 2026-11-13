@@ -16,7 +16,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
   "project-fireflies": {
     role: { en: "Interaction design, hardware integration, firmware & Unity control", zh: "交互设计、硬件整合、固件与 Unity 控制端开发" },
     team: { en: "Solo project", zh: "个人独立完成" },
-    duration: { en: "In development", zh: "开发中" },
+    duration: { en: "June 2026", zh: "2026 年 6 月" },
     contributionGroups: [
       {
         title: { en: "Kuramoto synchronization", zh: "Kuramoto 藏本同步模型" },
@@ -99,8 +99,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
   },
   "project-sand": {
     role: { en: "Gameplay systems & environmental effects", zh: "玩法系统与环境效果开发" },
-    team: { en: "Personal project", zh: "个人项目" },
-    duration: { en: "In development", zh: "开发中" },
+    team: { en: "Solo project", zh: "个人独立完成" },
+    duration: { en: "January 2026", zh: "2026 年 1 月" },
     contributionGroups: [
       {
         title: { en: "Economy & ecological tradeoffs", zh: "经济与生态取舍" },
@@ -181,8 +181,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
   },
   "coal-echoes": {
     role: { en: "Game design, interaction systems & environment integration", zh: "游戏设计、交互系统与场景整合" },
-    team: { en: "Personal portfolio project with AI assistance and third party assets", zh: "个人作品集项目，结合 AI 辅助开发与第三方美术资源" },
-    duration: { en: "2026 · In development", zh: "2026 年 · 开发中" },
+    team: { en: "Solo project", zh: "个人独立完成" },
+    duration: { en: "August 2026", zh: "2026 年 8 月" },
     contributionGroups: [
       {
         "title": {
@@ -267,8 +267,8 @@ export const projectDetails: Record<string, ProjectDetails> = {
         },
         "details": [
           {
-            "en": "Designed the narrative framework and the four-level exploration route around working class memories shaped by the 1970s, using photography, diary entries, and scrapbooking as the core interactions.",
-            "zh": "围绕 1970 年代特定时代下的工人阶级记忆设计叙事框架和四个关卡的探索路线，以摄影、日记与手账组织核心交互。"
+            "en": "Designed the narrative framework and the four-level exploration route around a late grandfather's diary and a 1980 group photo from the coal washing plant, using photography, diary entries, and scrapbooking as the core interactions.",
+            "zh": "围绕已故爷爷的日记和一张 1980 年的洗煤厂合影设计叙事框架和四个关卡的探索路线，以摄影、日记与手账组织核心交互。"
           },
           {
             "en": "Connected photography to Echo discoveries, using target framing and visibility checks to link photographed objects with narrative discoveries. Unity 6000.4.6f1 and C# implement the interactions, with Input System 1.19 handling player input.",
@@ -308,7 +308,52 @@ export const projectDetails: Record<string, ProjectDetails> = {
       { label: { en: "Halftone algorithm source", zh: "半调算法来源" }, url: "https://github.com/daniel-ilett/shaders-halftone" },
     ],
   },
+  "against-the-current": {
+    role: { en: "Environment art", zh: "环境美术" },
+    team: { en: "Solo project", zh: "个人独立完成" },
+    duration: { en: "March 2026", zh: "2026 年 3 月" },
+    stack: [
+      {
+        name: "Unreal Engine",
+        use: {
+          en: "Blockout, cliff and ground materials, fog, sky atmosphere, and color grading.",
+          zh: "场景白盒、崖壁与地面材质、雾效、天空大气与调色。",
+        },
+      },
+    ],
+    contributions: [
+      {
+        en: "Built a 3D environment study of the Three Gorges on the Yangtze River and the river trackers who once hauled wooden boats upstream, inspired by a trip to Chongqing.",
+        zh: "以长江三峡和曾经拉船逆流而上的纤夫为题材制作三维环境，灵感来自一次重庆之行。",
+      },
+      {
+        en: "Used steep cliffs, a narrow working bank, and a towline linking the trackers to the boat to tell the story of their labor through composition alone.",
+        zh: "通过陡峭崖壁、狭窄的纤道和连接纤夫与船只的纤绳，仅靠构图讲述纤夫的劳作。",
+      },
+      {
+        en: "Explored the tracker pose with AI-assisted concept images.",
+        zh: "借助 AI 辅助生成的概念图推敲纤夫姿态。",
+      },
+    ],
+  },
   "mask": {
+    role: { en: "Programming, Level 2", zh: "程序，负责第二关" },
+    team: { en: "Team of five", zh: "五人团队" },
+    duration: { en: "January 2026 · Global Game Jam 2026", zh: "2026 年 1 月 · Global Game Jam 2026" },
+    contributions: [
+      {
+        en: "Built the subway commute level, where phone messages from coworkers, HR, a boss, and a friend interrupt the player on a timed run to work.",
+        zh: "制作地铁通勤关卡，玩家在限时赶去上班的途中，不断被同事、HR、上司和朋友的手机消息打断。",
+      },
+      {
+        en: "Built the phone dialogue system: branching chat conversations are stored as editable ScriptableObject assets and shown as chat bubbles with choices.",
+        zh: "开发手机对话系统，分支聊天对话以可编辑的 ScriptableObject 资源存储，以聊天气泡和选项的形式呈现。",
+      },
+      {
+        en: "Later migrated the project from Tuanjie Engine to Unity 6 and published a web build with an English and Chinese language toggle.",
+        zh: "之后将项目从团结引擎迁移到 Unity 6，并发布带中英文切换的网页版。",
+      },
+    ],
     links: [
       {
         label: { en: "Play on itch.io", zh: "在 itch.io 试玩" },
