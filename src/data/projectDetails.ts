@@ -311,6 +311,11 @@ export const projectDetails: Record<string, ProjectDetails> = {
   "mask": {
     links: [
       {
+        label: { en: "Play on itch.io", zh: "在 itch.io 试玩" },
+        url: "https://hawang2004.itch.io/mask",
+      },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/GGJ-2026-MASK" },
+      {
         label: { en: "Jam submission", zh: "参赛页面" },
         url: "https://globalgamejam.org/games/2026/mask-6-4",
       },
@@ -355,6 +360,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
         label: { en: "Play on itch.io", zh: "在 itch.io 试玩" },
         url: "https://nikolai16.itch.io/seafloor-revival",
       },
+      { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Game-Toolkit-2025-Seafloor-Revival" },
       {
         label: { en: "Jam submission", zh: "参赛页面" },
         url: "https://itch.io/jam/gmtk-2025/rate/3783873",
