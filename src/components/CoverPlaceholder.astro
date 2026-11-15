@@ -1,14 +1,121 @@
 ---
-import LocalizedText from "./LocalizedText.astro";
-const { class: className = "", comingSoon = false } = Astro.props;
+// Typographic cover for projects without cover art: the title is set as a small print, sized to fit the frame.
+// Anything after a colon in the title becomes a handwritten subtitle.
+const { class: className = "", title = "" } = Astro.props;
+
+const [main, ...rest] = title.split(":");
+const subtitle = rest.join(":").trim();
+const words = main.trim().split(/\s+/);
+
+// Courier Prime advances 0.6em per character, so line widths can be measured in characters.
+// Sizes are in cqw (percent of the cover's width); the cover is 56.25cqw tall.
+const textWidth = 84;
+const textHeight = subtitle ? 30 : 40;
+const wrap = (maxChars: number) => {
+  const lines: string[] = [];
+  for (const word of words) {
+    if (word.length > maxChars) return null;
+    const last = lines[lines.length - 1];
+    if (last && last.length + 1 + word.length <= maxChars) lines[lines.length - 1] = `${last} ${word}`;
+    else lines.push(word);
+  }
+  return lines;
+};
+let fontSize = 24;
+let lines = wrap(Math.floor(textWidth / (0.6 * fontSize)));
+while (fontSize > 6 && (!lines || lines.length * 1.02 * fontSize > textHeight)) {
+  fontSize -= 0.5;
+  lines = wrap(Math.floor(textWidth / (0.6 * fontSize)));
+}
+
+// The title also seeds where the colour washes sit and how the large initial leans, so each cover differs a little.
+const seed = [...title].reduce((hash, char) => (hash * 31 + char.charCodeAt(0)) >>> 0, 7);
+const pick = (shift: number, min: number, max: number) => min + ((seed >>> shift) % (max - min + 1));
+const style = [
+  `--cover-size:${fontSize}cqw`,
+  `--wash-a-x:${pick(0, 55, 95)}%`,
+  `--wash-a-y:${pick(4, 0, 40)}%`,
+  `--wash-b-x:${pick(8, 0, 40)}%`,
+  `--wash-b-y:${pick(12, 60, 100)}%`,
+  `--initial-tilt:${pick(16, -14, 14)}deg`,
+].join(";");
 ---
 
-<div class:list={["flex flex-col items-center justify-center gap-2 aspect-video rounded-lg border border-base-content/20 bg-base-200 text-center px-3 py-5", className]}>
-  {comingSoon ? <>
-    <p class="text-sm font-semibold"><LocalizedText en="Cover art to be decided" zh="封面图未定" /></p>
-    <p class="text-xs opacity-60"><LocalizedText en="Coming soon" zh="敬请期待" /></p>
-  </> : <>
-    <p class="text-sm font-semibold"><LocalizedText en="In development" zh="开发中" /></p>
-    <p class="text-xs opacity-60"><LocalizedText en="Cover art to be decided" zh="封面图未定" /></p>
-  </>}
+<div aria-hidden="true" class:list={["title-cover aspect-video rounded-lg", className]} style={style}>
+  <span class="title-cover-initial">{main.trim().charAt(0)}</span>
+  <div class="title-cover-text">
+    <p class="title-cover-main">{lines?.map((line) => <span>{line}</span>)}</p>
+    {subtitle && <p class="title-cover-sub">{subtitle}</p>}
+  </div>
 </div>
+
+<style>
+  .title-cover {
+    position: relative;
+    overflow: hidden;
+    container-type: inline-size;
+    background:
+      radial-gradient(circle at var(--wash-a-x) var(--wash-a-y), oklch(var(--p) / 0.4), transparent 58%),
+      radial-gradient(circle at var(--wash-b-x) var(--wash-b-y), oklch(var(--a) / 0.42), transparent 52%),
+      repeating-linear-gradient(-45deg, oklch(var(--bc) / 0.045) 0 1px, transparent 1px 6px),
+      oklch(var(--b2));
+    box-shadow: inset 0 0 0 1px oklch(var(--bc) / 0.12);
+  }
+
+  /* A thin printed frame inside the edge */
+  .title-cover::after {
+    content: "";
+    position: absolute;
+    inset: 4cqw;
+    border: 1px solid oklch(var(--bc) / 0.18);
+    border-radius: 2px;
+    pointer-events: none;
+  }
+
+  .title-cover-initial {
+    position: absolute;
+    right: -4cqw;
+    bottom: -22cqw;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: 72cqw;
+    line-height: 1;
+    color: transparent;
+    -webkit-text-stroke: 0.5cqw oklch(var(--p) / 0.5);
+    transform: rotate(var(--initial-tilt));
+  }
+
+  .title-cover-text {
+    position: absolute;
+    left: 8cqw;
+    right: 8cqw;
+    bottom: 9cqw;
+  }
+
+  .title-cover-main {
+    margin: 0;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    font-size: var(--cover-size);
+    line-height: 1.02;
+    color: oklch(var(--bc));
+    /* A hard offset copy, like a slightly misregistered second ink */
+    text-shadow: 0.06em 0.06em 0 oklch(var(--p) / 0.55);
+  }
+
+  .title-cover-main span {
+    display: block;
+    white-space: nowrap;
+  }
+
+  .title-cover-sub {
+    margin: 1.5cqw 0 0;
+    font-family: "Caveat", cursive;
+    font-weight: 600;
+    font-size: 9cqw;
+    line-height: 1;
+    color: oklch(var(--p));
+    transform: rotate(-2deg);
+    transform-origin: left center;
+  }
+</style>

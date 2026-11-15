@@ -1,7 +1,7 @@
 ---
 // linkLabel / linkLabelZh name the outbound button when it isn't a GitHub repository.
 // playUrl adds a "Play" button and jamUrl a "Jam entry" button next to the source link.
-const { title, titleZh, img, coverPending, coverComingSoon, desc, descZh, url, playUrl, jamUrl, badge, category, teamProject, tags, projectId, linkLabel, linkLabelZh, target = "_blank" } = Astro.props;
+const { title, titleZh, img, coverPending, desc, descZh, url, playUrl, jamUrl, badge, category, teamProject, tags, projectId, linkLabel, linkLabelZh, target = "_blank" } = Astro.props;
 import { Image } from "astro:assets";
 import LocalizedText from "./LocalizedText.astro";
 import ProjectDetails from "./ProjectDetails.astro";
@@ -28,7 +28,7 @@ const CardContent = projectId ? "div" : "a";
   <CardContent href={projectId ? undefined : url} target={projectId ? undefined : target}>
     <div class="hero-content flex-col md:flex-row">
       {
-        coverPending ? <CoverPlaceholder class="w-full md:w-52 shrink-0" comingSoon={coverComingSoon} /> : img && (
+        coverPending ? <CoverPlaceholder class="w-full md:w-52 shrink-0" {title} /> : img && (
           <Image
             src={img}
             width={750}
@@ -79,5 +79,5 @@ const CardContent = projectId ? "div" : "a";
       GitHub</>} <span aria-hidden="true">↗</span>
     </a>}
   </div>}
-  {projectId && <ProjectDetails {projectId} {title} {titleZh} {desc} {descZh} {img} {coverPending} {coverComingSoon} />}
+  {projectId && <ProjectDetails {projectId} {title} {titleZh} {desc} {descZh} {img} {coverPending} />}
 </div>

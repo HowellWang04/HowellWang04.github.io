@@ -434,4 +434,87 @@ export const projectDetails: Record<string, ProjectDetails> = {
       { label: { en: "Guidebook PDF", zh: "说明书 PDF" }, url: "/la-luna-guidebook.pdf" },
     ],
   },
+  "qna-rag": {
+    role: { en: "Student & staff frontends, production deployment, CI & measurement", zh: "学生端与助教端前端、生产部署、CI 与性能测量" },
+    team: { en: "2 person team, course project for COMPSCI 639 AI-Assisted Full Stack Software Development", zh: "两人团队，COMPSCI 639 AI-Assisted Full Stack Software Development 课程项目" },
+    duration: { en: "Fall 2026 · Completed", zh: "2026 年秋季 · 已完成" },
+    contributionGroups: [
+      {
+        title: { en: "AI answers & citations", zh: "AI 回答与引用来源" },
+        tools: "React · TypeScript · Vite · Tailwind CSS",
+        summary: {
+          en: "Built how AI answers appear to students and staff: an AI-generated badge and warning, a numbered source list, and live updates while an answer is being written.",
+          zh: "负责 AI 回答在学生端与助教端的呈现，包括 AI 生成标识与提示、编号来源列表，以及回答生成期间的实时更新。",
+        },
+        details: [
+          {
+            en: "Post bodies render as plain text, so citations became a structured field. Past threads open inside the same app through a course-scoped link, uploaded files are fetched with the login token and opened as non-HTML files, and other sources open at their exact line, page, or quoted text.",
+            zh: "帖子正文按纯文本显示，因此引用来源设计为结构化字段。历史帖子通过带课程参数的链接在应用内打开，上传文件携带登录令牌获取并以非 HTML 方式打开，其他来源直接定位到对应行号、页码或引用文字。",
+          },
+          {
+            en: "Built the staff pages for registering course resources and comparing configurations against the design document's contract before the backend existed, so nothing had to change when it landed. The question page polls every 5 seconds while an answer is pending.",
+            zh: "在后端完成之前，依据设计文档约定的接口开发了助教端的课程资料登记与配置对比页面，后端上线后前端无需改动。问题页面在回答生成期间每 5 秒轮询一次状态。",
+          },
+        ],
+      },
+      {
+        title: { en: "Production deployment & CI", zh: "生产部署与 CI" },
+        tools: "Docker Compose · Nginx · Google Cloud · GitLab CI",
+        summary: {
+          en: "Wrote the production stack and deploy pipeline that run the board, a vector database, a local language model, and two embedding servers on a single 4 vCPU cloud VM.",
+          zh: "编写生产环境编排与部署流水线，在一台 4 核云服务器上同时运行问答平台、向量数据库、本地大语言模型与两个嵌入模型服务。",
+        },
+        details: [
+          {
+            en: "The AI services expose no public ports, and the backend does not wait for them to start, so the board stays usable while models load. Deploys run from a protected production branch through GitLab CI.",
+            zh: "AI 服务不对外开放端口，后端也不依赖它们启动完成，因此模型加载期间平台仍可正常使用。部署通过 GitLab CI 从受保护的 production 分支执行。",
+          },
+          {
+            en: "Measured memory on the VM itself: with every model loaded the stack peaked at 10.5 of 15.6 GiB, enough to keep the large gte-Qwen2 embedding model resident. The same test showed its default warmup never finishes on CPU, so it is turned off.",
+            zh: "在服务器上实测内存，所有模型加载后峰值为 10.5 GiB（共 15.6 GiB），足以让大型 gte-Qwen2 嵌入模型常驻。同一测试还发现其默认预热在 CPU 上永远无法完成，因此将其关闭。",
+          },
+        ],
+      },
+      {
+        title: { en: "Concurrency fix & code review", zh: "并发修复与代码审查" },
+        tools: "FastAPI · SQLAlchemy · MySQL",
+        summary: {
+          en: "Reviewed every backend merge request and found a database connection leak that only appears at production speed.",
+          zh: "审查了所有后端合并请求，并发现一个只在生产环境速度下才会出现的数据库连接耗尽问题。",
+        },
+        details: [
+          {
+            en: "Each answer takes about 28 seconds on the VM, and queued automatic answers each held a database connection while waiting. Fifteen of them would empty the pool and every page would fail. A 16 session probe confirmed it, and running automatic answers one at a time cut peak connections from 16 to 7.",
+            zh: "服务器上每条回答约需 28 秒，排队中的自动回答各自占用一个数据库连接，15 条即可耗尽连接池，导致所有页面报错。通过 16 个会话的并发探测确认了该问题，改为逐条生成自动回答后，峰值连接数从 16 降至 7。",
+          },
+          {
+            en: "Review also caught a chunker that dropped words at window boundaries, damaged ZIP uploads returning server errors instead of a clear upload error, and a successful index build being marked as failed.",
+            zh: "审查中还发现了分块器在窗口边界丢失词语、损坏的 ZIP 上传返回服务器错误而非明确的上传错误，以及成功的索引构建被误标为失败等问题。",
+          },
+        ],
+      },
+      {
+        title: { en: "RAG configuration evaluation", zh: "RAG 配置评估" },
+        tools: "Ollama · qwen2.5 · MiniLM · gte-Qwen2 · Chroma",
+        summary: {
+          en: "Compared eight configurations across chunking, embedding model, threshold, prompt, and generation model on 14 ground truth questions against the deployed system.",
+          zh: "在已部署的系统上，用 14 道标准答案问题对比了分块方式、嵌入模型、阈值、提示词与生成模型共八组配置。",
+        },
+        details: [
+          {
+            en: "Type-tailored chunking was the best single change, raising retrieval hits from 77% to 85% while cutting average generation time from 23.5 to 15.5 seconds. A stricter threshold and a larger 3B model both made answers worse.",
+            zh: "按资料类型分块是效果最好的单项改动，检索命中率从 77% 提升到 85%，平均生成时间从 23.5 秒降到 15.5 秒。更严格的阈值和更大的 3B 模型反而让回答质量下降。",
+          },
+          {
+            en: "The 0.35 threshold was calibrated from measured similarity scores, keeping out-of-scope questions unanswered in every run. Also wrote one of the three hardening system prompts.",
+            zh: "0.35 的相似度阈值依据实测分数校准，在所有配置中都能正确拒答课程范围外的问题。另外编写了三种加固系统提示词中的一种。",
+          },
+        ],
+      },
+    ],
+    links: [
+      { label: { en: "Course website", zh: "课程网站" }, url: "https://aicoding.cs.wisc.edu/fa26/schedule.html" },
+      { label: { en: "Email me for repository access", zh: "邮件申请仓库访问" }, url: "mailto:gwang284@wisc.edu?subject=QnA%20source%20code%20access" },
+    ],
+  },
 };

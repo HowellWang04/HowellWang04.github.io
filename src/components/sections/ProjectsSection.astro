@@ -23,7 +23,7 @@ import LocalizedText from "../LocalizedText.astro";
     title="Vanishing Fireflies"
     titleZh="Vanishing Fireflies 消逝的萤火虫"
     projectId="project-fireflies"
-    img="/vanishing-fireflies-cover.jpg"
+    img="/fireflies-cover.jpg"
     desc="An interactive light installation about ecological disturbance and recovery. Visitor movement and bright light disrupt LED fireflies, while the Kuramoto model shapes their collective flashing rhythm. ESP32 sensing connects to Unity control and sound."
     descZh="围绕生态扰动与恢复设计的灯光交互装置。参与者的移动与强光影响 LED 萤火虫的行为，藏本模型驱动群体闪烁节奏，通过 ESP32 传感与 Unity 控制连接灯光和声音。"
     url="https://github.com/HowellWang04/Vanishing-Fireflies"
@@ -53,6 +53,20 @@ import LocalizedText from "../LocalizedText.astro";
     <div class="text-3xl w-full font-bold font-heading mb-5 mt-10" data-reveal><LocalizedText en="Team & Jam Projects" zh="团队与 Game Jam 项目" /></div>
   </div>
   <HorizontalCard
+    title="QnA: RAG Course Q&A Board"
+    titleZh="QnA 课程问答平台"
+    projectId="qna-rag"
+    teamProject
+    coverPending
+    desc="A Piazza style course Q&A board with a RAG auto responder, built by a team of two for COMPSCI 639, AI-Assisted Full Stack Software Development. When a student asks a question, it searches course materials and past threads, and posts a clearly labeled AI answer with numbered sources only when the match clears a calibrated threshold. Everything else is left for course staff."
+    descZh="COMPSCI 639 AI-Assisted Full Stack Software Development 课程中两人合作开发的课程问答平台，形式类似 Piazza，并加入了基于 RAG 的自动回答。学生提问后，系统检索课程资料与历史帖子，只有匹配度超过校准阈值时才发布明确标注、附带编号来源的 AI 回答，其余问题留给课程助教。"
+    url="mailto:gwang284@wisc.edu?subject=QnA%20source%20code%20access"
+    linkLabel="Private repo, email me for an invite"
+    linkLabelZh="私有仓库，欢迎邮件申请访问邀请"
+    category="university"
+  />
+  <div class="divider my-0" data-reveal></div>
+  <HorizontalCard
     title="Seafloor Revival"
     titleZh="Seafloor Revival 海底回潮"
     projectId="seafloor-revival"
@@ -71,7 +85,7 @@ import LocalizedText from "../LocalizedText.astro";
     titleZh="Mask 面具"
     projectId="mask"
     teamProject
-    img="https://storage-v4.globalgamejam.org/files/styles/sidebar_full/s3/games/2026/832124/featured/6_1.png?VersionId=WijEEmYmB.AiE8a9MTHJh1C9mFAtUIJy&amp;itok=Jt2fWUhO"
+    img="/mask-cover.jpg"
     desc="A 2D platformer made for Global Game Jam 2026. Explore the roles we take on in life and peel away layers of masks to discover the self beneath."
     descZh="为 Global Game Jam 2026 制作的 2D 平台跳跃游戏。探索人生中被赋予的多重角色，揭开层层面具，寻找真实的自我。"
     url="https://github.com/HowellWang04/GGJ-2026-MASK"

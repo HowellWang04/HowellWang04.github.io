@@ -3,7 +3,7 @@ import LocalizedText from "./LocalizedText.astro";
 import CoverPlaceholder from "./CoverPlaceholder.astro";
 import { projectDetails } from "../data/projectDetails";
 
-const { projectId, title, titleZh, desc, descZh, img, coverPending, coverComingSoon } = Astro.props;
+const { projectId, title, titleZh, desc, descZh, img, coverPending } = Astro.props;
 const details = projectDetails[projectId] ?? {};
 const dialogId = `project-details-${projectId}`;
 const pending = { en: "Not yet documented", zh: "尚待补充" };
@@ -31,7 +31,7 @@ const facts = [
 
       <div class="project-body">
         <div class="project-overview">
-          {coverPending ? <CoverPlaceholder class="w-36 shrink-0" comingSoon={coverComingSoon} /> : img && <img src={img} alt={title} class="project-cover rounded-xl" loading="lazy" />}
+          {coverPending ? <CoverPlaceholder class="w-full min-[601px]:w-52 shrink-0" {title} /> : img && <img src={img} alt={title} class="project-cover rounded-xl" loading="lazy" />}
           <div>
             <p class="text-base leading-relaxed"><LocalizedText en={desc} zh={descZh ?? desc} /></p>
           </div>
@@ -271,7 +271,8 @@ const facts = [
   .project-header form { flex-shrink: 0; }
   .project-body { padding: 2rem; }
   .project-overview { display: flex; gap: 1.5rem; align-items: center; }
-  .project-cover { width: 9rem; height: 7.25rem; object-fit: cover; flex-shrink: 0; }
+  /* Same width and 16:9 frame as the card thumbnail, so the cover reads the same in both places. */
+  .project-cover { width: 13rem; height: auto; aspect-ratio: 16 / 9; object-fit: cover; flex-shrink: 0; }
   .project-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; padding: 1.25rem; margin-top: 1.75rem; }
   .project-section { margin-top: 2rem; }
   .tech-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
@@ -288,7 +289,7 @@ const facts = [
     .project-header { padding: 1rem; }
     .project-body { padding: 1.25rem; }
     .project-overview { flex-direction: column; align-items: flex-start; }
-    .project-cover { width: 7rem; height: auto; }
+    .project-cover { width: 100%; }
     .project-facts { grid-template-columns: 1fr; gap: 1rem; }
     .tech-grid { grid-template-columns: 1fr; }
     .tech-tools { min-height: 0; }
