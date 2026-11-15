@@ -78,8 +78,10 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 ## 技能与语言
 
-**游戏与交互**  Unity、C#、HDRP、uGUI、Shader Graph、Blender、ESP32、Arduino
+**数学**  微积分 III、离散数学、线性代数
 
-**编程与工具**  Python、Java、C、JavaScript、Three.js、Git、Jira
+**编程与工具**  C#、C/C++、HLSL、Python、TypeScript、JavaScript、Java、R、Three.js、Git、Jira
+
+**游戏与交互**  Unity（HDRP、Shader Graph）、Unreal Engine、Blender、Figma、ESP32、Arduino
 
 **语言**  中文母语，英语流利，日语基础

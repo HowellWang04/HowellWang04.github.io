@@ -129,12 +129,16 @@
         "title": "Skills and Languages",
         "entries": [
           {
-            "title": "Games and interaction",
-            "description": "Unity, C#, HDRP, uGUI, Shader Graph, Blender, ESP32, Arduino"
+            "title": "Mathematics",
+            "description": "Calculus III, discrete math, linear algebra"
           },
           {
             "title": "Programming and tools",
-            "description": "Python, Java, C, JavaScript, Three.js, Git, Jira"
+            "description": "C#, C/C++, HLSL, Python, TypeScript, JavaScript, Java, R, Three.js, Git, Jira"
+          },
+          {
+            "title": "Games and interaction",
+            "description": "Unity (HDRP, Shader Graph), Unreal Engine, Blender, Figma, ESP32, Arduino"
           },
           {
             "title": "Languages",
@@ -274,12 +278,16 @@
         "title": "技能与语言",
         "entries": [
           {
-            "title": "游戏与交互",
-            "description": "Unity、C#、HDRP、uGUI、Shader Graph、Blender、ESP32、Arduino"
+            "title": "数学",
+            "description": "微积分 III、离散数学、线性代数"
           },
           {
             "title": "编程与工具",
-            "description": "Python、Java、C、JavaScript、Three.js、Git、Jira"
+            "description": "C#、C/C++、HLSL、Python、TypeScript、JavaScript、Java、R、Three.js、Git、Jira"
+          },
+          {
+            "title": "游戏与交互",
+            "description": "Unity（HDRP、Shader Graph）、Unreal Engine、Blender、Figma、ESP32、Arduino"
           },
           {
             "title": "语言",

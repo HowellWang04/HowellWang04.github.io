@@ -78,8 +78,10 @@ July to August 2024  ·  Shanghai, China
 
 ## Skills and Languages
 
-**Games and interaction**  Unity, C#, HDRP, uGUI, Shader Graph, Blender, ESP32, Arduino
+**Mathematics**  Calculus III, discrete math, linear algebra
 
-**Programming and tools**  Python, Java, C, JavaScript, Three.js, Git, Jira
+**Programming and tools**  C#, C/C++, HLSL, Python, TypeScript, JavaScript, Java, R, Three.js, Git, Jira
+
+**Games and interaction**  Unity (HDRP, Shader Graph), Unreal Engine, Blender, Figma, ESP32, Arduino
 
 **Languages**  Mandarin native, English fluent, Japanese basic
