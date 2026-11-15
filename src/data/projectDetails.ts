@@ -176,6 +176,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
       },
     ],
     links: [
+      { label: { en: "Design document PDF", zh: "设计文档 PDF" }, url: "/design-docs/desert-restoration-simulator-design-doc.pdf" },
       { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Desert-Restoration-Simulator" },
     ],
   },
@@ -334,6 +335,9 @@ export const projectDetails: Record<string, ProjectDetails> = {
         en: "Explored the tracker pose with AI-assisted concept images.",
         zh: "借助 AI 辅助生成的概念图推敲纤夫姿态。",
       },
+    ],
+    links: [
+      { label: { en: "Design document PDF", zh: "设计文档 PDF" }, url: "/design-docs/against-the-current-design-doc.pdf" },
     ],
   },
   "mask": {
