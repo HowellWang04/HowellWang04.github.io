@@ -46,6 +46,16 @@ const facts = [
           ))}
         </dl>
 
+        {details.photos?.length && <section class="project-section">
+          <h3 class="text-lg font-bold"><LocalizedText en="Prototype" zh="实物原型" /></h3>
+          {details.photos.map((photo) => (
+            <figure class="project-photo">
+              <img src={photo.src} alt={photo.alt} class="rounded-xl" loading="lazy" />
+              <figcaption class="text-sm opacity-70 mt-2"><LocalizedText {...photo.caption} /></figcaption>
+            </figure>
+          ))}
+        </section>}
+
         <section class="project-section">
           <h3 class="text-lg font-bold">{details.contributionGroups?.length ? <LocalizedText en="My Contributions & Implementation" zh="我的贡献与技术实现" /> : <LocalizedText en="Tools & technology" zh="技术栈与工具" />}</h3>
           {details.contributionGroups?.length ? (
@@ -275,6 +285,8 @@ const facts = [
   .project-cover { width: 13rem; height: auto; aspect-ratio: 16 / 9; object-fit: cover; flex-shrink: 0; }
   .project-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; padding: 1.25rem; margin-top: 1.75rem; }
   .project-section { margin-top: 2rem; }
+  .project-photo { margin-top: 1rem; }
+  .project-photo img { width: 100%; max-width: 28rem; height: auto; }
   .tech-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
   .tech-card { display: flex; flex-direction: column; min-width: 0; padding: 1.25rem; border-radius: 0.875rem; }
   .tech-title { font-size: 1rem; font-weight: 700; line-height: 1.5; }

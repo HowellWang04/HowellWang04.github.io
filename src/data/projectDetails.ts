@@ -8,6 +8,7 @@ export type ProjectDetails = {
   contributionGroups?: { title: ProjectText; tools: string; summary: ProjectText; details: ProjectText[] }[];
   contributions?: ProjectText[];
   links?: { label: ProjectText; url: string }[];
+  photos?: { src: string; alt: string; caption: ProjectText }[];
 };
 
 // Add only confirmed personal responsibilities, tools, and results.
@@ -432,6 +433,16 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
     links: [
       { label: { en: "Guidebook PDF", zh: "说明书 PDF" }, url: "/la-luna-guidebook.pdf" },
+    ],
+    photos: [
+      {
+        src: "/la-luna-prototype.jpg",
+        alt: "La Luna: Star Sweeper paper prototype with the guidebook, moon board, cards, pawns and stones",
+        caption: {
+          en: "The printed paper prototype we playtested, with the guidebook, moon board, action and special cards, pawns, and black and white stones.",
+          zh: "我们用于试玩的纸质原型，包括说明书、月面棋盘、行动卡与特殊卡、棋子，以及黑白棋子。",
+        },
+      },
     ],
   },
   "qna-rag": {
