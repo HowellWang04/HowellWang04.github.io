@@ -86,12 +86,24 @@ html[data-theme="portfolio-light"] :is(.reveal-card, .card):hover {
     }
 }
 
-/* Home intro: the script splits the name and subtitle into per-letter spans. Words never break mid-word. */
-.intro-word {
-    display: inline-block;
-    white-space: nowrap;
+/* Page change: the old page lifts away and fades out, then the new one rises in from below.
+   Going back reverses the direction. Used by the page wrapper in BaseLayout. */
+@keyframes page-leave-up {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(-14px); }
 }
 
-.intro-char {
-    display: inline-block;
+@keyframes page-enter-up {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes page-leave-down {
+    from { opacity: 1; transform: translateY(0); }
+    to { opacity: 0; transform: translateY(14px); }
+}
+
+@keyframes page-enter-down {
+    from { opacity: 0; transform: translateY(-20px); }
+    to { opacity: 1; transform: translateY(0); }
 }

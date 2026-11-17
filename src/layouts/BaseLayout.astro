@@ -3,10 +3,17 @@ import BaseHead from "../components/BaseHead.astro";
 import Header from "../components/Header.astro";
 import Footer from "../components/Footer.astro";
 import SiteMenu from "../components/SiteMenu.astro";
-import PageCurtain from "../components/PageCurtain.astro";
 import { ViewTransitions } from "astro:transitions";
 
 import { SITE_TITLE, SITE_DESCRIPTION, TRANSITION_API } from "../config";
+
+// The page below the header slides on a page change; the header stays put.
+const ease = "cubic-bezier(0.2, 1, 0.3, 1)";
+const step = (name: string, duration: string) => ({ name, duration, easing: ease, fillMode: "both" });
+const pageSlide = {
+  forwards: { old: step("page-leave-up", "0.22s"), new: step("page-enter-up", "0.42s") },
+  backwards: { old: step("page-leave-down", "0.22s"), new: step("page-enter-down", "0.42s") },
+};
 
 const {
   image,
@@ -39,24 +46,24 @@ const {
   <body>
     <div class="portfolio-canvas flex min-h-[100dvh] flex-col">
       <Header title={SITE_TITLE} />
-      <!-- Full-width opening that sits outside the centred column (used by the home page). -->
-      <slot name="hero" />
-      <div class="flex-1 md:flex md:justify-center">
-        <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]" transition:name="page-content" transition:animate="none">
-          <slot />
-        </main>
+      <div class="flex flex-1 flex-col" transition:name="page" transition:animate={pageSlide}>
+        <!-- Full-width opening that sits outside the centred column (used by the home page). -->
+        <slot name="hero" />
+        <div class="flex-1 md:flex md:justify-center">
+          <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]">
+            <slot />
+          </main>
+        </div>
+        <Footer />
       </div>
-      <Footer />
     </div>
-    <!-- Both persist across page changes (transition:persist on their root elements). -->
+    <!-- Persists across page changes (transition:persist on its root element). -->
     <SiteMenu />
-    <PageCurtain />
   </body>
 </html>
 
 <script>
   import "../scripts/smooth-scroll";
-  import { afterCurtain } from "../scripts/curtain";
 
   document.addEventListener("astro:before-preparation", (event) => {
     const loadPage = event.loader;
@@ -112,8 +119,6 @@ const {
   };
 
   const setupReveal = async () => {
-    // After a page change, hold the reveal until the curtain lifts, or it plays out of sight behind it.
-    await afterCurtain();
     revealObserver?.disconnect();
     const main = document.querySelector<HTMLElement>("main");
     if (!main) return;

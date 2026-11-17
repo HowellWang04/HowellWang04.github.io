@@ -7,8 +7,14 @@ import { pages } from "../data/navigation";
 const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 ---
 
-<div class="site-header sticky top-0 z-50 flex h-14 w-full justify-center text-base-content" data-site-header>
+<div class="site-header sticky top-0 z-50 flex h-14 w-full justify-center text-base-content" data-site-header transition:name="site-header" transition:animate="none">
   <div class="flex w-full items-center gap-2 pl-4 pr-[3.75rem] sm:px-4">
+    <!-- Avatar and name in the top left, the usual way back to the home page. -->
+    <a href="/" class="home-link" title="Home" aria-label="Home">
+
+      <span class="home-avatar font-heading" aria-hidden="true">GW</span>
+      <span class="home-name font-heading"><LocalizedText en="Guanhao Wang" zh="王冠豪" /></span>
+    </a>
     <div class="ml-auto flex shrink-0 items-center gap-2">
       <nav class="header-links hidden sm:flex" aria-label="Pages">
         {pages.map((page) => (
@@ -53,6 +59,51 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 
   .site-header.is-solid {
     background-color: var(--portfolio-canvas);
+  }
+
+  .home-link {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    min-width: 0;
+  }
+
+  /* A monogram badge in the brand colour. */
+  .home-avatar {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 9999px;
+    background: oklch(var(--p));
+    color: oklch(var(--pc));
+    font-size: 0.85rem;
+    font-weight: 700;
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .home-link:hover .home-avatar {
+    transform: rotate(-8deg) scale(1.08);
+  }
+
+  .home-name {
+    font-size: 1.15rem;
+    font-weight: 700;
+    white-space: nowrap;
+  }
+
+  /* Phones have no room beside the icons for the name: the avatar alone leads home. */
+  @media (max-width: 639px) {
+    .home-name {
+      display: none;
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .home-avatar {
+      transition: none;
+    }
   }
 
   .header-links {

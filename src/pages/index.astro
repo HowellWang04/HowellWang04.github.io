@@ -7,15 +7,15 @@ import HomeHero from "../components/HomeHero.astro";
 
 <BaseLayout>
   <HomeHero slot="hero">
-  <div id="about">
-    <div class="hero-layer hero-title font-bold font-heading" data-depth="1" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
+  <div id="about" class="about-card">
+    <div class="hero-title font-bold font-heading" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
     <!-- The fields are typed out and deleted one after another on their own line. The static list stays for
          screen readers, and is what shows without JavaScript or with reduced motion. -->
-    <div class="hero-layer hero-subtitle py-3 font-bold font-heading" data-depth="0.6" data-intro="subtitle">
+    <div class="hero-subtitle py-3 font-bold font-heading" data-intro="subtitle">
       <span class="subtitle-lead"><LocalizedText en="A Computer Science student focused on" zh="计算机科学专业学生，专注于" /></span>
       <span class="typewriter" data-typewriter><LocalizedText en="Game Design / Game Development" zh="游戏设计 / 游戏开发" /></span>
     </div>
-    <div class="hero-layer hero-tagline py-2" data-depth="0.3" data-intro="tagline">
+    <div class="hero-tagline py-2" data-intro="tagline">
       <text>
         <LocalizedText
           en="I love video games and interactive experiences, and I enjoy designing them. Through programming and design, I hope to turn that passion into creations of my own."
@@ -23,7 +23,7 @@ import HomeHero from "../components/HomeHero.astro";
         />
       </text>
     </div>
-    <div class="hero-layer pt-4" data-depth="0.15" data-intro="cta">
+    <div class="pt-4" data-intro="cta">
       <a class="btn btn-primary rounded-full" href="/portfolio"><LocalizedText en="View Portfolio" zh="查看作品集" /><span aria-hidden="true">→</span></a>
     </div>
   </div>
@@ -52,92 +52,16 @@ import HomeHero from "../components/HomeHero.astro";
 <script>
   import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
   import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
-  import { afterCurtain } from "../scripts/curtain";
 
   gsap.registerPlugin(DrawSVGPlugin);
 
   // About Me lives on the right of the hero and is one sequence, built on GSAP:
   //  1. The hero starts without it. Shortly after the page opens it plays in by itself: the name rises in,
   //     then "A Computer Science student focused on" rises in and the fields start typing out and deleting one after another behind a caret,
-  //     the tagline appears word by word, and the View Portfolio button comes in last.
-  //  2. Once the hero scrolls away, the lines drift up at different speeds and fade away as My Favorite Video Games arrives.
+  //     the tagline rises in, and the View Portfolio button comes in last.
+  //  2. Once the hero scrolls away, the note the text sits on lifts off and fades away as My Favorite Video Games arrives.
   //  3. The controller doodle beside My Favorite Video Games draws itself in.
   // Steps 2 and 3 are scrubbed, so scrolling back up plays them in reverse.
-
-  // The letters live in a separate span next to the original text, so the language script can keep
-  // rewriting the original without wiping out the animation.
-  const cjk = /[\p{Script=Han}　-〿＀-￯]/u;
-  const splitIntoLetters = (original: HTMLElement) => {
-    const text = (document.documentElement.lang === "zh-CN" ? original.dataset.zh : original.dataset.en) ?? "";
-    const graphemes = "Segmenter" in Intl
-      ? [...new Intl.Segmenter(undefined, { granularity: "grapheme" }).segment(text)].map((part) => part.segment)
-      : Array.from(text);
-    const target = document.createElement("span");
-    const letters: HTMLElement[] = [];
-    const words: HTMLElement[] = [];
-    let word: HTMLElement | undefined;
-
-    // Separate letters lose the font's kerning (e.g. "Wa"), so record where each character sits in the original,
-    // kerned text and match it below.
-    const textNode = original.firstChild;
-    const kerned: DOMRect[] = [];
-    if (original.textContent === text && textNode?.nodeType === Node.TEXT_NODE) {
-      const range = document.createRange();
-      let offset = 0;
-      graphemes.forEach((grapheme) => {
-        if (!/\s/.test(grapheme)) {
-          range.setStart(textNode, offset);
-          range.setEnd(textNode, offset + grapheme.length);
-          kerned.push(range.getBoundingClientRect());
-        }
-        offset += grapheme.length;
-      });
-    }
-
-    original.style.display = "none";
-    original.after(target);
-    let at = 0;
-    graphemes.forEach((grapheme) => {
-      const start = at;
-      at += grapheme.length;
-      if (/\s/.test(grapheme)) {
-        target.append(grapheme);
-        word = undefined;
-        return;
-      }
-      // Words never break mid-word. Chinese has no spaces, so each character is its own word and lines can wrap.
-      const own = cjk.test(grapheme);
-      if (!word || own) {
-        word = document.createElement("span");
-        word.className = "intro-word";
-        target.append(word);
-        words.push(word);
-      }
-      const span = document.createElement("span");
-      span.textContent = grapheme;
-      span.dataset.at = String(start);
-      span.className = "intro-char";
-      letters.push(span);
-      word.append(span);
-      if (own) word = undefined;
-    });
-
-    // Nudge each letter onto its kerned position (left to right, so earlier nudges are already applied).
-    if (kerned.length === letters.length) {
-      const firstTop = letters[0]?.getBoundingClientRect().top ?? 0;
-      letters.forEach((letter, index) => {
-        const placed = letter.getBoundingClientRect();
-        const sameLine = Math.abs((placed.top - firstTop) - (kerned[index].top - kerned[0].top)) < 4;
-        if (sameLine) letter.style.marginLeft = `${kerned[index].left - placed.left}px`;
-      });
-    }
-
-    const restore = () => {
-      target.remove();
-      original.style.display = "";
-    };
-    return { text, letters, words, restore };
-  };
 
   const clamp = (value: number) => Math.min(1, Math.max(0, value));
   const easeOut = (t: number) => 1 - (1 - t) ** 3;
@@ -146,10 +70,10 @@ import HomeHero from "../components/HomeHero.astro";
   const phases = {
     name: [0, 0.2],
     subtitle: [0.15, 0.35],
-    tagline: [0.4, 0.85],
-    cta: [0.85, 1],
+    tagline: [0.3, 0.55],
+    cta: [0.5, 0.7],
   } as const;
-  const introSeconds = 3;
+  const introSeconds = 2;
 
   // The fields the subtitle types out, each in its own colour.
   const roles = [
@@ -193,13 +117,6 @@ import HomeHero from "../components/HomeHero.astro";
     };
     step();
     return () => clearTimeout(timer);
-  };
-
-  const spread = <T extends { start: number; end: number }>(group: T[], [from, to]: readonly number[], length: number) => {
-    group.forEach((item, index) => {
-      item.start = group.length > 1 ? from + (index * (to - from - length)) / (group.length - 1) : from;
-      item.end = item.start + length;
-    });
   };
 
   // Fit the My Favorite Video Games doodle to the heading text: the controller sits just right of the words.
@@ -263,16 +180,12 @@ import HomeHero from "../components/HomeHero.astro";
     }
 
     // On a rebuild (language switch) the teardown has just put back the plain, fully visible lines. Keep them
-    // hidden until the new letters are in place, or the whole intro flashes up while the fonts load.
+    // hidden until the new text is in place, or the whole intro flashes up while the fonts load.
     const rebuilding = name.classList.contains("is-revealed");
     if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = "hidden"; });
 
-    // Letters are positioned from measured glyph widths, so wait for the web fonts (briefly) before measuring.
-    // After a page change, also wait for the curtain to lift, or the intro plays behind it.
-    await Promise.all([
-      Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]),
-      afterCurtain(),
-    ]);
+    // The doodle is fitted to the heading's measured text, so wait for the web fonts (briefly) before measuring.
+    await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]);
     if (!main.isConnected || run !== setupRun) return;
 
     [name, subtitle, tagline, cta].forEach((element) => element.classList.add("is-revealed"));
@@ -295,12 +208,13 @@ import HomeHero from "../components/HomeHero.astro";
     typewriter.append(typed, caret);
     let stopTyping: (() => void) | undefined;
 
-    // The tagline's words appear one after another.
-    const story = splitIntoLetters(tagline.querySelector<HTMLElement>("[data-en]")!);
-    const words = story.words.map((element) => ({ element, start: 0, end: 0 }));
-    spread(words, phases.tagline, 0.12);
+    // The tagline rises in as a whole, like the name.
+    const taglineText = tagline.querySelector<HTMLElement>("[data-en]")!;
 
     const render = (progress: number) => {
+      // The note of paper behind the text lands first.
+      about.style.setProperty("--card", String(easeOut(clamp(progress / 0.15))));
+
       const rise = easeOut(clamp((progress - phases.name[0]) / (phases.name[1] - phases.name[0])));
       nameText.style.opacity = String(rise);
       nameText.style.transform = `translateY(${(1 - rise) * 0.3}em)`;
@@ -310,9 +224,9 @@ import HomeHero from "../components/HomeHero.astro";
       lead.style.transform = `translateY(${(1 - leadRise) * 0.3}em)`;
       if (!stopTyping && progress >= phases.subtitle[1]) stopTyping = startTypewriter(typed, caret);
 
-      words.forEach(({ element, start, end }) => {
-        element.style.opacity = String(easeOut(clamp((progress - start) / (end - start))));
-      });
+      const taglineRise = easeOut(clamp((progress - phases.tagline[0]) / (phases.tagline[1] - phases.tagline[0])));
+      taglineText.style.opacity = String(taglineRise);
+      taglineText.style.transform = `translateY(${(1 - taglineRise) * 0.3}em)`;
 
       const pop = easeOut(clamp((progress - phases.cta[0]) / (phases.cta[1] - phases.cta[0])));
       ctaButton.style.opacity = String(pop);
@@ -331,8 +245,7 @@ import HomeHero from "../components/HomeHero.astro";
     render(state.progress);
     if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = ""; });
 
-    // 2. As the hero scrolls away, the lines drift up at different speeds and fade away (no blur: a blur filter repaints the text every frame).
-    const layers = [...about.querySelectorAll<HTMLElement>(".hero-layer")];
+    // 2. As the hero scrolls away, the note lifts off the page and fades away (no blur: a blur filter repaints the text every frame).
     const exit = gsap.timeline({
       scrollTrigger: {
         trigger: hero,
@@ -341,10 +254,7 @@ import HomeHero from "../components/HomeHero.astro";
         scrub: 0.4,
       },
     });
-    layers.forEach((layer) => {
-      const depth = Number(layer.dataset.depth ?? 0.5);
-      exit.to(layer, { y: -140 * depth, opacity: 1 - 0.95 * depth, ease: "none" }, 0);
-    });
+    exit.to(about, { y: -90, opacity: 0, ease: "none" }, 0);
 
     // 3. As My Favorite Video Games arrives, its controller doodle is drawn in: the outline, then the d-pad and buttons.
     //    Each piece gets time in proportion to its length, so the pen moves at an even speed.
@@ -377,16 +287,17 @@ import HomeHero from "../components/HomeHero.astro";
         animation.scrollTrigger?.kill(true);
         animation.kill();
       });
-      gsap.set(layers, { clearProps: "transform,opacity" });
+      gsap.set(about, { clearProps: "transform,opacity" });
+      about.style.removeProperty("--card");
       nameText.style.opacity = nameText.style.transform = "";
       lead.style.opacity = lead.style.transform = "";
+      taglineText.style.opacity = taglineText.style.transform = "";
       ctaButton.style.opacity = ctaButton.style.transform = "";
       gsap.set(strokes, { clearProps: "all" });
       stopTyping?.();
       typed.remove();
       caret.remove();
       roleList.classList.remove("sr-only");
-      story.restore();
     };
   };
 
@@ -407,8 +318,50 @@ import HomeHero from "../components/HomeHero.astro";
 </script>
 
 <style>
+  /* The About text sits on a note of paper taped to the page, so its lines read as one block. */
+  .about-card {
+    position: relative;
+    isolation: isolate;
+    padding: calc(var(--about-text) * 1.7) calc(var(--about-text) * 1.6) calc(var(--about-text) * 1.9);
+  }
+
+  .about-card::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    border: 1px solid var(--portfolio-hairline, rgb(255 255 255 / 8%));
+    border-radius: 0.75rem;
+    background: oklch(var(--b1));
+    box-shadow: 0 1px 2px rgb(60 38 28 / 4%), 0 22px 44px -26px rgb(60 38 28 / 35%);
+    opacity: var(--card, 1);
+    transform: translateY(calc((1 - var(--card, 1)) * 14px));
+  }
+
+  /* The same strip of tape that holds the game photos down. */
+  .about-card::after {
+    content: "";
+    position: absolute;
+    top: -0.6rem;
+    left: 50%;
+    z-index: -1;
+    width: 6rem;
+    height: 1.25rem;
+    background: rgb(232 214 170 / 70%);
+    box-shadow: 0 1px 2px rgb(40 28 20 / 12%);
+    opacity: var(--card, 1);
+    transform: translateX(-50%) rotate(-3deg);
+  }
+
+  /* Until the intro starts, the lines are hidden, so the note stays hidden with them. */
+  .about-card:has([data-intro]:not(.is-revealed))::before,
+  .about-card:has([data-intro]:not(.is-revealed))::after {
+    opacity: 0;
+  }
+
   .hero-title {
-    font-size: calc(var(--about-text) * 2.6);
+    /* Sized so "I'm Guanhao" fits on one line inside the note at its narrowest. */
+    font-size: calc(var(--about-text) * 2.4);
     line-height: 1.2;
   }
 
