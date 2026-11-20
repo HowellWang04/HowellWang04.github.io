@@ -27,7 +27,7 @@ const renderEntry = (entry) => {
   const { name, date, details } = splitEntry(entry);
   const link = entry.links?.[0];
   const title = link ? `<a href="${escape(absolute(link.url))}">${escape(name)}<span class="arrow">↗</span></a>` : escape(name);
-  return `<div class="entry">
+  return `<div class="entry${details || entry.bullets ? "" : " brief"}">
     <div class="head"><span class="name">${title}</span>${date ? `<span class="date">${escape(date)}</span>` : ""}</div>
     ${details ? `<p class="meta">${escape(details)}</p>` : ""}
     ${entry.bullets ? `<ul>${entry.bullets.map((b) => `<li>${escape(b)}</li>`).join("")}</ul>` : ""}
@@ -42,23 +42,24 @@ const renderPage = (resume, language) => `<!doctype html>
 <link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-regular/result.css" rel="stylesheet" />
 <link href="https://cdn.jsdelivr.net/npm/lxgw-wenkai-gb-web@1.522.0/lxgwwenkaigb-medium/result.css" rel="stylesheet" />
 <style>
-  @page { size: A4; margin: 11mm 14mm 10mm; }
+  @page { size: A4; margin: 9mm 12mm 8mm; }
   /* Black and white only: no accent colour, grey just for secondary details. */
   :root { --ink: #000; --muted: #444; --accent: #000; --rule: #000; }
   * { box-sizing: border-box; margin: 0; padding: 0; }
-  body { font-family: "Source Serif 4", "LXGW WenKai GB", Georgia, serif; font-size: 9.2pt; line-height: 1.36; color: var(--ink); -webkit-print-color-adjust: exact; }
+  body { font-family: "Source Serif 4", "LXGW WenKai GB", Georgia, serif; font-size: 8.9pt; line-height: 1.3; color: var(--ink); -webkit-print-color-adjust: exact; }
   a { color: inherit; text-decoration: none; }
   p, li { text-wrap: pretty; }
   h1, h2 { font-family: "Courier Prime", "LXGW WenKai GB Medium", "Courier New", monospace; font-weight: 700; font-synthesis-weight: none; }
-  h1 { font-size: 22pt; line-height: 1.1; letter-spacing: -0.01em; }
+  h1 { font-size: 20pt; line-height: 1.1; letter-spacing: -0.01em; }
   .contact { margin-top: 5pt; color: var(--muted); font-size: 9pt; }
   .contact a { color: var(--accent); text-decoration: underline; text-underline-offset: 1.5pt; text-decoration-thickness: 0.5pt; }
   .contact .sep { margin: 0 5pt; color: var(--rule); }
   .summary { margin-top: 5pt; }
-  section { margin-top: 8pt; }
+  section { margin-top: 7pt; }
   h2 { padding-bottom: 3pt; border-bottom: 0.6pt solid var(--rule); color: var(--accent); font-size: 9.4pt; letter-spacing: 0.1em; text-transform: uppercase; }
   :lang(zh-CN) h2 { letter-spacing: 0.04em; }
-  .entry { margin-top: 6pt; break-inside: avoid; }
+  .entry { margin-top: 5pt; break-inside: avoid; }
+  .entry.brief { margin-top: 1.5pt; }
   .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12pt; }
   .name { font-family: "Source Serif 4", "LXGW WenKai GB Medium", Georgia, serif; font-weight: 600; font-size: 9.8pt; font-synthesis-weight: none; }
   .arrow { margin-left: 2.5pt; color: var(--accent); font-size: 8pt; font-weight: 400; }
@@ -69,7 +70,7 @@ const renderPage = (resume, language) => `<!doctype html>
   li { margin-top: 1pt; }
   li::marker { color: var(--accent); }
   .skills { margin-top: 4pt; }
-  .skill { display: grid; grid-template-columns: 40mm 1fr; gap: 8pt; margin-top: 2pt; }
+  .skill { display: grid; grid-template-columns: 52mm 1fr; gap: 8pt; margin-top: 2pt; }
   .skill .name { font-size: 9.2pt; white-space: nowrap; }
 </style>
 </head>

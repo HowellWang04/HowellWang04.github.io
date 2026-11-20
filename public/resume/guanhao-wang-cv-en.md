@@ -1,70 +1,73 @@
 # Guanhao Wang
 
-gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
+Madison, WI  |  howellwang7679@gmail.com
 
 [Portfolio](https://guanhao.me/) · [GitHub](https://github.com/HowellWang04)
 
-Computer science undergraduate focused on game development, environmental storytelling, and physical interaction.
-
 ## Education
 
-### University of Wisconsin–Madison  |  Computer Science Undergraduate
+### University of Wisconsin–Madison  |  B.S. in Computer Sciences, College of Letters & Science
 
-June 2025 to present  ·  Expected graduation May 2027  ·  GPA 3.724/4.000
+Jun 2025–Present  ·  Expected May 2027  ·  Cumulative GPA 3.724/4.000
 
-
-### The Pennsylvania State University  |  Undergraduate Study in Computer Science
-
-August 2023 to June 2025  ·  GPA 3.94/4.00  ·  Transferred to UW–Madison
+* Selected Coursework: Computer Graphics, Programming III, Building User Interfaces (in progress)
 
 
-## Games and Interactive Projects
+### The Pennsylvania State University  |  Undergraduate Studies in Computer Science, College of Engineering
 
-### Coal Echoes  |  Narrative Exploration Game
+Aug 2023–Jun 2025  ·  Cumulative GPA 3.940/4.000  ·  Transferred to UW–Madison
 
-August 2026  ·  Solo Project  ·  Unity 6, HDRP, C#, Blender
-
-* Designed a four-level first person exploration game around a grandfather's diary at an abandoned coal washing plant; built photography, album, scrapbook, and inspection systems for object discovery through the camera.
-* Used an AI agent through Blender MCP to assist with parametric modeling and texture baking for industrial assets, including cableway structures and a guardhouse, then integrated them into Unity.
-* Built terrain from USGS elevation data in MapMagic with an offline Gradient Terrain Authoring transition; created HDRP sandstorm, heat haze, and runtime newspaper halftone effects (halftone adapted from Daniel Ilett, MIT).
-
-[Source code on GitHub](https://github.com/HowellWang04/Coal-Echoes)
-
-### Vanishing Fireflies  |  Interactive Light Installation
-
-June 2026  ·  Solo Project  ·  ESP32, Arduino, Unity, UDP
-
-* Programmed 420 LEDs across three swarms, using radar and light sensors to translate visitor movement and human light sources into firefly disturbance and synchronization.
-* Implemented two independently responsive zones, one ambient swarm, and a UDP interface for sending Unity synchronization commands during development and debugging.
-
-[Source code on GitHub](https://github.com/HowellWang04/Vanishing-Fireflies)
-
-### Seafloor Revival  |  GMTK Game Jam 2025
-
-July to August 2025  ·  UI Development and Art Integration  ·  Unity, C#
-
-* Built all game UI and related C# behavior, integrated interface art in a six person team, and contributed to a released browser prototype of a 2.5D underwater building game.
-
-[Playable browser prototype](https://nikolai16.itch.io/seafloor-revival)
-
-### Mooncake  |  Interactive Graphics
-
-February to April 2025  ·  Three.js, JavaScript
-
-* Built a Three.js mooncake scene for the Mid Autumn Festival with STL models, shadowed spotlighting, and drifting star particles; added live controls for light, camera orbit, and particles, documented in a technical report.
-
-[Project demonstration](https://howellwang04.github.io/Mooncake-Project-Demo/)
 
 ## Professional Experience
 
 ### IQVIA  |  Technology Solutions Intern
 
-July to August 2024  ·  Shanghai, China
+Jul–Aug 2024  ·  Shanghai, China
 
-* Wrote and maintained 100+ pages of user guides for a pharmaceutical WeChat Mini Program upgrade, covering two user types, four scenarios, and three device contexts.
-* Performed user acceptance testing on the Mini Program and reported 10+ defects in Jira with reproduction steps; organized its 1,000+ data tags into a three level hierarchy for user filtering.
+* Wrote and maintained more than 100 pages of user documentation for a pharmaceutical web platform upgrade, covering two user groups, four use cases, and three device types.
+* Conducted user acceptance testing, reported more than 10 defects in Jira, and walked the project team through reproduction steps and cross-platform use cases.
+* Organized more than 1,000 data tags into a three-level classification for user filtering and tag prioritization.
 
 [Download internship certificate (PDF)](https://guanhao.me/resume/guanhao-wang-iqvia-internship-certificate.pdf)
+
+
+## Selected Projects
+
+### Coal Echoes  |  First-Person Narrative Exploration Game
+
+Aug–Nov 2026  ·  Solo Developer, Designer, Writer, and Environment Artist  ·  Unity 6, C#, HDRP, Blender
+
+* Designed four levels set in an abandoned coal washing plant in northwestern China. Wrote the grandfather's diary, the protagonist's scrapbook notes, and the ending.
+* Implemented a photography system that detects camera framing, a drag-and-drop scrapbook, and a playable cableway sequence. Shaped the surrounding terrain from real elevation data and used HDRP lighting, fog, and custom shaders to build the plant's atmosphere.
+
+[Source code on GitHub](https://github.com/HowellWang04/Coal-Echoes)
+
+
+### Vanishing Fireflies  |  Interactive Light and Sound Installation
+
+Jun 2026  ·  Solo Project  ·  Unity, ESP32, C/C++, Arduino
+
+* Built an installation in which visitor movement and directed light disrupt the flicker of simulated fireflies. Programmed the ESP32 to process radar and light sensor input and control addressable LEDs.
+* Connected the ESP32 to Unity over UDP so the same sensor input shifts the soundscape from nature toward city noise.
+
+[Source code on GitHub](https://github.com/HowellWang04/Vanishing-Fireflies)
+
+
+### Against the Current  |  3D Environment Study
+
+Mar 2026  ·  Solo Project  ·  Unreal Engine
+
+* Reconstructed a Three Gorges riverbank, wooden boat, and river trackers using historical and location references. Composed the scene around the towline to show how workers hauled boats upstream.
+* Developed cliff and riverbank materials and used height fog, lighting, and color grading to give the gorge depth.
+
+
+### Desert Restoration Simulator  |  Land Management Game Prototype
+
+Jan 2026  ·  Solo Developer, Gameplay Designer, and Art Director  ·  Unity 6, C#, URP
+
+* Designed and programmed a simulation in which mining, factory construction, and tree planting affect both the player's budget and the condition of the land.
+* Linked vegetation loss and industrial pollution to changes in dust, sky color, and heat distortion so players could see the environmental effects of their decisions.
+
 
 ## Publication
 
@@ -76,12 +79,28 @@ July to August 2024  ·  Shanghai, China
 
 [Publication and DOI](https://www.ewadirect.com/proceedings/lnep/article/view/5390)
 
-## Skills and Languages
 
-**Mathematics**  Calculus III, discrete math, linear algebra
+## Honors & Awards
 
-**Programming and tools**  C#, C/C++, HLSL, Python, TypeScript, JavaScript, Java, R, Three.js, Git, Jira
+### Silver Medal, BYAA Collectives China Regional Competition
 
-**Games and interaction**  Unity (HDRP, Shader Graph), Unreal Engine, Blender, Figma, ESP32, Arduino
+2026
 
-**Languages**  Mandarin native, English fluent, Japanese basic
+
+### Dean's List, The Pennsylvania State University, four consecutive semesters
+
+Fall 2023–Spring 2025
+
+
+### President Walker Award, The Pennsylvania State University
+
+2024
+
+
+## Technical Skills
+
+**Programming**  C#, C/C++, HLSL
+
+**Game Engines and 3D Tools**  Unity 6 (HDRP, URP, Shader Graph), Unreal Engine, Blender
+
+**Physical Computing and Testing**  ESP32, Arduino, sensor integration, Jira, user acceptance testing
