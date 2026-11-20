@@ -21,7 +21,7 @@
             "title": "University of Wisconsin–Madison  |  B.S. in Computer Sciences, College of Letters & Science",
             "meta": "Jun 2025–Present  ·  Expected May 2027  ·  Cumulative GPA 3.724/4.000",
             "bullets": [
-              "Selected Coursework: Computer Graphics, Programming III, Building User Interfaces (in progress)"
+              "Selected Coursework: Computer Graphics, AI-Assisted Full-Stack Development, Building User Interfaces (in progress)"
             ]
           },
           {
@@ -37,9 +37,9 @@
             "title": "IQVIA  |  Technology Solutions Intern",
             "meta": "Jul–Aug 2024  ·  Shanghai, China",
             "bullets": [
-              "Wrote and maintained more than 100 pages of user documentation for a pharmaceutical web platform upgrade, covering two user groups, four use cases, and three device types.",
+              "Wrote and maintained more than 100 pages of user documentation for a pharmaceutical web platform upgrade, covering 2 user groups, 4 use cases, and 3 device types.",
               "Conducted user acceptance testing, reported more than 10 defects in Jira, and walked the project team through reproduction steps and cross-platform use cases.",
-              "Organized more than 1,000 data tags into a three-level classification for user filtering and tag prioritization."
+              "Organized more than 1,000 data tags into a 3-level classification for user filtering and tag prioritization."
             ],
             "links": [
               {
@@ -140,15 +140,19 @@
         "entries": [
           {
             "title": "Programming",
-            "description": "C#, C/C++, HLSL"
+            "description": "C#, C/C++, Python, TypeScript/JavaScript, Java, SQL, HLSL"
           },
           {
             "title": "Game Engines and 3D Tools",
-            "description": "Unity 6 (HDRP, URP, Shader Graph), Unreal Engine, Blender"
+            "description": "Unity 6 (HDRP, URP, Shader Graph, ProBuilder, Terrain Tools), Unreal Engine, Blender"
+          },
+          {
+            "title": "Full-Stack Web Development",
+            "description": "React, FastAPI, REST APIs, MySQL, Redis, Docker, Nginx, GitLab CI/CD"
           },
           {
             "title": "Physical Computing and Testing",
-            "description": "ESP32, Arduino, sensor integration, Jira, user acceptance testing"
+            "description": "ESP32, Arduino, Sensor Integration, Jira, User Acceptance Testing"
           }
         ]
       }

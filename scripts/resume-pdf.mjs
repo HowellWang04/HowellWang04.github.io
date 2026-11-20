@@ -55,10 +55,10 @@ const renderPage = (resume, language) => `<!doctype html>
   .contact a { color: var(--accent); text-decoration: underline; text-underline-offset: 1.5pt; text-decoration-thickness: 0.5pt; }
   .contact .sep { margin: 0 5pt; color: var(--rule); }
   .summary { margin-top: 5pt; }
-  section { margin-top: 7pt; }
+  section { margin-top: 6pt; }
   h2 { padding-bottom: 3pt; border-bottom: 0.6pt solid var(--rule); color: var(--accent); font-size: 9.4pt; letter-spacing: 0.1em; text-transform: uppercase; }
   :lang(zh-CN) h2 { letter-spacing: 0.04em; }
-  .entry { margin-top: 5pt; break-inside: avoid; }
+  .entry { margin-top: 4.4pt; break-inside: avoid; }
   .entry.brief { margin-top: 1.5pt; }
   .head { display: flex; justify-content: space-between; align-items: baseline; gap: 12pt; }
   .name { font-family: "Source Serif 4", "LXGW WenKai GB Medium", Georgia, serif; font-weight: 600; font-size: 9.8pt; font-synthesis-weight: none; }

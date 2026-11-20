@@ -10,7 +10,7 @@ Madison, WI  |  howellwang7679@gmail.com
 
 Jun 2025–Present  ·  Expected May 2027  ·  Cumulative GPA 3.724/4.000
 
-* Selected Coursework: Computer Graphics, Programming III, Building User Interfaces (in progress)
+* Selected Coursework: Computer Graphics, AI-Assisted Full-Stack Development, Building User Interfaces (in progress)
 
 
 ### The Pennsylvania State University  |  Undergraduate Studies in Computer Science, College of Engineering
@@ -24,9 +24,9 @@ Aug 2023–Jun 2025  ·  Cumulative GPA 3.940/4.000  ·  Transferred to UW–Mad
 
 Jul–Aug 2024  ·  Shanghai, China
 
-* Wrote and maintained more than 100 pages of user documentation for a pharmaceutical web platform upgrade, covering two user groups, four use cases, and three device types.
+* Wrote and maintained more than 100 pages of user documentation for a pharmaceutical web platform upgrade, covering 2 user groups, 4 use cases, and 3 device types.
 * Conducted user acceptance testing, reported more than 10 defects in Jira, and walked the project team through reproduction steps and cross-platform use cases.
-* Organized more than 1,000 data tags into a three-level classification for user filtering and tag prioritization.
+* Organized more than 1,000 data tags into a 3-level classification for user filtering and tag prioritization.
 
 [Download internship certificate (PDF)](https://guanhao.me/resume/guanhao-wang-iqvia-internship-certificate.pdf)
 
@@ -99,8 +99,10 @@ Fall 2023–Spring 2025
 
 ## Technical Skills
 
-**Programming**  C#, C/C++, HLSL
+**Programming**  C#, C/C++, Python, TypeScript/JavaScript, Java, SQL, HLSL
 
-**Game Engines and 3D Tools**  Unity 6 (HDRP, URP, Shader Graph), Unreal Engine, Blender
+**Game Engines and 3D Tools**  Unity 6 (HDRP, URP, Shader Graph, ProBuilder, Terrain Tools), Unreal Engine, Blender
 
-**Physical Computing and Testing**  ESP32, Arduino, sensor integration, Jira, user acceptance testing
+**Full-Stack Web Development**  React, FastAPI, REST APIs, MySQL, Redis, Docker, Nginx, GitLab CI/CD
+
+**Physical Computing and Testing**  ESP32, Arduino, Sensor Integration, Jira, User Acceptance Testing
