@@ -11,9 +11,14 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
   <div class="flex w-full items-center gap-2 pl-4 pr-[3.75rem] sm:px-4">
     <!-- Avatar and name in the top left, the usual way back to the home page. -->
     <a href="/" class="home-link" title="Home" aria-label="Home">
-
-      <span class="home-avatar font-heading" aria-hidden="true">GW</span>
-      <span class="home-name font-heading"><LocalizedText en="Guanhao Wang" zh="王冠豪" /></span>
+      <!-- On hover the initials rise out of the top of the badge and an arrow comes up after them, heading back to
+           the top, as the link does. -->
+      <span class="home-avatar font-heading" aria-hidden="true">
+        <span class="avatar-initials">GW</span>
+        <span class="avatar-arrow">
+          <svg viewBox="0 0 24 24"><path d="M12 19V5M5.5 11.5 12 5l6.5 6.5" /></svg>
+        </span>
+      </span>
     </a>
     <div class="ml-auto flex shrink-0 items-center gap-2">
       <nav class="header-links hidden sm:flex" aria-label="Pages">
@@ -70,39 +75,99 @@ const current = Astro.url.pathname.replace(/\/$/, "") || "/";
 
   /* A monogram badge in the brand colour. */
   .home-avatar {
+    --rise: 2.25rem;
+    position: relative;
     display: grid;
     place-items: center;
     width: 2.25rem;
     height: 2.25rem;
     flex-shrink: 0;
+    overflow: hidden;
     border-radius: 9999px;
     background: oklch(var(--p));
     color: oklch(var(--pc));
     font-size: 0.85rem;
     font-weight: 700;
-    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1);
+    line-height: 1;
+    transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1), box-shadow 320ms ease;
   }
 
-  .home-link:hover .home-avatar {
-    transform: rotate(-8deg) scale(1.08);
+  /* The font's box leaves room below for descenders, which capitals don't use, so the initials sit high.
+     Nudge them down onto the middle of the capitals (and a hair left, where the W's ink overhangs). */
+  .avatar-initials {
+    translate: -0.03em 0.17em;
+    transition: transform 420ms cubic-bezier(0.65, 0, 0.35, 1);
   }
 
-  .home-name {
-    font-size: 1.15rem;
-    font-weight: 700;
-    white-space: nowrap;
+  .avatar-arrow {
+    position: absolute;
+    inset: 0;
+    display: grid;
+    place-items: center;
+    transform: translateY(var(--rise));
+    transition: transform 420ms cubic-bezier(0.22, 1, 0.36, 1) 70ms;
   }
 
-  /* Phones have no room beside the icons for the name: the avatar alone leads home. */
-  @media (max-width: 639px) {
-    .home-name {
-      display: none;
+  .avatar-arrow svg {
+    width: 1rem;
+    height: 1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2.6;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .home-link:hover .home-avatar,
+  .home-link:focus-visible .home-avatar {
+    transform: translateY(-2px);
+    box-shadow: 0 6px 14px -6px oklch(var(--p) / 0.7);
+  }
+
+  .home-link:hover .avatar-initials,
+  .home-link:focus-visible .avatar-initials {
+    transform: translateY(calc(var(--rise) * -1));
+  }
+
+  .home-link:hover .avatar-arrow,
+  .home-link:focus-visible .avatar-arrow {
+    transform: translateY(0);
+  }
+
+  /* Once it has arrived, the arrow keeps shooting up out of the top and coming back in from the bottom. */
+  .home-link:hover .avatar-arrow svg,
+  .home-link:focus-visible .avatar-arrow svg {
+    animation: avatar-launch 1.2s cubic-bezier(0.55, 0, 0.45, 1) 0.6s infinite;
+  }
+
+  @keyframes avatar-launch {
+    0%, 30% {
+      transform: translateY(0);
+    }
+    42% {
+      transform: translateY(0.12rem);
+    }
+    62% {
+      transform: translateY(calc(var(--rise) * -1));
+    }
+    62.01% {
+      transform: translateY(var(--rise));
+    }
+    100% {
+      transform: translateY(0);
     }
   }
 
   @media (prefers-reduced-motion: reduce) {
-    .home-avatar {
+    .home-avatar,
+    .avatar-initials,
+    .avatar-arrow {
       transition: none;
+    }
+
+    .home-link:hover .avatar-arrow svg,
+    .home-link:focus-visible .avatar-arrow svg {
+      animation: none;
     }
   }
 

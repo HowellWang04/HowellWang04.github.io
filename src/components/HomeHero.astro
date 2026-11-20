@@ -1,40 +1,32 @@
 ---
-import LocalizedText from "./LocalizedText.astro";
-
 const portrait = "/portrait/guanhao-portrait-selected-171840.png";
-const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
 ---
 
-<!-- Full-screen opening: the cutout portrait stands on the page background, the name runs across it as an
-     endless marquee, and the page's About text (the slot) sits on the right and plays in by itself. -->
+<!-- Full-screen opening: the cutout portrait stands on the page background, the name circles the body as a
+     turning ring of letters (passing in front of it and behind it), and the page's About text (the slot) sits on
+     the right and plays in by itself. -->
 <section class="home-hero" data-home-hero aria-label="Guanhao Wang">
   <div class="hero-inner" data-hero-inner>
-    <img
-      class="hero-portrait"
-      src={portrait}
-      alt="Portrait of Guanhao Wang"
-      width="1026"
-      height="1280"
-      fetchpriority="high"
-      decoding="async"
-      data-hero-portrait
-    />
+    <!-- The portrait and the ring share one 3D space, so the browser hides the letters on the far side of the
+         ring wherever the body stands in front of them. The script fills in the letters. -->
+    <div class="hero-figure">
+      <img
+        class="hero-portrait"
+        src={portrait}
+        alt="Portrait of Guanhao Wang"
+        width="1026"
+        height="1280"
+        fetchpriority="high"
+        decoding="async"
+        data-hero-portrait
+      />
+      <div class="hero-ring" aria-hidden="true" data-hero-ring>
+        <div class="hero-ring-spin" data-hero-ring-spin></div>
+      </div>
+    </div>
 
     <div class="hero-about">
       <slot />
-    </div>
-
-    <div class="hero-marquee" aria-hidden="true">
-      <div class="hero-marquee-track" data-hero-marquee>
-        {/* Two identical halves, so sliding the track by half its width loops seamlessly. */}
-        {[0, 1].map(() => (
-          <span class="hero-marquee-half">
-            {[0, 1].map(() => (
-              <span class="hero-name"><LocalizedText en={name.en} zh={name.zh} /><span class="hero-dash">—</span></span>
-            ))}
-          </span>
-        ))}
-      </div>
     </div>
   </div>
 </section>
@@ -42,11 +34,66 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
 <script>
   import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
 
-  // The marquee runs on its own and flips direction with the scroll, like turning a reel.
-  // As the hero scrolls away its content stays in place, shrinking and fading a little, while the page below slides
-  // over it like a sheet with a rounded, shadowed top edge.
+  // The name circles the lower chest as a ring of letters. It turns on its own and flips direction with the scroll,
+  // like turning a reel. As the hero scrolls away its content stays in place, shrinking and fading a little, while
+  // the page below slides over it like a sheet with a rounded, shadowed top edge.
   let teardownHero: (() => void) | undefined;
   let setUpHero: HTMLElement | undefined;
+
+  const names = { en: "Guanhao Wang — ", zh: "你好，我是王冠豪 · " };
+  // The portrait file is 1026 x 1280. The ring sits this far down it and reaches this far out from its middle.
+  const portraitRatio = 1280 / 1026;
+  const ringHeight = 0.76;
+  const ringRadius = 0.5;
+
+  // Lays the name out around the ring, repeated as often as fits, sized and placed from the portrait as drawn.
+  const buildRing = (portrait: HTMLImageElement, ring: HTMLElement, spin: HTMLElement) => {
+    spin.replaceChildren();
+    // In the narrow layout the image box can be wider than the picture (object-fit: contain, bottom), so work out
+    // where the picture itself is drawn.
+    const boxWidth = portrait.clientWidth;
+    const boxHeight = portrait.clientHeight;
+    if (!boxWidth || !boxHeight) return [];
+    const drawnHeight = Math.min(boxHeight, boxWidth * portraitRatio);
+    const drawnWidth = drawnHeight / portraitRatio;
+    const radius = drawnWidth * ringRadius;
+    ring.style.left = `${portrait.offsetLeft + boxWidth / 2}px`;
+    ring.style.top = `${portrait.offsetTop + boxHeight - drawnHeight * (1 - ringHeight)}px`;
+    ring.style.fontSize = `${drawnHeight * 0.07}px`;
+
+    const text = document.documentElement.lang === "zh-CN" ? names.zh : names.en;
+    const glyphs = Array.from(text).map((glyph) => {
+      const letter = document.createElement("span");
+      letter.className = "hero-ring-letter";
+      letter.textContent = glyph;
+      spin.append(letter);
+      // offsetWidth, not the on-screen box: the turning ring would foreshorten the letter.
+      return { glyph, width: letter.offsetWidth };
+    });
+    spin.replaceChildren();
+    const unit = glyphs.reduce((sum, { width }) => sum + width, 0) || 1;
+    const repeats = Math.max(1, Math.round((2 * Math.PI * radius) / unit));
+    const total = unit * repeats;
+
+    const letters: HTMLElement[] = [];
+    let along = 0;
+    for (let repeat = 0; repeat < repeats; repeat += 1) {
+      glyphs.forEach(({ glyph, width }) => {
+        const angle = ((along + width / 2) / total) * 360;
+        along += width;
+        if (!glyph.trim()) return;
+        const letter = document.createElement("span");
+        letter.className = "hero-ring-letter";
+        letter.textContent = glyph;
+        letter.dataset.glyph = glyph;
+        // Each letter stands on the ring facing outward, so the near side reads left to right.
+        letter.style.transform = `translate(-50%, -50%) rotateY(${angle}deg) translateZ(${radius}px)`;
+        spin.append(letter);
+        letters.push(letter);
+      });
+    }
+    return letters;
+  };
 
   const setupHero = () => {
     const hero = document.querySelector<HTMLElement>("[data-home-hero]");
@@ -56,15 +103,46 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     setUpHero = hero ?? undefined;
     teardownHero?.();
     teardownHero = undefined;
-    const track = hero?.querySelector<HTMLElement>("[data-hero-marquee]");
     const inner = hero?.querySelector<HTMLElement>("[data-hero-inner]");
-    const portrait = hero?.querySelector<HTMLElement>("[data-hero-portrait]");
-    if (!hero || !track || !inner || !portrait) return;
-    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const portrait = hero?.querySelector<HTMLImageElement>("[data-hero-portrait]");
+    const ring = hero?.querySelector<HTMLElement>("[data-hero-ring]");
+    const spin = hero?.querySelector<HTMLElement>("[data-hero-ring-spin]");
+    if (!hero || !inner || !portrait || !ring || !spin) return;
+    const firstVisit = !hero.dataset.played;
+    hero.dataset.played = "true";
+    const still = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    const marquee = gsap.to(track, { xPercent: -50, duration: 28, ease: "none", repeat: -1 });
+    // The letters are measured, so wait for the fonts; rebuild when the size or the language changes.
+    let alive = true;
+    let introduced = !firstVisit || still;
+    const rebuild = () => {
+      if (!alive) return;
+      const letters = buildRing(portrait, ring, spin);
+      if (!introduced && letters.length) {
+        introduced = true;
+        gsap.from(letters, { autoAlpha: 0, duration: 0.6, ease: "power2.out", stagger: { amount: 0.9 }, delay: 0.3 });
+      }
+    };
+    Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]).then(rebuild);
+    const resized = new ResizeObserver(() => rebuild());
+    resized.observe(portrait);
+    document.addEventListener("portfolio:language-change", rebuild);
+
+    const stopRing = () => {
+      alive = false;
+      resized.disconnect();
+      document.removeEventListener("portfolio:language-change", rebuild);
+      spin.replaceChildren();
+    };
+
+    if (still) {
+      teardownHero = stopRing;
+      return;
+    }
+
+    const turn = gsap.to(spin, { rotationY: -360, duration: 26, ease: "none", repeat: -1 });
     // Start far into the loop so running it backwards never hits the beginning.
-    marquee.totalTime(marquee.duration() * 1000);
+    turn.totalTime(turn.duration() * 1000);
 
     // Only turn the reel when the scroll changes direction, not on every scroll frame.
     let scrollDirection = 1;
@@ -74,16 +152,16 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
       onUpdate: (self) => {
         if (self.direction === scrollDirection) return;
         scrollDirection = self.direction;
-        gsap.to(marquee, { timeScale: self.direction, duration: 0.6, overwrite: true });
+        gsap.to(turn, { timeScale: self.direction, duration: 0.6, overwrite: true });
       },
     });
 
-    // The marquee is blended over the hero, which costs a full recomposite every frame, so stop it once the hero is off screen.
+    // Stop turning once the hero is off screen.
     const visibility = ScrollTrigger.create({
       trigger: hero,
       start: "top bottom",
       end: "bottom top",
-      onToggle: (self) => (self.isActive ? marquee.resume() : marquee.pause()),
+      onToggle: (self) => (self.isActive ? turn.resume() : turn.pause()),
     });
 
     // Moving down as fast as the page scrolls keeps the content in place, so the page below slides over it.
@@ -96,22 +174,21 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     });
 
     const intro = gsap.timeline();
-    if (!hero.dataset.played) {
-      hero.dataset.played = "true";
+    if (firstVisit) {
       intro
         .from(portrait, { yPercent: 8, autoAlpha: 0, duration: 1.2, ease: "power3.out" })
-        .from(track, { y: 60, autoAlpha: 0, duration: 1.1, ease: "power3.out" }, 0.15)
         .from(hero.querySelectorAll("[data-hero-fade]"), { y: 20, autoAlpha: 0, duration: 0.9, ease: "power3.out", stagger: 0.1 }, 0.35);
     }
 
     teardownHero = () => {
       intro.progress(1).kill();
-      marquee.kill();
+      turn.kill();
       direction.kill();
       visibility.kill();
       parallax.scrollTrigger?.kill();
       parallax.kill();
-      gsap.set(track, { clearProps: "transform" });
+      stopRing();
+      gsap.set(spin, { clearProps: "transform" });
       gsap.set(inner, { clearProps: "transform,opacity" });
     };
   };
@@ -159,17 +236,25 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     grid-template-rows: minmax(0, 1fr);
     height: var(--hero-height);
     overflow: hidden;
-    /* The marquee blends with what is behind it, so this layer needs the page colour behind it too. */
     background: var(--portfolio-canvas);
-    --marquee-size: clamp(5rem, min(14vw, calc(var(--hero-height) * 0.24)), 15rem);
-    /* The base size of the About text, which grows with the hero so it fits between the header and the marquee. */
-    --about-text: clamp(0.8125rem, calc(var(--hero-height) * 0.025), 1.125rem);
+    /* The base size of the About text, which grows with the hero. It also stays small enough for the whole note
+       (about 30 times this size) to fit between the header and the bottom, which keeps a zoomed-in page from
+       pushing the note up under the header. */
+    --about-text: clamp(0.8125rem, min(calc(var(--hero-height) * 0.025), calc((var(--hero-height) - 8rem) / 30)), 1.125rem);
   }
 
-  .hero-portrait {
+  /* One 3D space for the portrait and the ring (no overflow clipping or opacity here, which would flatten it). */
+  .hero-figure {
     grid-column: 2;
     grid-row: 1;
     align-self: end;
+    position: relative;
+    perspective: 1600px;
+    transform-style: preserve-3d;
+  }
+
+  .hero-portrait {
+    display: block;
     /* Short windows keep a fixed gap between the head and the header's line, and narrow ones shrink the
        portrait (1026 x 1280) so the text column always fits beside it. */
     height: min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24));
@@ -184,67 +269,76 @@ const name = { en: "Guanhao Wang", zh: "你好，我是王冠豪" };
     grid-row: 1;
     display: flex;
     flex-direction: column;
-    justify-content: center;
+    /* safe: if the note is still too tall, it overflows downward instead of up under the header. */
+    justify-content: safe center;
     min-width: 0;
-    /* Between the header and the marquee. */
-    margin: 5rem 3vw calc(var(--marquee-size) + 1rem) 1rem;
+    /* Between the header and the bottom. */
+    margin: 5rem 3vw 3rem 1rem;
   }
 
-  .hero-marquee {
+  /* The ring is seen from a little above, so its near side dips below its far side. The script places its centre. */
+  .hero-ring {
     position: absolute;
-    left: 0;
-    right: 0;
-    /* On the hero's bottom edge, so as the hero scrolls away the parallax slides the letters down under
-       the content that follows. */
-    bottom: 0;
-    font-family: var(--font-heading);
-    font-size: var(--marquee-size);
-    font-weight: 400;
-    line-height: 1;
-    white-space: nowrap;
+    left: 50%;
+    top: 76%;
+    width: 0;
+    height: 0;
+    transform: rotateX(-5deg);
+    transform-style: preserve-3d;
     pointer-events: none;
-    /* White in difference mode: near black over the page, light over the dark sweater, and it follows dark mode. */
-    color: #fff;
-    mix-blend-mode: difference;
   }
 
-  .hero-marquee-track {
-    display: inline-flex;
+  .hero-ring-spin {
+    transform-style: preserve-3d;
     will-change: transform;
   }
 
-  .hero-name {
-    display: inline-flex;
-    align-items: center;
-    padding-right: 0.35em;
+  .hero-ring :global(.hero-ring-letter) {
+    position: absolute;
+    left: 0;
+    top: 0;
+    font-family: var(--font-heading);
+    font-weight: 700;
+    line-height: 1;
+    white-space: pre;
+    color: oklch(var(--p));
+    /* Each letter shows only while it faces the viewer. Turned away, its faint mirrored twin (below) shows instead,
+       so the far side of the ring stays quiet behind the near side. */
+    transform-style: preserve-3d;
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
-  .hero-dash {
-    padding-left: 0.35em;
+  .hero-ring :global(.hero-ring-letter)::after {
+    content: attr(data-glyph);
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0.32;
+    /* Turned to face backward, then flipped, so from behind the glyph reads mirrored as a real ring would. */
+    transform: rotateY(180deg) scaleX(-1);
+    -webkit-backface-visibility: hidden;
+    backface-visibility: hidden;
   }
 
-  /* The Chinese greeting runs on with just a wide gap between repeats, no dash. */
-  :global(html[lang="zh-CN"]) .hero-name {
-    padding-right: 1.5em;
-  }
-
-  :global(html[lang="zh-CN"]) .hero-dash {
-    display: none;
-  }
-
-  /* Too narrow for the two columns: the text sits just above the marquee and the portrait fills what is left. */
+  /* Too narrow for the two columns: the text sits on top and the portrait fills what is left. */
   @media (max-width: 767px), (max-aspect-ratio: 4/3) {
     .hero-inner {
       display: flex;
       flex-direction: column;
-      padding: 5rem 0 calc(var(--marquee-size) + 1rem);
+      padding: 5rem 0 0;
       --about-text: clamp(0.8125rem, 3.8vw, 1.125rem);
     }
 
-    .hero-portrait {
+    .hero-figure {
       flex: 1 1 0;
+      align-self: stretch;
       min-height: 0;
+    }
+
+    .hero-portrait {
       width: 100%;
+      height: 100%;
       object-fit: contain;
       object-position: bottom;
     }

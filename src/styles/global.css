@@ -50,8 +50,8 @@ html.lenis {
 }
 
 html[data-theme="portfolio-light"] {
-    --portfolio-canvas: #F6F2EB;
-    --portfolio-hairline: #E6DED1;
+    --portfolio-canvas: #F7F1E2;
+    --portfolio-hairline: #E8DDC7;
 }
 
 html[data-theme="dark"] {

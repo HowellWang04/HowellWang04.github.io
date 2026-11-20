@@ -18,7 +18,7 @@ import HomeHero from "../components/HomeHero.astro";
     <div class="hero-tagline py-2" data-intro="tagline">
       <text>
         <LocalizedText
-          en="I love video games and interactive experiences, and I enjoy designing them. Through programming and design, I hope to turn that passion into creations of my own."
+          en="I'm passionate about video games and interactive experiences, and I enjoy designing them. Through programming and design, I hope to turn that passion into creations of my own."
           zh="我热爱电子游戏与交互体验，也享受设计它们的过程。我希望通过编程与设计，将这份热爱转化为自己的作品。"
         />
       </text>
@@ -30,12 +30,14 @@ import HomeHero from "../components/HomeHero.astro";
   </HomeHero>
 
   <section id="games" class="scroll-mt-20 pt-12">
-    <div class="text-3xl w-full font-bold font-heading" data-reveal>
-      <!-- A line-drawn controller beside the heading.
-           The script places it next to the heading text, which changes with the language. -->
+    <!-- Above the game photos, which drop in from higher up while the doodle is being drawn. -->
+    <div class="relative z-[3] text-3xl w-full font-bold font-heading" data-reveal>
+      <!-- A highlighter swipe behind the heading, then a line-drawn controller beside it (two separate strokes).
+           The script fits both to the heading text, which changes with the language. -->
       <span class="doodle-heading">
         <LocalizedText en="My Favorite Video Games" zh="我最喜欢的电子游戏作品" />
         <svg class="doodle-stroke" aria-hidden="true">
+          <path class="doodle-line" />
           <g class="doodle-pad">
             <path d="M6.5 30C8.5 30 10 29 11.1 27.4L14 23H34L36.9 27.4C38 29 39.5 30 41.5 30C44.5 30 47.1 27.5 46.5 24L45 16C44 10 40 6 34 6H14C8 6 4 10 3 16L1.5 24C0.9 27.5 3.5 30 6.5 30Z" />
             <path d="M13 12.5v6M10 15.5h6" />
@@ -119,9 +121,11 @@ import HomeHero from "../components/HomeHero.astro";
     return () => clearTimeout(timer);
   };
 
-  // Fit the My Favorite Video Games doodle to the heading text: the controller sits just right of the words.
+  // Fit the My Favorite Video Games doodle to the heading text: the highlighter runs behind the words and the
+  // controller sits just right of them.
   const layoutDoodle = (heading: HTMLElement) => {
     const svg = heading.querySelector<SVGSVGElement>(".doodle-stroke")!;
+    const line = svg.querySelector<SVGPathElement>(".doodle-line")!;
     const pad = svg.querySelector<SVGGElement>(".doodle-pad")!;
     const range = document.createRange();
     range.selectNodeContents(heading.querySelector("[data-en]")!);
@@ -131,6 +135,16 @@ import HomeHero from "../components/HomeHero.astro";
     const left = text.left - box.left;
     const top = text.top - box.top;
     const { width: w, height: h } = text;
+
+    // One swipe of a highlighter behind the lower part of the words: it starts a little before them, rises a touch
+    // as a hand drifts, and runs a little past the end.
+    const x = (fraction: number) => left + w * fraction;
+    const y = top + h * 0.6;
+    line.setAttribute(
+      "d",
+      `M ${x(0) - 0.25 * em} ${y + 0.06 * em}` +
+        ` C ${x(0.35)} ${y + 0.02 * em}, ${x(0.7)} ${y - 0.04 * em}, ${x(1) + 0.2 * em} ${y - 0.1 * em}`,
+    );
 
     // The controller (drawn in a 48 x 32 box) sits right of the words, centred on them and tilted a little.
     const scale = (1.3 * em) / 48;
@@ -256,11 +270,14 @@ import HomeHero from "../components/HomeHero.astro";
     });
     exit.to(about, { y: -90, opacity: 0, ease: "none" }, 0);
 
-    // 3. As My Favorite Video Games arrives, its controller doodle is drawn in: the outline, then the d-pad and buttons.
-    //    Each piece gets time in proportion to its length, so the pen moves at an even speed.
+    // 3. As My Favorite Video Games arrives, the highlighter swipe goes on first, then after a short lift of the pen the
+    //    controller beside it: the outline, then the d-pad and buttons. The controller's pieces get time in
+    //    proportion to their length, so the pen moves at an even speed.
     layoutDoodle(doodle);
-    const strokes = [...doodle.querySelectorAll<SVGGeometryElement>(".doodle-pad path, .doodle-pad circle")];
-    const lengths = strokes.map((stroke) => stroke.getTotalLength());
+    const highlight = doodle.querySelector<SVGPathElement>(".doodle-line")!;
+    const pieces = [...doodle.querySelectorAll<SVGGeometryElement>(".doodle-pad path, .doodle-pad circle")];
+    const strokes = [highlight, ...pieces];
+    const lengths = pieces.map((stroke) => stroke.getTotalLength());
     const total = lengths.reduce((sum, length) => sum + length, 0) || 1;
     // Start undrawn: the from-values inside a scroll-linked timeline aren't applied until the first scroll.
     gsap.set(strokes, { drawSVG: "0%" });
@@ -273,7 +290,9 @@ import HomeHero from "../components/HomeHero.astro";
         onRefresh: () => layoutDoodle(doodle),
       },
     });
-    strokes.forEach((stroke, index) => {
+    draw.fromTo(highlight, { drawSVG: "0%" }, { drawSVG: "100%", ease: "power1.inOut", duration: 0.7 });
+    draw.to({}, { duration: 0.15 });
+    pieces.forEach((stroke, index) => {
       draw.fromTo(stroke, { drawSVG: "0%" }, { drawSVG: "100%", ease: "none", duration: lengths[index] / total });
     });
 
@@ -318,7 +337,7 @@ import HomeHero from "../components/HomeHero.astro";
 </script>
 
 <style>
-  /* The About text sits on a note of paper taped to the page, so its lines read as one block. */
+  /* The About text sits on a note of paper, so its lines read as one block. */
   .about-card {
     position: relative;
     isolation: isolate;
@@ -338,24 +357,8 @@ import HomeHero from "../components/HomeHero.astro";
     transform: translateY(calc((1 - var(--card, 1)) * 14px));
   }
 
-  /* The same strip of tape that holds the game photos down. */
-  .about-card::after {
-    content: "";
-    position: absolute;
-    top: -0.6rem;
-    left: 50%;
-    z-index: -1;
-    width: 6rem;
-    height: 1.25rem;
-    background: rgb(232 214 170 / 70%);
-    box-shadow: 0 1px 2px rgb(40 28 20 / 12%);
-    opacity: var(--card, 1);
-    transform: translateX(-50%) rotate(-3deg);
-  }
-
   /* Until the intro starts, the lines are hidden, so the note stays hidden with them. */
-  .about-card:has([data-intro]:not(.is-revealed))::before,
-  .about-card:has([data-intro]:not(.is-revealed))::after {
+  .about-card:has([data-intro]:not(.is-revealed))::before {
     opacity: 0;
   }
 
@@ -406,14 +409,18 @@ import HomeHero from "../components/HomeHero.astro";
   /* The heading leaves room on its right for the controller; the doodle's SVG is laid over it by the script. */
   .doodle-heading {
     position: relative;
+    /* Keeps the doodle's layer behind the words but in front of the page. */
+    isolation: isolate;
     display: inline-block;
     padding-right: 1.9em;
   }
 
+  /* Behind the words, so the highlighter stroke sits under the ink like a real marker. */
   .doodle-stroke {
     position: absolute;
     top: 0;
     left: 0;
+    z-index: -1;
     overflow: visible;
     pointer-events: none;
   }
@@ -430,5 +437,20 @@ import HomeHero from "../components/HomeHero.astro";
 
   .doodle-pad :is(path, circle) {
     stroke-width: 2.5;
+  }
+
+  /* A broad, flat-tipped, see-through highlighter. Multiply lets the paper and the letters show through it. */
+  .doodle-stroke .doodle-line {
+    stroke: rgb(245 196 82 / 62%);
+    stroke-width: 0.62em;
+    stroke-linecap: butt;
+    vector-effect: none;
+    mix-blend-mode: multiply;
+  }
+
+  /* Multiply vanishes on a dark page, so a dimmer amber is laid on normally there. */
+  :global(html[data-theme="dark"]) .doodle-stroke .doodle-line {
+    stroke: rgb(214 150 60 / 38%);
+    mix-blend-mode: normal;
   }
 </style>
