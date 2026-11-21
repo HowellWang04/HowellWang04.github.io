@@ -1,5 +1,5 @@
-// Fetches visitor counts per country from GoatCounter and writes them to src/data/visitors.json for the visitors
-// page. Needs a GoatCounter API key in GOATCOUNTER_TOKEN; without one it leaves the file as it is.
+// Fetches how many people came from each country from GoatCounter and writes them to src/data/visitors.json for
+// the visitors page. Needs a GoatCounter API key in GOATCOUNTER_TOKEN; without one it leaves the file as it is.
 import { readFile, writeFile } from "node:fs/promises";
 
 const token = process.env.GOATCOUNTER_TOKEN;
@@ -27,13 +27,34 @@ const get = async (path) => {
   return response.json();
 };
 
+// The site sends a "visit" event once per browser (see BaseHead.astro), so counting that one path counts people
+// rather than pages looked at. Its id is needed to pick it out; it isn't there until the first visit.
+const findVisitPath = async () => {
+  for (let after = 0; ;) {
+    const { paths, more } = await get(`/paths?limit=200${after ? `&after=${after}` : ""}`);
+    const visit = paths.find((path) => path.path === "visit");
+    if (visit) return visit.id;
+    // Stop if the list doesn't move on, so a paging hiccup can't loop forever.
+    if (!more || !paths.length || paths.at(-1).id <= after) return undefined;
+    after = paths.at(-1).id;
+  }
+};
+
 try {
-  const { total } = await get(`/stats/total?${range}`);
+  const visitPath = await findVisitPath();
+  if (visitPath === undefined) {
+    await writeFile(new URL("../src/data/visitors.json", import.meta.url), JSON.stringify({ total: 0, countries: [] }, null, 2) + "\n");
+    console.log("fetch-visitors: no visits counted yet.");
+    process.exit(0);
+  }
+  const only = `${range}&include_paths=${visitPath}`;
+  const { total } = await get(`/stats/total?${only}`);
 
   // Locations come 100 at a time. An id can carry a region after the country ("US-WI"); the map works by country.
   const counts = new Map();
   for (let offset = 0; ; offset += 100) {
-    const page = await get(`/stats/locations?${range}&limit=100&offset=${offset}`);    for (const { id, count } of page.stats) {
+    const page = await get(`/stats/locations?${only}&limit=100&offset=${offset}`);
+    for (const { id, count } of page.stats) {
       const country = String(id ?? "").split("-")[0].toUpperCase();
       if (/^[A-Z]{2}$/.test(country)) counts.set(country, (counts.get(country) ?? 0) + count);
     }
