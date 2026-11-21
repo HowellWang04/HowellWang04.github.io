@@ -253,8 +253,8 @@
             "title": "IQVIA 艾昆纬  |  技术部门实习",
             "meta": "2024 年 7 月至 8 月  ·  中国上海",
             "bullets": [
-              "为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖两类用户、四种场景和三种终端。",
-              "对该小程序执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理小程序内 1,000 多个数据标签，建立支持用户筛选的三层分类。"
+              "为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖 2 类用户、4 种场景和 3 种终端。",
+              "对该小程序执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理小程序内 1,000 多个数据标签，建立支持用户筛选的 3 层分类。"
             ],
             "links": [
               {
@@ -293,11 +293,15 @@
           },
           {
             "title": "编程与工具",
-            "description": "C#、C/C++、HLSL、Python、TypeScript、JavaScript、Java、R、Three.js、Git、Jira"
+            "description": "C#、C/C++、HLSL、Python、TypeScript、JavaScript、Java、SQL、R、Three.js、Git、Jira"
+          },
+          {
+            "title": "全栈开发",
+            "description": "React、FastAPI、REST API、MySQL、Redis、Docker、Nginx、GitLab CI/CD"
           },
           {
             "title": "游戏与交互",
-            "description": "Unity（HDRP、Shader Graph）、Unreal Engine、Blender、Figma、ESP32、Arduino"
+            "description": "Unity（HDRP、Shader Graph、ProBuilder、Terrain Tools）、Unreal Engine、Blender、Figma、ESP32、Arduino"
           },
           {
             "title": "语言",

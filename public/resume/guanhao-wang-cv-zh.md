@@ -61,8 +61,8 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 2024 年 7 月至 8 月  ·  中国上海
 
-* 为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖两类用户、四种场景和三种终端。
-* 对该小程序执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理小程序内 1,000 多个数据标签，建立支持用户筛选的三层分类。
+* 为制药企业微信小程序升级编制并维护 100 多页操作手册，覆盖 2 类用户、4 种场景和 3 种终端。
+* 对该小程序执行用户验收测试，在 Jira 提交 10 多项缺陷及复现步骤；梳理小程序内 1,000 多个数据标签，建立支持用户筛选的 3 层分类。
 
 [下载实习证明（PDF）](https://guanhao.me/resume/guanhao-wang-iqvia-internship-certificate.pdf)
 
@@ -80,8 +80,10 @@ gwang284@wisc.edu  |  +1 6084403924  |  +86 19921697926
 
 **数学**  微积分 III、离散数学、线性代数
 
-**编程与工具**  C#、C/C++、HLSL、Python、TypeScript、JavaScript、Java、R、Three.js、Git、Jira
+**编程与工具**  C#、C/C++、HLSL、Python、TypeScript、JavaScript、Java、SQL、R、Three.js、Git、Jira
 
-**游戏与交互**  Unity（HDRP、Shader Graph）、Unreal Engine、Blender、Figma、ESP32、Arduino
+**全栈开发**  React、FastAPI、REST API、MySQL、Redis、Docker、Nginx、GitLab CI/CD
+
+**游戏与交互**  Unity（HDRP、Shader Graph、ProBuilder、Terrain Tools）、Unreal Engine、Blender、Figma、ESP32、Arduino
 
 **语言**  中文母语，英语流利，日语基础
