@@ -1,8 +1,6 @@
 ---
 import LocalizedText from "./LocalizedText.astro";
-import visitors from "../data/visitors.json";
 const today = new Date();
-const places = visitors.countries.length;
 ---
 
 <footer class="footer footer-center block mb-5 pt-10">
@@ -21,9 +19,7 @@ const places = visitors.countries.length;
         <path d="M3 12h18" />
         <ellipse class="globe-meridian" cx="12" cy="12" rx="4" ry="9" />
       </svg>
-      {places > 0
-        ? <LocalizedText en={`Visitors from ${places} ${places === 1 ? "country or region" : "countries and regions"}`} zh={`来自 ${places} 个国家和地区的访客`} />
-        : <LocalizedText en="Visitor map" zh="访客地图" />}
+      <LocalizedText en="Visitor Map" zh="访客地图" />
     </a>
   </div>
 </footer>

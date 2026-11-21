@@ -5,7 +5,7 @@
 import BaseLayout from "../layouts/BaseLayout.astro";
 import LocalizedText from "../components/LocalizedText.astro";
 import visitors from "../data/visitors.json";
-import { geoCentroid, geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
+import { geoArea, geoCentroid, geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
 import { feature } from "topojson-client";
 import polygonClipping from "polygon-clipping";
 import countries from "i18n-iso-countries";
@@ -13,6 +13,7 @@ import en from "i18n-iso-countries/langs/en.json";
 import zh from "i18n-iso-countries/langs/zh.json";
 import world110 from "world-atlas/countries-110m.json";
 import world50 from "world-atlas/countries-50m.json";
+import ct from "countries-and-timezones";
 
 countries.registerLocale(en);
 countries.registerLocale(zh);
@@ -27,16 +28,20 @@ const nameOf = (code: string) => names[code] ?? {
   zh: countries.getName(code, "zh") ?? code,
 };
 
-// Taiwan, Hong Kong and Macao are part of China on the globe: they light up with it and add to its shade.
+// Taiwan, Hong Kong and Macao are part of China on the globe: they add to its shade, and hovering any of them
+// lights up all of China.
 const partOf: Record<string, string> = { TW: "CN", HK: "CN", MO: "CN" };
 const groupOf = (code: string) => partOf[code] ?? code;
 
 const counts = new Map(visitors.countries.map(({ code, count }) => [code, count]));
 const groupTotals = new Map<string, number>();
 counts.forEach((count, code) => groupTotals.set(groupOf(code), (groupTotals.get(groupOf(code)) ?? 0) + count));
-const max = Math.max(1, ...groupTotals.values());
-// Log scale, so one country with most of the visitors doesn't wash every other one out.
-const shade = (count: number) => (0.35 + 0.65 * Math.log(1 + count) / Math.log(1 + max)).toFixed(2);
+const max = Math.max(1, ...counts.values());
+// More visitors, bigger pin and deeper shade. Log scale, so one country with most of the visitors doesn't dwarf
+// or wash out every other one.
+const pinSize = (count: number) => (0.8 + 0.6 * Math.log(1 + count) / Math.log(1 + max)).toFixed(2);
+const maxGroup = Math.max(1, ...groupTotals.values());
+const shade = (count: number) => (0.2 + 0.5 * Math.log(1 + count) / Math.log(1 + maxGroup)).toFixed(2);
 
 // Antarctica only takes up room.
 const toShapes = (world: any) =>
@@ -68,28 +73,48 @@ const zangnan = polygonClipping.intersection(polygonsOf(india.geometry), zangnan
 china.geometry = toD3(polygonClipping.union(polygonsOf(china.geometry), zangnan));
 india.geometry = toD3(polygonClipping.difference(polygonsOf(india.geometry), zangnan));
 
-// Small places (Singapore, Hong Kong...) are missing from the coarse map, so visited ones get a dot instead,
-// placed with the detailed map.
-const drawn = new Set(shapes.map(codeOf));
-const dots = toShapes(world50)
-  .map((shape: any) => ({ shape, code: codeOf(shape) }))
-  .filter(({ code }) => code && counts.has(code) && !drawn.has(code))
-  .map(({ shape, code }) => ({ code, at: geoCentroid(shape).map((n) => +n.toFixed(2)) }));
+// Where a place's pin goes, found with the detailed map so small places (Singapore, Hong Kong...) get one too.
+// It stands on the largest piece of land, so France's lands in France, not the Atlantic. Some places come in
+// more than one shape (Australia and its outlying islands), so the pieces are pooled first.
+const lands = new Map<string, any[]>();
+toShapes(world50).forEach((shape: any) => {
+  const code = codeOf(shape);
+  if (!code) return;
+  const pieces = polygonsOf(shape.geometry).map((coordinates: any) => ({ type: "Polygon", coordinates }));
+  lands.set(code, [...(lands.get(code) ?? []), ...pieces]);
+});
+const anchors = new Map([...lands].map(([code, pieces]) => {
+  const land = pieces.reduce((a, b) => (geoArea(a) >= geoArea(b) ? a : b));
+  return [code, geoCentroid(land).map((n) => +n.toFixed(2))];
+}));
+
+// Every visited country or region gets one pin.
+const visits = visitors.countries
+  .filter(({ code }) => anchors.has(code))
+  .map(({ code, count }) => ({ code, count, at: anchors.get(code)! }));
+
+// The browser can tell a newcomer's country from their clock's time zone, without asking anyone, so the page
+// can greet them and turn the globe to them the moment it opens. It gets each zone's country, and each
+// country's spot, name and the group it lights up with.
+const zones: Record<string, string> = {};
+const youPlaces: Record<string, { at: number[]; en: string; zh: string; group: string }> = {};
+Object.values(ct.getAllTimezones({ deprecated: true })).forEach(({ name, countries: [code] }) => {
+  if (!code || !anchors.has(code)) return;
+  zones[name] = code;
+  youPlaces[code] = { at: anchors.get(code)!, ...nameOf(code), group: groupOf(code) };
+});
 
 // The browser redraws the globe as it turns, so it gets the shapes too, rounded to keep the page small.
 const round = (value: any): any => (typeof value === "number" ? Math.round(value * 10) / 10 : value.map(round));
 const geometries = shapes.map((shape: any) => ({ type: shape.geometry.type, coordinates: round(shape.geometry.coordinates) }));
 
 // Countries are drawn in groups, so China lights up as a whole.
-type Part = { kind: "shape" | "dot"; index: number; code?: string };
+type Part = { index: number; code?: string };
 const groups = new Map<string, Part[]>();
 shapes.forEach((shape: any, index: number) => {
   const code = codeOf(shape);
   const key = code ? groupOf(code) : `shape-${index}`;
-  groups.set(key, [...(groups.get(key) ?? []), { kind: "shape", index, code }]);
-});
-dots.forEach(({ code }: any, index: number) => {
-  groups.set(groupOf(code), [...(groups.get(groupOf(code)) ?? []), { kind: "dot", index, code }]);
+  groups.set(key, [...(groups.get(key) ?? []), { index, code }]);
 });
 
 // The first view faces East Asia.
@@ -105,22 +130,51 @@ const front = (at: number[]) => {
   const point = projection(at as [number, number]);
   return path({ type: "Point", coordinates: at }) ? point : undefined;
 };
-const globeData = JSON.stringify({ size, scale, rotate, geometries, dots: dots.map(({ at }: any) => at) });
+// Seen from far off, a needle standing out of the globe points away from the centre, and shows the more of its
+// length the nearer it stands to the edge. This is where its ball ends up, relative to its tip.
+// Real pins never go in quite straight, so each leans a little its own way (mostly upward, so the ball sits
+// above the tip). The lean comes from the place's code, so it stays the same from one visit to the next.
+const pinHeight = 14;
+const leanOf = (code: string) => {
+  const hash = [...code].reduce((sum, letter) => sum * 31 + letter.charCodeAt(0), 7);
+  const angle = (-90 + (hash % 100) - 50) * Math.PI / 180;
+  const length = 6 + (hash % 3);
+  return [+(length * Math.cos(angle)).toFixed(2), +(length * Math.sin(angle)).toFixed(2)];
+};
+const pinTop = ([x, y]: number[], [lx, ly]: number[]) => {
+  const [cx, cy] = projection.translate();
+  return [+(pinHeight * (x - cx) / scale + lx).toFixed(2), +(pinHeight * (y - cy) / scale + ly).toFixed(2)];
+};
+// The fun fact: places that matter to me, pinned on the globe when the button is pressed. Labels sit to the right
+// of the pin unless they'd run into a neighbour.
+const funPlaces = [
+  { at: [121.47, 31.23], left: false, place: { en: "Shanghai", zh: "上海" }, note: { en: "My hometown", zh: "我的家乡" } },
+  { at: [-89.4, 43.07], left: false, place: { en: "Madison", zh: "麦迪逊" }, note: { en: "Where I am now", zh: "我现在在这里" } },
+  { at: [129.77, 43.31], left: false, place: { en: "Wangqing, Jilin", zh: "吉林汪清" }, note: { en: "My father's hometown", zh: "父亲的家乡" } },
+  { at: [106.35, 39.19], left: true, place: { en: "Shitanjing, Ningxia", zh: "宁夏石炭井" }, note: { en: "My mother's hometown", zh: "母亲的家乡" } },
+];
+const funLabel = ({ place, note }: (typeof funPlaces)[number]) =>
+  ({ en: `${note.en} · ${place.en}`, zh: `${note.zh} · ${place.zh}` });
 
-const ranked = visitors.countries.map(({ code, count }) => ({ code, count, name: nameOf(code) }));
-const places = ranked.length;
+const globeData = JSON.stringify({
+  size, scale, rotate, pinHeight, zones, youPlaces, geometries, visits: visits.map(({ at }: any) => at), pins: funPlaces.map(({ at }) => at),
+});
+
+const places = visitors.countries.length;
 ---
 
 <BaseLayout title="Visitors">
   <section class="visitors">
-    <h1 class="text-3xl font-bold font-heading mb-3" data-reveal><LocalizedText en="Visitor Map" zh="访客地图" /></h1>
-    <p class="mb-8 opacity-80" data-reveal>
-      {places > 0
-        ? <LocalizedText
-            en={`${visitors.total} visitors from ${places} ${places === 1 ? "country or region" : "countries and regions"} have stopped by so far.`}
-            zh={`目前已有来自 ${places} 个国家和地区的 ${visitors.total} 位访客来过这里。`} />
-        : <LocalizedText en="No visitors counted yet. You might be the first." zh="还没有统计到访客，你也许是第一位。" />}
+    <h1 class="text-3xl font-bold font-heading mb-8 text-center" data-reveal><LocalizedText en="Visitor Map" zh="访客地图" /></h1>
+    <!-- Filled in by the script from the newcomer's time zone; hovering it says where the guess comes from. -->
+    <p class="visitor-hello" data-visitor-hello hidden>
+      <span data-hello-text></span><span class="hello-wave" aria-hidden="true">👋</span>
     </p>
+    {places === 0 && (
+      <p class="-mt-5 mb-8 opacity-80 text-center" data-reveal>
+        <LocalizedText en="No visitors counted yet. You might be the first." zh="还没有统计到访客，你也许是第一位。" />
+      </p>
+    )}
 
     <!-- data-lenis-prevent-wheel: the wheel zooms the globe here instead of scrolling the page. -->
     <figure class="map-card" data-reveal data-visitor-map data-lenis-prevent-wheel>
@@ -131,33 +185,73 @@ const places = ranked.length;
           const total = groupTotals.get(group) ?? 0;
           return (
             <g class:list={["country-group", { "is-visited": total > 0 }]} style={total ? `--shade: ${shade(total)}` : undefined}>
-              {parts.map(({ kind, index, code }) => {
+              {parts.map(({ index, code }) => {
                 const label = total && code
                   ? { "data-country": code, "data-name-en": nameOf(code).en, "data-name-zh": nameOf(code).zh, "data-count": counts.get(code) ?? 0 }
                   : {};
-                if (kind === "shape") return <path class="country" d={path(shapes[index])} data-shape={index} {...label} />;
-                const at = front(dots[index].at);
-                return <circle class="country dot" r="5" cx={at?.[0].toFixed(1)} cy={at?.[1].toFixed(1)}
-                  style={at ? undefined : "display: none"} data-dot={index} {...label} />;
+                return <path class="country" d={path(shapes[index])} data-shape={index} data-group={group} {...label} />;
               })}
             </g>
           );
         })}
+        <!-- A pin for each visited place: a glossy muted red ball on a steel needle, standing out of the globe
+             with a slight lean. Toward the edge the needle shows more and more, pointing away from the centre.
+             The gradient gives the ball its roundness. -->
+        <defs>
+          <radialGradient id="pin-ball" cx="0.35" cy="0.3" r="0.75">
+            <stop offset="0" class="pin-ball-light" />
+            <stop offset="0.45" class="pin-ball-mid" />
+            <stop offset="1" class="pin-ball-dark" />
+          </radialGradient>
+        </defs>
+        {visits.map(({ code, count, at }: any, index: number) => {
+          const point = front(at);
+          const top = point ? pinTop(point, leanOf(code)) : [0, -pinHeight];
+          return (
+            <g class="visit-pin" data-visit={index} data-country={code} data-name-en={nameOf(code).en}
+              data-name-zh={nameOf(code).zh} data-count={count} data-lean={leanOf(code).join(" ")}
+              transform={point ? `translate(${point[0].toFixed(1)} ${point[1].toFixed(1)})` : undefined}
+              style={point ? undefined : "visibility: hidden"}>
+              <g class="visit-pin-body" style={`--size: ${pinSize(count)}`}>
+                <line class="visit-pin-hit" x2={top[0]} y2={top[1]} data-needle />
+                <circle class="visit-pin-shadow" r="2.5" />
+                <line class="visit-pin-needle" x2={top[0]} y2={top[1]} data-needle />
+                <line class="visit-pin-glint" x2={top[0]} y2={top[1]} data-needle />
+                <g transform={`translate(${top[0]} ${top[1]})`} data-ball>
+                  <circle class="visit-pin-head" r="5" />
+                  <ellipse class="visit-pin-shine" cx="-1.8" cy="-2" rx="1.6" ry="1.1" transform="rotate(-30 -1.8 -2)" />
+                </g>
+              </g>
+            </g>
+          );
+        })}
+        <g class="fun-layer">
+          {funPlaces.map((place, index) => (
+            <g class="fun-pin" data-pin={index}>
+              <g class="fun-drop" style={`--i: ${index}`}>
+                <circle class="fun-pulse" r="5" />
+                <circle r="5" />
+                <text x={place.left ? -10 : 10} y="4" text-anchor={place.left ? "end" : "start"}
+                  data-en={funLabel(place).en} data-zh={funLabel(place).zh}>{funLabel(place).en}</text>
+              </g>
+            </g>
+          ))}
+        </g>
       </svg>
+      <!-- A little note that wiggles now and then, inviting a click; once open it offers to put the pins away. -->
+      <button type="button" class="fun-toggle" aria-pressed="false" data-fun-toggle>
+        <span class="fun-teaser">
+          <span class="fun-spark" aria-hidden="true">✦</span>
+          <LocalizedText en="Psst… want a fun fact about Guanhao?" zh="嘘，想知道王冠豪的一个小秘密吗？" />
+        </span>
+        <span class="fun-close">
+          <LocalizedText en="Okay, tuck them away" zh="好啦，收起来" />
+          <svg class="fun-close-icon" viewBox="0 0 12 12" aria-hidden="true"><path d="M3 3l6 6M9 3l-6 6" /></svg>
+        </span>
+      </button>
       <div class="map-tooltip" data-map-tooltip hidden></div>
       <script type="application/json" data-globe-data set:html={globeData}></script>
     </figure>
-
-    {places > 0 && (
-      <ol class="place-list" data-reveal>
-        {ranked.map(({ code, count, name }) => (
-          <li>
-            <span class="place-name"><LocalizedText en={name.en} zh={name.zh} /></span>
-            <span class="place-count">{count}</span>
-          </li>
-        ))}
-      </ol>
-    )}
   </section>
 </BaseLayout>
 
@@ -181,30 +275,82 @@ const places = ranked.length;
     const sphere = globe.querySelector("[data-globe-sphere]")!;
     const lines = globe.querySelector("[data-globe-graticule]")!;
     const shapes = [...globe.querySelectorAll<SVGPathElement>("[data-shape]")];
-    const dots = [...globe.querySelectorAll<SVGCircleElement>("[data-dot]")];
+    const visitPins = [...globe.querySelectorAll<SVGGElement>("[data-visit]")];
+    const pins = [...globe.querySelectorAll<SVGGElement>("[data-pin]")];
+    let touched = false;
+    const funToggle = map.querySelector<HTMLButtonElement>("[data-fun-toggle]")!;
     let rotation: [number, number] = data.rotate;
     let zoom = 1;
     let frame = 0;
+    // A flick keeps the globe spinning and slowing down, and the wheel eases toward its zoom instead of jumping.
+    let targetZoom = 1;
+    let velocity: [number, number] = [0, 0]; // degrees per millisecond
+    let lastMove = 0;
+    let previous = 0;
+    let gliding = 0;
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    // Pointers on the globe: one drags, two pinch.
+    const pointers = new Map<number, { x: number; y: number }>();
 
+    // Only pins on the side facing the viewer show.
+    const placePin = (pin: SVGGElement, at: [number, number]) => {
+      const facing = geoDistance(at, [-rotation[0], -rotation[1]]) < Math.PI / 2;
+      pin.style.visibility = facing ? "" : "hidden";
+      if (!facing) return;
+      const [x, y] = projection(at)!;
+      pin.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+      // A visitor pin stands out of the globe with a slight lean (see pinTop on the server).
+      const ball = pin.querySelector("[data-ball]");
+      if (!ball) return;
+      const [cx, cy] = projection.translate();
+      const [lx, ly] = pin.dataset.lean!.split(" ").map(Number);
+      const top = [data.pinHeight * (x - cx) / projection.scale() + lx, data.pinHeight * (y - cy) / projection.scale() + ly];
+      ball.setAttribute("transform", `translate(${top[0].toFixed(2)} ${top[1].toFixed(2)})`);
+      pin.querySelectorAll("[data-needle]").forEach((needle) => {
+        needle.setAttribute("x2", top[0].toFixed(2));
+        needle.setAttribute("y2", top[1].toFixed(2));
+      });
+    };
     const render = () => {
       frame = 0;
       projection.rotate(rotation).scale(data.scale * zoom);
       sphere.setAttribute("d", path({ type: "Sphere" }) ?? "");
       lines.setAttribute("d", path(graticule) ?? "");
       shapes.forEach((shape) => shape.setAttribute("d", path(data.geometries[Number(shape.dataset.shape)]) ?? ""));
-      dots.forEach((dot) => {
-        const at = data.dots[Number(dot.dataset.dot)];
-        // Only dots on the side facing the viewer show.
-        const facing = geoDistance(at, [-rotation[0], -rotation[1]]) < Math.PI / 2;
-        dot.style.display = facing ? "" : "none";
-        if (!facing) return;
-        const [x, y] = projection(at)!;
-        dot.setAttribute("cx", x.toFixed(1));
-        dot.setAttribute("cy", y.toFixed(1));
-      });
+      visitPins.forEach((pin) => placePin(pin, data.visits[Number(pin.dataset.visit)]));      pins.forEach((pin) => placePin(pin, data.pins[Number(pin.dataset.pin)]));
     };
     const redraw = () => {
-      if (!frame) frame = requestAnimationFrame(render);
+      if (!frame && !gliding) frame = requestAnimationFrame(render);
+    };
+    const turn = (dx: number, dy: number) => {
+      rotation = [rotation[0] + dx, Math.max(-90, Math.min(90, rotation[1] + dy))];
+    };
+    const glide = (now: number) => {
+      const dt = previous ? Math.min(now - previous, 64) : 16;
+      previous = now;
+      if (!pointers.size) {
+        turn(velocity[0] * dt, velocity[1] * dt);
+        if (Math.abs(rotation[1]) === 90) velocity[1] = 0;
+        const decay = Math.exp(-dt / 325);
+        velocity = [velocity[0] * decay, velocity[1] * decay];
+        if (Math.hypot(...velocity) < 0.002) velocity = [0, 0];
+      }
+      zoom += (targetZoom - zoom) * (1 - Math.exp(-dt / 90));
+      if (Math.abs(targetZoom - zoom) < 0.001) zoom = targetZoom;
+      render();
+      gliding = velocity[0] || velocity[1] || zoom !== targetZoom ? requestAnimationFrame(glide) : 0;
+      if (!gliding) previous = 0;
+    };
+    const startGlide = () => {
+      if (reducedMotion.matches) {
+        velocity = [0, 0];
+        zoom = targetZoom;
+        redraw();
+      } else if (!gliding) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        gliding = requestAnimationFrame(glide);
+      }
     };
     // Match the view to the globe's box (wider on desktop, square on phones), with the globe in the middle.
     const fit = () => {
@@ -214,13 +360,46 @@ const places = ranked.length;
       projection.translate([width / 2, data.size / 2]);
       redraw();
     };
-    const zoomBy = (factor: number) => {
-      zoom = Math.min(8, Math.max(1, zoom * factor));
-      redraw();
+    // Turns the globe until a place faces the viewer, the short way round, easing in and out.
+    let flight = 0;
+    const flyTo = (at: [number, number]) => {
+      cancelAnimationFrame(flight);
+      velocity = [0, 0];
+      const from = rotation;
+      const turnBy = [((-at[0] - from[0]) % 360 + 540) % 360 - 180, -at[1] - from[1]];
+      const start = performance.now();
+      const duration = reducedMotion.matches ? 0 : 1100;
+      const step = (now: number) => {
+        const t = duration ? Math.min(1, (now - start) / duration) : 1;
+        const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
+        rotation = [from[0] + turnBy[0] * eased, from[1] + turnBy[1] * eased];
+        render();
+        flight = t < 1 ? requestAnimationFrame(step) : 0;
+      };
+      flight = requestAnimationFrame(step);
+    };
+    const showPin = (index: number) => {
+      pins.forEach((pin, i) => pin.classList.toggle("is-current", i === index));
+      flyTo(data.pins[index]);
     };
 
-    // Pointers on the globe: one drags, two pinch.
-    const pointers = new Map<number, { x: number; y: number }>();
+    funToggle.addEventListener("click", () => {
+      const on = !map.classList.contains("is-fun");
+      map.classList.toggle("is-fun", on);
+      funToggle.setAttribute("aria-pressed", String(on));
+      if (on) showPin(0);
+    });
+
+    // A pinch follows the fingers directly; the wheel eases.
+    const zoomBy = (factor: number, direct = false) => {
+      targetZoom = Math.min(8, Math.max(1, targetZoom * factor));
+      if (direct) {
+        zoom = targetZoom;
+        redraw();
+      } else {
+        startGlide();
+      }
+    };
     const spread = () => {
       const [a, b] = [...pointers.values()];
       return Math.hypot(a.x - b.x, a.y - b.y);
@@ -231,6 +410,11 @@ const places = ranked.length;
       pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
       globe.classList.add("is-dragging");
       tooltip.hidden = true;
+      // Touching a spinning globe catches it.
+      velocity = [0, 0];
+      cancelAnimationFrame(flight);
+      lastMove = event.timeStamp;
+      touched = true;
     });
 
     globe.addEventListener("pointermove", (event) => {
@@ -239,20 +423,32 @@ const places = ranked.length;
       if (pointers.size === 1) {
         // Degrees per screen pixel, so the spot under the pointer roughly follows it.
         const step = (180 / Math.PI) / (data.scale * zoom) * (data.size / globe.getBoundingClientRect().height);
-        rotation = [rotation[0] + (event.clientX - last.x) * step,
-          Math.max(-90, Math.min(90, rotation[1] - (event.clientY - last.y) * step))];
+        const dx = (event.clientX - last.x) * step;
+        const dy = -(event.clientY - last.y) * step;
+        turn(dx, dy);
+        // Recent moves count most, so the spin on release matches the end of the flick.
+        const dt = Math.max(event.timeStamp - lastMove, 1);
+        velocity = [0.8 * dx / dt + 0.2 * velocity[0], 0.8 * dy / dt + 0.2 * velocity[1]];
+        lastMove = event.timeStamp;
         pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
         redraw();
       } else {
         const before = spread();
         pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
-        if (before > 0) zoomBy(spread() / before);
+        velocity = [0, 0];
+        if (before > 0) zoomBy(spread() / before, true);
       }
     });
 
     const release = (event: PointerEvent) => {
       pointers.delete(event.pointerId);
-      if (!pointers.size) globe.classList.remove("is-dragging");
+      if (pointers.size) return;
+      globe.classList.remove("is-dragging");
+      // Holding still before letting go means no flick. Very fast flicks are capped so the globe stays readable.
+      const speed = Math.hypot(...velocity);
+      if (event.timeStamp - lastMove > 80 || event.type === "pointercancel") velocity = [0, 0];
+      else if (speed > 1.5) velocity = [velocity[0] * 1.5 / speed, velocity[1] * 1.5 / speed];
+      if (velocity[0] || velocity[1]) startGlide();
     };
     globe.addEventListener("pointerup", release);
     globe.addEventListener("pointercancel", release);
@@ -278,6 +474,26 @@ const places = ranked.length;
       tooltip.hidden = false;
     });
     map.addEventListener("pointerleave", () => (tooltip.hidden = true));
+
+    // Greet the newcomer by the country of their clock's time zone. Once the page has settled the globe turns to
+    // that country and it glows, unless they've already taken hold of the globe.
+    const you = data.youPlaces[data.zones[Intl.DateTimeFormat().resolvedOptions().timeZone]];
+    const hello = document.querySelector<HTMLElement>("[data-visitor-hello]");
+    if (you && hello) {
+      const text = hello.querySelector<HTMLElement>("[data-hello-text]")!;
+      const the = /^(United|Netherlands|Philippines|Bahamas|Gambia|Maldives|Czech|Dominican|Central African)/.test(you.en) ? "the " : "";
+      text.dataset.en = `Hello, visitor from ${the}${you.en}!`;
+      text.dataset.zh = `你好，来自${you.zh}的访客！`;
+      const zh = document.documentElement.lang === "zh-CN";
+      text.textContent = zh ? text.dataset.zh : text.dataset.en;
+      hello.title = zh ? "根据你设备的时区推测，不会上传任何信息" : "Guessed from your device's time zone. Nothing is uploaded.";
+      hello.hidden = false;
+      window.setTimeout(() => {
+        if (touched || map.classList.contains("is-fun")) return;
+        flyTo(you.at);
+        globe.querySelectorAll(`[data-group="${you.group}"]`).forEach((country) => country.classList.add("is-home"));
+      }, 900);
+    }
 
     fit();
     new ResizeObserver(fit).observe(globe);
@@ -340,22 +556,314 @@ const places = ranked.length;
     stroke-width: 0.5;
   }
 
+  /* Visited countries take on the pins' red, deeper where more visitors came from. The shade stays light enough
+     for the pins to stand out on it. */
   .country-group.is-visited .country {
-    fill: oklch(var(--p));
-    fill-opacity: var(--shade);
-    transition: fill-opacity 200ms ease;
+    fill: color-mix(in oklch, var(--pin) calc(var(--shade) * 100%), oklch(var(--b3)));
+    transition: fill 200ms ease;
   }
 
-  /* Hovering any part of a country lights up all of it. */
+  /* Hovering any part of a visited country deepens all of it. */
   .country-group.is-visited:hover .country {
-    fill-opacity: 1;
+    fill: color-mix(in oklch, var(--pin) 85%, oklch(var(--b3)));
   }
 
-  /* Small places sit on top of bigger shapes (Hong Kong and Macao on China's coast), so their dots stay solid
-     with a light ring to stand out. */
-  .country-group.is-visited .country.dot {
-    fill-opacity: 1;
-    stroke-width: 1.5;
+  /* Visited places get a muted red pin, a little bigger where more visitors came from. */
+  .globe {
+    --pin: oklch(0.6 0.09 25);
+  }
+
+  .visit-pin {
+    cursor: default;
+    transition: opacity 300ms ease;
+  }
+
+  /* With the fun fact open, the visitor pins step back so the labels read clearly. */
+  .map-card.is-fun .visit-pin {
+    opacity: 0.3;
+  }
+
+  .visit-pin-body {
+    transform: scale(var(--size));
+    transition: transform 240ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .visit-pin:hover .visit-pin-body {
+    transform: scale(calc(var(--size) * 1.3));
+  }
+
+  /* An invisible fat stroke from the tip to the ball, so the pin is easy to hover even though it's small. */
+  .visit-pin-hit {
+    stroke: transparent;
+    stroke-width: 18;
+    stroke-linecap: round;
+    pointer-events: stroke;
+  }
+
+  .visit-pin-shadow {
+    fill: black;
+    opacity: 0.25;
+    filter: blur(0.8px);
+  }
+
+  /* A steel needle: a grey line with a thin bright glint along it. */
+  .visit-pin-needle,
+  .visit-pin-glint {
+    stroke-linecap: round;
+  }
+
+  .visit-pin-needle {
+    stroke: #858585;
+    stroke-width: 1.6;
+  }
+
+  .visit-pin-glint {
+    stroke: #e6e6e6;
+    stroke-width: 0.5;
+  }
+
+  .visit-pin-head {
+    fill: url(#pin-ball);
+  }
+
+  .visit-pin-shine {
+    fill: white;
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .pin-ball-light {
+    stop-color: color-mix(in oklch, var(--pin) 45%, white);
+  }
+
+  .pin-ball-mid {
+    stop-color: var(--pin);
+  }
+
+  .pin-ball-dark {
+    stop-color: color-mix(in oklch, var(--pin) 55%, black);
+  }
+
+  /* The newcomer's own pin: the accent colour, a ripple where it goes in, and a label. */
+  /* The greeting rises in once the page knows where the newcomer is; the hand waves a couple of times. */
+  .visitor-hello {
+    margin: -1.25rem 0 1.75rem;
+    font-family: var(--font-hand);
+    font-size: 1.6rem;
+    text-align: center;
+    cursor: help;
+    animation: hello-in 600ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+  }
+
+  .visitor-hello[hidden] {
+    display: none;
+  }
+
+  @keyframes hello-in {
+    from {
+      opacity: 0;
+      transform: translateY(0.75rem) scale(0.95);
+    }
+  }
+
+  .hello-wave {
+    display: inline-block;
+    margin-left: 0.3rem;
+    transform-origin: 70% 80%;
+    animation: hello-wave 1.4s ease-in-out 600ms 2;
+  }
+
+  @keyframes hello-wave {
+    0%, 60%, 100% { transform: rotate(0deg); }
+    10%, 30% { transform: rotate(16deg); }
+    20%, 40% { transform: rotate(-10deg); }
+  }
+
+  /* Their own country glows for a moment once the globe has turned to it. */
+  .country.is-home {
+    animation: home-glow 2.4s ease-in-out 2;
+  }
+
+  @keyframes home-glow {
+    50% { fill: color-mix(in oklch, oklch(var(--s)) 55%, oklch(var(--b3))); }
+  }
+
+  /* A sticky note in handwriting, tilted a little. Every few seconds it gives a small wiggle to catch the eye. */
+  .fun-toggle {
+    position: absolute;
+    top: 0.85rem;
+    right: 0.85rem;
+    max-width: calc(100% - 1.7rem);
+    padding: 0.35rem 0.9rem 0.25rem;
+    border: 1px dashed oklch(var(--s));
+    border-radius: 0.6rem;
+    background: color-mix(in oklch, oklch(var(--s)) 14%, oklch(var(--b1)));
+    box-shadow: 0 8px 18px -12px color-mix(in srgb, currentColor 45%, transparent);
+    font-family: var(--font-hand);
+    font-size: 1.2rem;
+    line-height: 1.2;
+    text-align: left;
+    transform: rotate(-2deg);
+    transform-origin: 90% 50%;
+    animation: fun-wiggle 4.5s ease-in-out 1.5s infinite;
+    transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 320ms ease;
+  }
+
+  .fun-toggle:hover {
+    animation: none;
+    transform: rotate(0deg) scale(1.05);
+    box-shadow: 0 12px 22px -12px color-mix(in srgb, currentColor 55%, transparent);
+  }
+
+  @keyframes fun-wiggle {
+    0%, 82%, 100% { transform: rotate(-2deg); }
+    86% { transform: rotate(-6deg) scale(1.04); }
+    90% { transform: rotate(2deg) scale(1.04); }
+    94% { transform: rotate(-4deg); }
+  }
+
+  .fun-spark {
+    display: inline-block;
+    margin-right: 0.2rem;
+    color: oklch(var(--s));
+    animation: fun-twinkle 1.8s ease-in-out infinite;
+  }
+
+  @keyframes fun-twinkle {
+    0%, 100% { transform: scale(1) rotate(0deg); opacity: 1; }
+    50% { transform: scale(0.6) rotate(45deg); opacity: 0.5; }
+  }
+
+  /* Once open, the note pops and turns into a quiet way to put the pins away. */
+  .fun-close {
+    display: none;
+  }
+
+  .fun-toggle[aria-pressed="true"] {
+    border-style: solid;
+    border-color: color-mix(in srgb, currentColor 15%, transparent);
+    background: oklch(var(--b1));
+    font-size: 1.05rem;
+    opacity: 0.85;
+    transform: rotate(0deg);
+    animation: fun-burst 450ms cubic-bezier(0.34, 1.56, 0.64, 1);
+  }
+
+  .fun-toggle[aria-pressed="true"] .fun-teaser {
+    display: none;
+  }
+
+  /* The close mark is drawn, not typed, so it sits centred beside the handwriting in a small round badge. */
+  .fun-toggle[aria-pressed="true"] .fun-close {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .fun-close-icon {
+    width: 1.1rem;
+    height: 1.1rem;
+    flex-shrink: 0;
+    padding: 0.2rem;
+    border-radius: 50%;
+    background: color-mix(in srgb, currentColor 10%, transparent);
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+    stroke-linecap: round;
+    transition: transform 240ms ease, background-color 240ms ease;
+  }
+
+  .fun-toggle:hover .fun-close-icon {
+    transform: rotate(90deg);
+    background: color-mix(in srgb, currentColor 18%, transparent);
+  }
+
+  @keyframes fun-burst {
+    0% { transform: scale(0.7); opacity: 0; }
+    60% { transform: scale(1.08); }
+    100% { transform: scale(1); }
+  }
+
+  .fun-layer {
+    display: none;
+    pointer-events: none;
+  }
+
+  .map-card.is-fun .fun-layer {
+    display: inline;
+  }
+
+  /* Each pin drops in from above and bounces, one after another. */
+  .fun-drop {
+    animation: fun-drop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) both;
+    animation-delay: calc(500ms + var(--i) * 150ms);
+  }
+
+  @keyframes fun-drop {
+    0% { transform: translateY(-48px); opacity: 0; }
+    40% { opacity: 1; }
+    100% { transform: translateY(0); }
+  }
+
+  .fun-pin circle {
+    fill: oklch(var(--s));
+    stroke: oklch(var(--b1));
+    stroke-width: 2;
+    transition: r 200ms ease;
+  }
+
+  .fun-pin.is-current circle {
+    r: 7;
+  }
+
+  /* The current place sends out a ripple, on the globe and in the list below. */
+  .fun-pin .fun-pulse {
+    display: none;
+    fill: none;
+    stroke: oklch(var(--s));
+    stroke-width: 2;
+    transform-box: fill-box;
+    transform-origin: center;
+  }
+
+  .fun-pin.is-current .fun-pulse {
+    display: inline;
+    animation: fun-ripple 1.6s ease-out infinite;
+  }
+
+  @keyframes fun-ripple {
+    from {
+      opacity: 0.8;
+      transform: scale(1);
+    }
+    to {
+      opacity: 0;
+      transform: scale(3.2);
+    }
+  }
+
+  /* A halo in the card's colour keeps the label readable over land and sea. */
+  .fun-pin text {
+    fill: oklch(var(--bc));
+    font-size: 13px;
+    font-weight: 600;
+    paint-order: stroke;
+    stroke: oklch(var(--b1));
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .fun-toggle,
+    .fun-spark,
+    .fun-drop,
+    .fun-pin.is-current .fun-pulse,
+    .visitor-hello,
+    .hello-wave,
+    .country.is-home {
+      animation: none;
+    }
   }
 
   .map-tooltip {
@@ -369,25 +877,5 @@ const places = ranked.length;
     white-space: nowrap;
     pointer-events: none;
     transform: translate(-50%, calc(-100% - 0.75rem));
-  }
-
-  .place-list {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
-    gap: 0.25rem 2rem;
-    margin-top: 2rem;
-  }
-
-  .place-list li {
-    display: flex;
-    justify-content: space-between;
-    gap: 1rem;
-    padding: 0.4rem 0;
-    border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
-  }
-
-  .place-count {
-    font-family: var(--font-heading);
-    opacity: 0.7;
   }
 </style>
