@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Rebuild daily so the visitors page and the Steam card pick up new numbers.
+  # Rebuild daily so the visitors page and the Steam and Nintendo cards pick up new numbers.
   schedule:
     - cron: "0 8 * * *"
 
@@ -40,6 +40,10 @@ jobs:
         run: node scripts/fetch-steam.mjs
         env:
           STEAM_API_KEY: ${{ secrets.STEAM_API_KEY }}
+      - name: Fetch Nintendo play time
+        run: node scripts/fetch-nintendo.mjs
+        env:
+          NINTENDO_PCTL_TOKEN: ${{ secrets.NINTENDO_PCTL_TOKEN }}
       - name: Build website
         run: npm run build
       - name: Upload website

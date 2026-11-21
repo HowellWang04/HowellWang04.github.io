@@ -1,9 +1,11 @@
 ---
 // Where to find me for a game: a Steam card with my numbers, what I've been playing and what I've played most
-// (fetched daily by scripts/fetch-steam.mjs), and a PlayStation card with my online ID.
+// (fetched daily by scripts/fetch-steam.mjs), a PlayStation card with my online ID, and a Nintendo Switch card with
+// what I've played lately (fetched daily by scripts/fetch-nintendo.mjs).
 import LocalizedText from "./LocalizedText.astro";
 import steam from "../data/steam.json";
-import { siPlaystation, siSteam } from "simple-icons";
+import nintendo from "../data/nintendo.json";
+import { siNintendoswitch, siPlaystation, siSteam } from "simple-icons";
 import { PSN_ID, STEAM_ID } from "../config";
 
 const steamUrl = `https://steamcommunity.com/profiles/${STEAM_ID}/`;
@@ -26,7 +28,7 @@ const stats = [
       <span class="play-platform">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
         Steam
-        <span class="play-arrow" aria-hidden="true">→</span>
+        <svg class="play-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
       </span>
       {steam.level !== null && (
         <span class="play-tiles">
@@ -66,7 +68,7 @@ const stats = [
       )}
       {steam.favorites.length > 0 && (
         <span class="play-recent">
-          <span class="play-label"><LocalizedText en="All-time favorites" zh="玩得最久" /></span>
+          <span class="play-label"><LocalizedText en="Most played" zh="玩得最久" /></span>
           {steam.favorites.map((game) => (
             <span class="play-game">
               {game.image && <img src={game.image} alt="" width="460" height="215" loading="lazy" />}
@@ -83,15 +85,53 @@ const stats = [
       )}
     </a>
 
-    <a class="play-card reveal-card rounded-lg bg-base-100" href={psnUrl} target="_blank" rel="noopener noreferrer" data-reveal>
-      <span class="play-platform">
-        <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siPlaystation.path} /></svg>
-        PlayStation
-        <span class="play-arrow" aria-hidden="true">→</span>
-      </span>
-      <span class="play-id font-heading">{PSN_ID}</span>
-      <span class="play-note"><LocalizedText en="Add me as a friend on PlayStation" zh="在 PlayStation 上加我好友" /></span>
-    </a>
+    <div class="play-side">
+      <a class="play-card reveal-card rounded-lg bg-base-100" href={psnUrl} target="_blank" rel="noopener noreferrer" data-reveal>
+        <span class="play-platform">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siPlaystation.path} /></svg>
+          PlayStation
+          <svg class="play-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
+        </span>
+        <span class="play-id font-heading">{PSN_ID}</span>
+        <span class="play-note"><LocalizedText en="Add me as a friend on PlayStation" zh="在 PlayStation 上加我好友" /></span>
+      </a>
+
+      <!-- Nintendo has no public profile to link to, so this card is just a card. -->
+      <div class="play-card play-card-still reveal-card rounded-lg bg-base-100" data-reveal>
+        <span class="play-platform">
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siNintendoswitch.path} /></svg>
+          Nintendo Switch
+        </span>
+        {nintendo.recent.length > 0 ? (
+          <>
+            <span class="play-tiles play-tiles-two">
+              <span class="play-tile">
+                <span class="play-tile-value">{hours(nintendo.minutesRecent)}</span>
+                <span class="play-tile-label"><LocalizedText en="Hours this month" zh="近一个月小时" /></span>
+              </span>
+              <span class="play-tile">
+                <span class="play-tile-value">{nintendo.daysPlayed}</span>
+                <span class="play-tile-label"><LocalizedText en="Days played" zh="游玩天数" /></span>
+              </span>
+            </span>
+            <span class="play-recent">
+              <span class="play-label"><LocalizedText en="Recently played" zh="最近在玩" /></span>
+              {nintendo.recent.map((game) => (
+                <span class="play-game">
+                  {game.image && <img class="play-icon" src={game.image} alt="" width="256" height="256" loading="lazy" />}
+                  <span class="play-game-info">
+                    <span class="play-game-name">{game.name}</span>
+                  </span>
+                  <span class="play-game-hours">{hours(game.minutes)} h</span>
+                </span>
+              ))}
+            </span>
+          </>
+        ) : (
+          <span class="play-note"><LocalizedText en="Nothing on the Switch lately" zh="最近还没在 Switch 上玩" /></span>
+        )}
+      </div>
+    </div>
   </div>
 </section>
 
@@ -122,6 +162,19 @@ const stats = [
     transform: translateY(-3px);
   }
 
+  /* The Nintendo card links nowhere, so it doesn't lift as if it could be clicked. */
+  .play-card-still:hover {
+    transform: none;
+  }
+
+  /* PlayStation and Nintendo stack in the right-hand column. */
+  .play-side {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    min-width: 0;
+  }
+
   .play-platform {
     display: flex;
     align-items: center;
@@ -137,16 +190,23 @@ const stats = [
     fill: currentColor;
   }
 
-  /* The arrow slides over on hover, like the other outbound links. */
-  .play-arrow {
+  /* An "opens elsewhere" mark: a box with an arrow leaving it, which nudges up and out on hover. */
+  .play-platform .play-arrow {
+    width: 1.15rem;
+    height: 1.15rem;
     margin-left: auto;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
     opacity: 0.5;
     transition: transform 240ms ease, opacity 240ms ease;
   }
 
   .play-card:hover .play-arrow {
     opacity: 1;
-    transform: translateX(4px);
+    transform: translate(2px, -2px);
   }
 
   /* A row of small number tiles: big figure, small label under it. */
@@ -160,6 +220,10 @@ const stats = [
     .play-tiles {
       grid-template-columns: repeat(4, minmax(0, 1fr));
     }
+  }
+
+  .play-tiles.play-tiles-two {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .play-tile {
@@ -211,6 +275,14 @@ const stats = [
     height: auto;
     flex-shrink: 0;
     border-radius: 0.35rem;
+  }
+
+  /* Switch games come with square icons rather than wide headers. */
+  .play-game img.play-icon {
+    width: 2.6rem;
+    height: 2.6rem;
+    object-fit: cover;
+    border-radius: 0.5rem;
   }
 
   .play-game-info {
