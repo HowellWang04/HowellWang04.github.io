@@ -59,7 +59,7 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     const radius = drawnWidth * ringRadius;
     ring.style.left = `${portrait.offsetLeft + boxWidth / 2}px`;
     ring.style.top = `${portrait.offsetTop + boxHeight - drawnHeight * (1 - ringHeight)}px`;
-    ring.style.fontSize = `${drawnHeight * 0.07}px`;
+    ring.style.fontSize = `${drawnHeight * 0.095}px`;
 
     const text = document.documentElement.lang === "zh-CN" ? names.zh : names.en;
     const glyphs = Array.from(text).map((glyph) => {
@@ -229,10 +229,14 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
   .hero-inner {
     position: sticky;
     top: 0;
-    /* The portrait and the About text share this grid, so they can't overlap. The portrait stays centred
-       while the text has its minimum width; after that the left column gives way and the portrait moves left. */
+    /* Short windows keep a fixed gap between the head and the header's line, and narrow ones shrink the
+       portrait (1026 x 1280) so the text column always fits beside it. */
+    --portrait-height: min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24));
+    /* The portrait and the About text share this grid, so they can't overlap. The left column is just wide
+       enough to stand the portrait's centre on the left golden-section line (38.2% across). It can only shrink
+       (minmax from 0), so once the text runs short of its minimum width the portrait slides further left. */
     display: grid;
-    grid-template-columns: minmax(0, 1fr) auto minmax(26rem, 1fr);
+    grid-template-columns: minmax(0, calc(38.2% - var(--portrait-height) * 1026 / 1280 / 2)) auto minmax(26rem, 1fr);
     grid-template-rows: minmax(0, 1fr);
     height: var(--hero-height);
     overflow: hidden;
@@ -255,9 +259,7 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
 
   .hero-portrait {
     display: block;
-    /* Short windows keep a fixed gap between the head and the header's line, and narrow ones shrink the
-       portrait (1026 x 1280) so the text column always fits beside it. */
-    height: min(calc(var(--hero-height) * 0.9), calc(var(--hero-height) - 5rem), calc((100vw - 27rem) * 1.24));
+    height: var(--portrait-height);
     width: auto;
     max-width: none;
     user-select: none;
@@ -272,6 +274,10 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     /* safe: if the note is still too tall, it overflows downward instead of up under the header. */
     justify-content: safe center;
     min-width: 0;
+    /* With the portrait on the golden line the text column gets wide on big screens: keep the note to a
+       comfortable line length, centred in its column. */
+    max-width: 32rem;
+    justify-self: center;
     /* Between the header and the bottom. */
     margin: 5rem 3vw 3rem 1rem;
   }
@@ -344,6 +350,7 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     }
 
     .hero-about {
+      max-width: none;
       margin: 1rem 1.25rem 0;
     }
   }
