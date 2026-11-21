@@ -32,6 +32,7 @@ try {
   const counts = new Map();
   for (let offset = 0; ; offset += 100) {
     const page = await get(`/stats/locations?${range}&limit=100&offset=${offset}`);
+    console.log(`fetch-visitors: locations page ${JSON.stringify(page).slice(0, 500)}`);
     for (const { id, count } of page.stats) {
       const country = String(id ?? "").split("-")[0].toUpperCase();
       if (/^[A-Z]{2}$/.test(country)) counts.set(country, (counts.get(country) ?? 0) + count);
