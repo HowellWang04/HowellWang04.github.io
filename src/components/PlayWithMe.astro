@@ -6,7 +6,7 @@ import LocalizedText from "./LocalizedText.astro";
 import steam from "../data/steam.json";
 import nintendo from "../data/nintendo.json";
 import { siNintendoswitch, siPlaystation, siSteam } from "simple-icons";
-import { PSN_ID, STEAM_ID } from "../config";
+import { PSN_ID, STEAM_ID, SWITCH_FRIEND_CODE } from "../config";
 
 const steamUrl = `https://steamcommunity.com/profiles/${STEAM_ID}/`;
 const psnUrl = `https://profile.playstation.com/${PSN_ID}`;
@@ -102,7 +102,14 @@ const stats = [
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siNintendoswitch.path} /></svg>
           Nintendo Switch
         </span>
-        {nintendo.recent.length > 0 ? (
+        <!-- Friend codes have to be typed in on the console, so a click copies it. -->
+        <button type="button" class="play-copy" data-copy={SWITCH_FRIEND_CODE}>
+          <span class="play-id font-heading">{SWITCH_FRIEND_CODE}</span>
+          <svg class="play-copy-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a1 1 0 0 1 1-1h9" /></svg>
+          <span class="play-copied" data-copied hidden><LocalizedText en="Copied" zh="已复制" /></span>
+        </button>
+        <span class="play-note"><LocalizedText en="Add me as a friend on Switch" zh="在 Switch 上加我好友" /></span>
+        {nintendo.recent.length > 0 && (
           <>
             <span class="play-tiles play-tiles-two">
               <span class="play-tile">
@@ -127,13 +134,34 @@ const stats = [
               ))}
             </span>
           </>
-        ) : (
-          <span class="play-note"><LocalizedText en="Nothing on the Switch lately" zh="最近还没在 Switch 上玩" /></span>
         )}
       </div>
     </div>
   </div>
 </section>
+
+<script>
+  // Copies the Switch friend code and says so for a moment.
+  const setupCopy = () => {
+    document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
+      if (button.dataset.bound) return;
+      button.dataset.bound = "true";
+      const copied = button.querySelector<HTMLElement>("[data-copied]")!;
+      button.addEventListener("click", async () => {
+        try {
+          await navigator.clipboard.writeText(button.dataset.copy!);
+        } catch {
+          return;
+        }
+        copied.hidden = false;
+        window.setTimeout(() => (copied.hidden = true), 1600);
+      });
+    });
+  };
+
+  setupCopy();
+  document.addEventListener("astro:page-load", setupCopy);
+</script>
 
 <style>
   /* minmax(0, ...) lets a long game name shorten with an ellipsis instead of widening the card. */
@@ -336,6 +364,38 @@ const stats = [
     font-family: var(--font-heading);
     font-size: 0.9rem;
     opacity: 0.7;
+  }
+
+  /* The friend code reads like the PlayStation ID, with a copy mark that answers "Copied" when clicked. */
+  .play-copy {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    width: fit-content;
+    text-align: left;
+  }
+
+  .play-copy-icon {
+    width: 1.05rem;
+    height: 1.05rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    opacity: 0.5;
+    transition: opacity 200ms ease, transform 200ms ease;
+  }
+
+  .play-copy:hover .play-copy-icon {
+    opacity: 1;
+    transform: scale(1.1);
+  }
+
+  .play-copied {
+    font-size: 0.8rem;
+    color: oklch(var(--p));
   }
 
   .play-id {
