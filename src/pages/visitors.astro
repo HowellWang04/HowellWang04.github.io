@@ -152,12 +152,16 @@ const funPlaces = [
   { at: [-89.4, 43.07], left: false, place: { en: "Madison", zh: "麦迪逊" }, note: { en: "Where I am now", zh: "我现在在这里" } },
   { at: [129.77, 43.31], left: false, place: { en: "Wangqing, Jilin", zh: "吉林汪清" }, note: { en: "My father's hometown", zh: "父亲的家乡" } },
   { at: [106.35, 39.19], left: true, place: { en: "Shitanjing, Ningxia", zh: "宁夏石炭井" }, note: { en: "My mother's hometown", zh: "母亲的家乡" } },
+  { at: [119.3, 26.08], left: false, place: { en: "Fuzhou", zh: "福州" }, note: { en: "Where my girlfriend lives", zh: "女朋友住的地方" } },
 ];
 const funLabel = ({ place, note }: (typeof funPlaces)[number]) =>
   ({ en: `${note.en} · ${place.en}`, zh: `${note.zh} · ${place.zh}` });
 
 const globeData = JSON.stringify({
-  size, scale, rotate, pinHeight, zones, youPlaces, geometries, visits: visits.map(({ at }: any) => at), pins: funPlaces.map(({ at }) => at),
+  size, scale, rotate, pinHeight, zones, geometries, visits: visits.map(({ at }: any) => at), pins: funPlaces.map(({ at }) => at),
+  youPlaces: Object.fromEntries(Object.entries(youPlaces).map(([code, place]) => [code, { ...place, lean: leanOf(code) }])),
+  // For adding a newcomer's own visit on the spot: when these numbers were fetched, and the scales they set.
+  builtAt: Date.now(), maxCount: max, maxGroup,
 });
 
 const places = visitors.countries.length;
@@ -171,7 +175,7 @@ const places = visitors.countries.length;
       <span data-hello-text></span><span class="hello-wave" aria-hidden="true">👋</span>
     </p>
     {places === 0 && (
-      <p class="-mt-5 mb-8 opacity-80 text-center" data-reveal>
+      <p class="-mt-5 mb-8 opacity-80 text-center" data-reveal data-no-visitors>
         <LocalizedText en="No visitors counted yet. You might be the first." zh="还没有统计到访客，你也许是第一位。" />
       </p>
     )}
@@ -184,7 +188,8 @@ const places = visitors.countries.length;
         {[...groups].map(([group, parts]) => {
           const total = groupTotals.get(group) ?? 0;
           return (
-            <g class:list={["country-group", { "is-visited": total > 0 }]} style={total ? `--shade: ${shade(total)}` : undefined}>
+            <g class:list={["country-group", { "is-visited": total > 0 }]} style={total ? `--shade: ${shade(total)}` : undefined}
+              data-group-box={group} data-total={total}>
               {parts.map(({ index, code }) => {
                 const label = total && code
                   ? { "data-country": code, "data-name-en": nameOf(code).en, "data-name-zh": nameOf(code).zh, "data-count": counts.get(code) ?? 0 }
@@ -225,6 +230,21 @@ const places = visitors.countries.length;
             </g>
           );
         })}
+        <!-- A blank pin for a newcomer whose country has none yet; the script fills it in and drops it in place. -->
+        <g class="visit-pin" style="display: none" data-visit-template>
+          <g class="visit-pin-drop">
+            <g class="visit-pin-body">
+              <line class="visit-pin-hit" data-needle />
+              <circle class="visit-pin-shadow" r="2.5" />
+              <line class="visit-pin-needle" data-needle />
+              <line class="visit-pin-glint" data-needle />
+              <g data-ball>
+                <circle class="visit-pin-head" r="5" />
+                <ellipse class="visit-pin-shine" cx="-1.8" cy="-2" rx="1.6" ry="1.1" transform="rotate(-30 -1.8 -2)" />
+              </g>
+            </g>
+          </g>
+        </g>
         <g class="fun-layer">
           {funPlaces.map((place, index) => (
             <g class="fun-pin" data-pin={index}>
@@ -477,8 +497,57 @@ const places = visitors.countries.length;
 
     // Greet the newcomer by the country of their clock's time zone. Once the page has settled the globe turns to
     // that country and it glows, unless they've already taken hold of the globe.
-    const you = data.youPlaces[data.zones[Intl.DateTimeFormat().resolvedOptions().timeZone]];
+    const youCode = data.zones[Intl.DateTimeFormat().resolvedOptions().timeZone];
+    const you = data.youPlaces[youCode];
     const hello = document.querySelector<HTMLElement>("[data-visitor-hello]");
+
+    // The map's numbers were fetched when the site was last built. A newcomer who first came by after that isn't in
+    // them yet, so their own visit is added here, on their screen only, until the next build counts it for real.
+    let addedYou = false;
+    const addMyVisit = () => {
+      let firstVisit = 0;
+      try {
+        firstVisit = Number(localStorage.getItem("guanhao-visited"));
+      } catch {
+        return;
+      }
+      if (!you || addedYou || !(firstVisit > data.builtAt)) return;
+      addedYou = true;
+      // They are the first, so "no visitors yet" no longer holds.
+      document.querySelector<HTMLElement>("[data-no-visitors]")?.remove();
+      const box =globe.querySelector<SVGGElement>(`[data-group-box="${you.group}"]`);
+      if (box) {
+        const total = Number(box.dataset.total) + 1;
+        box.dataset.total = String(total);
+        box.classList.add("is-visited");
+        const shade = 0.2 + 0.5 * Math.log(1 + total) / Math.log(1 + Math.max(data.maxGroup, total));
+        box.style.setProperty("--shade", shade.toFixed(2));
+      }
+      const existing = visitPins.find((pin) => pin.dataset.country === youCode);
+      if (existing) {
+        existing.dataset.count = String(Number(existing.dataset.count) + 1);
+      } else {
+        // A new pin, dropped in like the fun-fact ones.
+        const template = globe.querySelector<SVGGElement>("[data-visit-template]")!;
+        const pin = template.cloneNode(true) as SVGGElement;
+        pin.removeAttribute("data-visit-template");
+        pin.style.display = "";
+        pin.classList.add("is-new");
+        Object.assign(pin.dataset, {
+          visit: String(data.visits.length), country: youCode, nameEn: you.en, nameZh: you.zh, count: "1",
+          lean: you.lean.join(" "),
+        });
+        const size = 0.8 + 0.6 * Math.log(2) / Math.log(1 + Math.max(data.maxCount, 1));
+        pin.querySelector<SVGGElement>(".visit-pin-body")!.style.setProperty("--size", size.toFixed(2));
+        data.visits.push(you.at);
+        template.before(pin);
+        visitPins.push(pin);
+      }
+      redraw();
+    };
+    addMyVisit();
+    // On the very first page the visit is recorded a moment after the page sets up.
+    window.addEventListener("guanhao:first-visit", addMyVisit);
     if (you && hello) {
       const text = hello.querySelector<HTMLElement>("[data-hello-text]")!;
       const the = /^(United|Netherlands|Philippines|Bahamas|Gambia|Maldives|Czech|Dominican|Central African)/.test(you.en) ? "the " : "";
@@ -581,6 +650,11 @@ const places = visitors.countries.length;
   /* With the fun fact open, the visitor pins step back so the labels read clearly. */
   .map-card.is-fun .visit-pin {
     opacity: 0.3;
+  }
+
+  /* A newcomer's own new pin drops in from above. */
+  .visit-pin.is-new .visit-pin-drop {
+    animation: fun-drop 700ms cubic-bezier(0.34, 1.56, 0.64, 1) 1.4s both;
   }
 
   .visit-pin-body {
@@ -858,6 +932,7 @@ const places = visitors.countries.length;
     .fun-toggle,
     .fun-spark,
     .fun-drop,
+    .visit-pin.is-new .visit-pin-drop,
     .fun-pin.is-current .fun-pulse,
     .visitor-hello,
     .hello-wave,

@@ -64,7 +64,9 @@ const { title, description, image = '/social_img.webp', ogType = 'website' } = A
 			// filter() says why a hit wouldn't be sent (localhost, or switched off with #toggle-goatcounter).
 			if (localStorage.getItem(visitedKey) || goatcounter.filter?.()) return;
 			goatcounter.count({ path: "visit", title: "First visit", event: true });
-			localStorage.setItem(visitedKey, "1");
+			// When this browser first came by, so the visitor map can show it before the next build counts it.
+			localStorage.setItem(visitedKey, String(Date.now()));
+			window.dispatchEvent(new Event("guanhao:first-visit"));
 		} catch {
 			// Storage blocked: skip the visit rather than count this browser again on every page.
 		}
