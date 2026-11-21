@@ -61,7 +61,8 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     ring.style.top = `${portrait.offsetTop + boxHeight - drawnHeight * (1 - ringHeight)}px`;
     ring.style.fontSize = `${drawnHeight * 0.095}px`;
 
-    const text = document.documentElement.lang === "zh-CN" ? names.zh : names.en;
+    const zh = document.documentElement.lang === "zh-CN";
+    const text = zh ? names.zh : names.en;
     const glyphs = Array.from(text).map((glyph) => {
       const letter = document.createElement("span");
       letter.className = "hero-ring-letter";
@@ -72,7 +73,10 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     });
     spin.replaceChildren();
     const unit = glyphs.reduce((sum, { width }) => sum + width, 0) || 1;
-    const repeats = Math.max(1, Math.round((2 * Math.PI * radius) / unit));
+    // The name repeats as many times as comes closest to closing the ring, then stretches or squeezes a little to
+    // close it exactly. Chinese characters fill their whole square, so they aim for about a quarter more room.
+    const room = zh ? 1.25 : 1;
+    const repeats = Math.max(1, Math.round((2 * Math.PI * radius) / (unit * room)));
     const total = unit * repeats;
 
     const letters: HTMLElement[] = [];
