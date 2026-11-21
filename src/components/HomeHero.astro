@@ -148,6 +148,14 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     // Start far into the loop so running it backwards never hits the beginning.
     turn.totalTime(turn.duration() * 1000);
 
+    // The reel's speed is its base speed (which the scroll flips) plus a push from the mouse, which fades away.
+    const speed = { base: 1, push: 0 };
+    const steer = () => {
+      speed.push *= Math.exp(-gsap.ticker.deltaRatio() / 40);
+      turn.timeScale(speed.base + speed.push);
+    };
+    gsap.ticker.add(steer);
+
     // Only turn the reel when the scroll changes direction, not on every scroll frame.
     let scrollDirection = 1;
     const direction = ScrollTrigger.create({
@@ -156,9 +164,36 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
       onUpdate: (self) => {
         if (self.direction === scrollDirection) return;
         scrollDirection = self.direction;
-        gsap.to(turn, { timeScale: self.direction, duration: 0.6, overwrite: true });
+        gsap.to(speed, { base: self.direction, duration: 0.6, overwrite: true });
       },
     });
+
+    // Moving the mouse over the ring drags its near side along with it, and the ring leans a little toward the
+    // pointer. Only a band around the ring counts; both settle back once the mouse stops or moves off it.
+    const figure = portrait.parentElement!;
+    const lean = { x: gsap.quickTo(ring, "rotationX", { duration: 0.8, ease: "power3.out" }), z: gsap.quickTo(ring, "rotation", { duration: 0.8, ease: "power3.out" }) };
+    gsap.set(ring, { rotationX: -3 });
+    let lastX: number | undefined;
+    const onPointerLeave = () => {
+      lastX = undefined;
+      lean.x(-3);
+      lean.z(0);
+    };
+    const onPointerMove = (event: PointerEvent) => {
+      if (event.pointerType !== "mouse") return;
+      // The ring is a point at its centre; the band reaches across the portrait and a little above and below.
+      const centre = ring.getBoundingClientRect();
+      const box = figure.getBoundingClientRect();
+      const across = (event.clientX - centre.left) / (box.width / 2);
+      const down = (event.clientY - centre.top) / (box.height * 0.15);
+      if (Math.abs(across) > 1 || Math.abs(down) > 1) return onPointerLeave();
+      if (lastX !== undefined) speed.push = gsap.utils.clamp(-12, 12, speed.push - (event.clientX - lastX) * 0.05);
+      lastX = event.clientX;
+      lean.x(-3 - down * 4);
+      lean.z(across * -3);
+    };
+    hero.addEventListener("pointermove", onPointerMove);
+    hero.addEventListener("pointerleave", onPointerLeave);
 
     // Stop turning once the hero is off screen.
     const visibility = ScrollTrigger.create({
@@ -187,6 +222,11 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     teardownHero = () => {
       intro.progress(1).kill();
       turn.kill();
+      gsap.ticker.remove(steer);
+      hero.removeEventListener("pointermove", onPointerMove);
+      hero.removeEventListener("pointerleave", onPointerLeave);
+      gsap.killTweensOf(ring);
+      gsap.set(ring, { clearProps: "transform" });
       direction.kill();
       visibility.kill();
       parallax.scrollTrigger?.kill();

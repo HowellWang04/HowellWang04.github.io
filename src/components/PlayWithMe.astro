@@ -11,6 +11,11 @@ import { PSN_ID, STEAM_ID, SWITCH_FRIEND_CODE } from "../config";
 const steamUrl = `https://steamcommunity.com/profiles/${STEAM_ID}/`;
 const psnUrl = `https://profile.playstation.com/${PSN_ID}`;
 const hours = (minutes: number) => (minutes / 60).toFixed(1);
+// Long playtimes in whole hours, short ones to a tenth.
+const libraryHours = (minutes: number) => minutes >= 600 ? Math.round(minutes / 60).toLocaleString("en-US") : hours(minutes);
+// Most games keep their cover at this address; the few that don't fall back to their icon (see the script).
+const cover = (appid: number) => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`;
+const library = steam.library ?? [];
 
 // The numbers across the top of the Steam card; the ones Steam didn't share are left out.
 const stats = [
@@ -22,16 +27,33 @@ const stats = [
 ---
 
 <section id="play" class="scroll-mt-20 pt-16">
-  <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Find Me on Every Platform" zh="各个游戏平台都有我的身影" /></div>
+  <!-- Doodled like My Favorite Video Games (index.astro draws it): a highlighter swipe and a line-drawn handheld
+       console, with a screen, a d-pad and two buttons. -->
+  <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal>
+    <span class="doodle-heading">
+      <LocalizedText en="Find Me on Every Platform" zh="各个游戏平台都有我的身影" />
+      <svg class="doodle-stroke" aria-hidden="true">
+        <path class="doodle-line" />
+        <g class="doodle-icon">
+          <path d="M9 4H39C43 4 46 7 46 11V21C46 25 43 28 39 28H9C5 28 2 25 2 21V11C2 7 5 4 9 4Z" />
+          <path d="M17 9H31C32.1 9 33 9.9 33 11V21C33 22.1 32.1 23 31 23H17C15.9 23 15 22.1 15 21V11C15 9.9 15.9 9 17 9Z" />
+          <path d="M8.5 13v6M5.5 16h6" />
+          <circle cx="38" cy="14" r="1.2" />
+          <circle cx="41" cy="18.5" r="1.2" />
+        </g>
+      </svg>
+    </span>
+  </div>
   <div class="play-grid">
-    <a class="play-card reveal-card rounded-lg bg-base-100" href={steamUrl} target="_blank" rel="noopener noreferrer" data-reveal>
+    <!-- The whole card links to my Steam profile (the link's ::after covers it), except the library button. -->
+    <div class="play-card play-card-steam reveal-card rounded-lg bg-base-100" data-reveal>
       <span class="play-platform">
         <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
-        Steam
+        <a class="play-link" href={steamUrl} target="_blank" rel="noopener noreferrer">Steam</a>
         <svg class="play-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
       </span>
       {steam.level !== null && (
-        <span class="play-tiles">
+        <span class="play-tiles" data-reveal-children>
           {stats.map(({ value, en, zh }) => (
             <span class="play-tile">
               <span class="play-tile-value">{value}</span>
@@ -41,7 +63,7 @@ const stats = [
         </span>
       )}
       {steam.recent.length > 0 && (
-        <span class="play-recent">
+        <span class="play-recent" data-reveal-children>
           <span class="play-label">
             <LocalizedText en="Recently played" zh="最近在玩" />
             {steam.minutesTwoWeeks ? <LocalizedText
@@ -67,8 +89,8 @@ const stats = [
         </span>
       )}
       {steam.favorites.length > 0 && (
-        <span class="play-recent">
-          <span class="play-label"><LocalizedText en="Most played" zh="玩得最久" /></span>
+        <span class="play-recent" data-reveal-children>
+          <span class="play-label"><LocalizedText en="Most played" zh="最长游玩" /></span>
           {steam.favorites.map((game) => (
             <span class="play-game">
               {game.image && <img src={game.image} alt="" width="460" height="215" loading="lazy" />}
@@ -80,12 +102,18 @@ const stats = [
           ))}
         </span>
       )}
+      {library.length > 0 && (
+        <button type="button" class="play-library-open" data-library-open>
+          <LocalizedText en={`Browse all ${library.length} games`} zh={`浏览全部 ${library.length} 款游戏`} />
+          <span aria-hidden="true">→</span>
+        </button>
+      )}
       {steam.level === null ? (
-        <span class="play-note"><LocalizedText en="Add me as a friend on Steam" zh="在 Steam 上加我好友" /></span>
+        <span class="play-note"><LocalizedText en="Add me as a friend on Steam" zh="在 Steam 上添加我为好友" /></span>
       ) : (
         <span class="play-source"><LocalizedText en="Fetched daily from the Steam Web API" zh="数据每日从 Steam Web API 抓取" /></span>
       )}
-    </a>
+    </div>
 
     <div class="play-side">
       <a class="play-card reveal-card rounded-lg bg-base-100" href={psnUrl} target="_blank" rel="noopener noreferrer" data-reveal>
@@ -95,7 +123,7 @@ const stats = [
           <svg class="play-arrow" viewBox="0 0 24 24" aria-hidden="true"><path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" /></svg>
         </span>
         <span class="play-id font-heading">{PSN_ID}</span>
-        <span class="play-note"><LocalizedText en="Add me as a friend on PlayStation" zh="在 PlayStation 上加我好友" /></span>
+        <span class="play-note"><LocalizedText en="Add me as a friend on PlayStation" zh="在 PlayStation 上添加我为好友" /></span>
       </a>
 
       <!-- Nintendo has no public profile to link to, so this card is just a card. -->
@@ -112,10 +140,10 @@ const stats = [
             <span class="play-copied" data-copied hidden><LocalizedText en="Copied" zh="已复制" /></span>
           </span>
         </button>
-        <span class="play-note"><LocalizedText en="Add me as a friend on Switch" zh="在 Switch 上加我好友" /></span>
+        <span class="play-note"><LocalizedText en="Add me as a friend on Switch" zh="在 Switch 上添加我为好友" /></span>
         {nintendo.recent.length > 0 && (
           <>
-            <span class="play-tiles play-tiles-two">
+            <span class="play-tiles play-tiles-two" data-reveal-children>
               <span class="play-tile">
                 <span class="play-tile-value">{hours(nintendo.minutesRecent)}</span>
                 <span class="play-tile-label"><LocalizedText en="Hours this month" zh="近一个月小时" /></span>
@@ -125,7 +153,7 @@ const stats = [
                 <span class="play-tile-label"><LocalizedText en="Days played" zh="游玩天数" /></span>
               </span>
             </span>
-            <span class="play-recent">
+            <span class="play-recent" data-reveal-children>
               <span class="play-label"><LocalizedText en="Recently played" zh="最近在玩" /></span>
               {nintendo.recent.map((game) => (
                 <span class="play-game">
@@ -143,9 +171,44 @@ const stats = [
       </div>
     </div>
   </div>
+
+  {library.length > 0 && (
+    <dialog class="library-dialog bg-base-100 text-base-content" data-library data-lenis-prevent aria-labelledby="library-title">
+      <header class="library-header bg-base-100">
+        <div>
+          <h2 id="library-title" class="library-title">
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
+            <LocalizedText en="My Steam Library" zh="我的 Steam 游戏库" />
+          </h2>
+          <p class="library-sub">
+            <LocalizedText
+              en={`${library.length} games, most played first`}
+              zh={`${library.length} 款游戏，按游玩时长排序`} />
+          </p>
+        </div>
+        <button type="button" class="library-close" data-library-close>
+          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+          <span class="sr-only"><LocalizedText en="Close" zh="关闭" /></span>
+        </button>
+      </header>
+      <ul class="library-grid">
+        {library.map((game) => (
+          <li class="library-game">
+            <img src={cover(game.appid)} data-icon={game.icon} alt="" width="460" height="215" loading="lazy" />
+            <span class="library-name" title={game.name}>{game.name}</span>
+            <span class="library-hours">
+              {game.minutes > 0 ? `${libraryHours(game.minutes)} h` : <LocalizedText en="Not played yet" zh="还没玩过" />}
+            </span>
+          </li>
+        ))}
+      </ul>
+    </dialog>
+  )}
 </section>
 
 <script>
+  import { lenis } from "../scripts/smooth-scroll";
+
   // Copies the Switch friend code and says so for a moment.
   const setupCopy = () => {
     document.querySelectorAll<HTMLButtonElement>("[data-copy]").forEach((button) => {
@@ -166,6 +229,53 @@ const stats = [
 
   setupCopy();
   document.addEventListener("astro:page-load", setupCopy);
+
+  // The Steam library opens in a dialog that scrolls on its own; the page holds still behind it.
+  const setupLibrary = () => {
+    const dialog = document.querySelector<HTMLDialogElement>("[data-library]");
+    const open = document.querySelector<HTMLButtonElement>("[data-library-open]");
+    if (!dialog || !open || dialog.dataset.bound) return;
+    dialog.dataset.bound = "true";
+    const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+    open.addEventListener("click", () => {
+      lenis?.stop();
+      dialog.showModal();
+      dialog.scrollTop = 0;
+      if (still()) return;
+      const easing = "cubic-bezier(0.2, 1, 0.3, 1)";
+      dialog.animate([{ opacity: 0, transform: "translateY(16px)" }, { opacity: 1, transform: "none" }], { duration: 420, easing });
+      // The first screenful of games cascades in.
+      dialog.querySelectorAll<HTMLElement>(".library-game").forEach((game, index) => {
+        if (index > 15) return;
+        game.animate(
+          [{ opacity: 0, translate: "0 16px" }, { opacity: 1, translate: "0 0" }],
+          { duration: 520, delay: 100 + index * 40, easing, fill: "backwards" },
+        );
+      });
+    });
+    dialog.querySelector("[data-library-close]")!.addEventListener("click", () => dialog.close());
+    dialog.addEventListener("click", (event) => {
+      if (event.target === dialog) dialog.close();
+    });
+    dialog.addEventListener("close", () => lenis?.start());
+
+    // A game whose cover isn't at the usual address shows its small icon instead, or an empty tile without one.
+    dialog.addEventListener("error", (event) => {
+      const image = event.target as HTMLImageElement;
+      if (!(image instanceof HTMLImageElement)) return;
+      if (image.dataset.icon && !image.classList.contains("is-icon")) {
+        image.classList.add("is-icon");
+        image.src = image.dataset.icon;
+      } else {
+        // A transparent pixel, so only the tile's background shows instead of a broken image mark.
+        image.src = "data:image/gif;base64,R0lGODlhAQABAIAAAAAAAP///yH5BAEAAAAALAAAAAABAAEAAAIBRAA7";
+      }
+    }, true);
+  };
+
+  setupLibrary();
+  document.addEventListener("astro:page-load", setupLibrary);
 </script>
 
 <style>
@@ -179,7 +289,6 @@ const stats = [
   @media (min-width: 768px) {
     .play-grid {
       grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
-      align-items: start;
     }
   }
 
@@ -206,6 +315,11 @@ const stats = [
     flex-direction: column;
     gap: 1.25rem;
     min-width: 0;
+  }
+
+  /* The two columns end level: the Switch card stretches to meet the bottom of the Steam card. */
+  .play-side > :last-child {
+    flex-grow: 1;
   }
 
   .play-platform {
@@ -430,6 +544,173 @@ const stats = [
     font-size: 0.68rem;
     font-style: italic;
     opacity: 0.45;
+  }
+
+  /* The Steam card is a box with a link in it rather than a link, so it can also hold the library button. The link
+     stretches over the whole card; the button sits above it. */
+  .play-card-steam {
+    position: relative;
+  }
+
+  .play-link::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+  }
+
+  .play-link:focus-visible {
+    outline: none;
+  }
+
+  .play-card-steam:has(.play-link:focus-visible) {
+    outline: 2px solid oklch(var(--p));
+    outline-offset: 2px;
+  }
+
+  .play-library-open {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.65rem 0.9rem;
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+    font-size: 0.95rem;
+    text-align: left;
+    transition: background-color 200ms ease;
+  }
+
+  .play-library-open:hover {
+    background: color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  .play-library-open > span[aria-hidden] {
+    transition: transform 200ms ease;
+  }
+
+  .play-library-open:hover > span[aria-hidden] {
+    transform: translateX(3px);
+  }
+
+  /* The library dialog: a sticky header over a grid of game covers. */
+  .library-dialog {
+    width: min(64rem, calc(100vw - 2rem));
+    max-width: none;
+    max-height: calc(100dvh - 2rem);
+    margin: auto;
+    padding: 0;
+    border: 0;
+    border-radius: 1.25rem;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
+  }
+
+  .library-dialog::backdrop {
+    background: rgb(10 12 18 / 65%);
+    backdrop-filter: blur(4px);
+  }
+
+  :global(html:has(.library-dialog[open])) {
+    overflow: hidden;
+  }
+
+  .library-header {
+    position: sticky;
+    top: 0;
+    z-index: 1;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    padding: 1.25rem 1.5rem 1rem;
+    border-bottom: 1px solid oklch(var(--bc) / 0.1);
+  }
+
+  .library-title {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-size: 1.4rem;
+    font-weight: 700;
+  }
+
+  .library-title svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor;
+  }
+
+  .library-sub {
+    margin-top: 0.2rem;
+    font-size: 0.85rem;
+    opacity: 0.6;
+  }
+
+  .library-close {
+    display: grid;
+    place-items: center;
+    width: 2.25rem;
+    height: 2.25rem;
+    flex-shrink: 0;
+    border-radius: 50%;
+    transition: background-color 200ms ease;
+  }
+
+  .library-close:hover {
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .library-close svg {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+  }
+
+  .library-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(min(100%, 12rem), 1fr));
+    gap: 1.25rem 1rem;
+    padding: 1.25rem 1.5rem 1.5rem;
+  }
+
+  .library-game {
+    display: flex;
+    flex-direction: column;
+    gap: 0.25rem;
+    min-width: 0;
+  }
+
+  .library-game img {
+    width: 100%;
+    height: auto;
+    aspect-ratio: 460 / 215;
+    margin-bottom: 0.25rem;
+    border-radius: 0.5rem;
+    background: color-mix(in srgb, currentColor 6%, transparent);
+  }
+
+  /* The fallback icon is tiny, so it sits at its own size in the middle of the tile. */
+  .library-game img.is-icon {
+    object-fit: none;
+  }
+
+  .library-name {
+    overflow: hidden;
+    font-size: 0.9rem;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+  }
+
+  .library-hours {
+    font-family: var(--font-heading);
+    font-size: 0.8rem;
+    opacity: 0.6;
   }
 
   @media (prefers-reduced-motion: reduce) {

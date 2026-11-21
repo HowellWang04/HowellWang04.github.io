@@ -41,7 +41,7 @@ const {
     </script>
     <BaseHead title={title} description={description} image={image} , ogType={ogType} />
     {TRANSITION_API && <ViewTransitions />}
-    <noscript><style>:is([data-reveal], [data-intro]):not(.is-revealed) { opacity: 1 !important; }</style></noscript>
+    <noscript><style>:is([data-reveal], [data-intro], [data-reveal-children] > *):not(.is-revealed) { opacity: 1 !important; }</style></noscript>
   </head>
   <body>
     <div class="portfolio-canvas flex min-h-[100dvh] flex-col">
@@ -81,9 +81,14 @@ const {
     };
   });
 
-  // Reveal [data-reveal] blocks as they enter the viewport. Each batch plays in reading order:
-  // rows from top to bottom, and items within a row from left to right.
-  let revealObserver: IntersectionObserver | undefined;
+  // Reveal elements as the scroll reaches them: each rises 24px and fades in once it is a little way into the
+  // window. [data-reveal] marks one element; [data-reveal-children] marks each child of a container, so a list or
+  // a grid comes in piece by piece. Each batch plays in reading order: rows from top to bottom, and items within a
+  // row from left to right. An element that scrolls fully out of the window hides again, so it plays again on the
+  // way back. Intro parts ([data-intro]) play once.
+  let enterObserver: IntersectionObserver | undefined;
+  let exitObserver: IntersectionObserver | undefined;
+  const revealTargets = "[data-reveal], [data-reveal-children] > *";
 
   const markRevealed = (element: HTMLElement) => {
     // Skip any CSS opacity transition (e.g. on .btn) so it can't fight the animation below.
@@ -100,26 +105,36 @@ const {
       .sort((a, b) => Math.round(a.rect.top / 24) - Math.round(b.rect.top / 24) || a.rect.left - b.rect.left);
 
     ordered.forEach(({ element }, index) => {
-      revealObserver?.unobserve(element);
       markRevealed(element);
+      if (element.hasAttribute("data-intro")) {
+        enterObserver?.unobserve(element);
+        exitObserver?.unobserve(element);
+      }
       if (!animate) return;
+      // translate, not transform, so hover effects that scale with transform still work while this plays.
       element.animate(
         [
-          { opacity: 0, transform: "translateY(8px)" },
-          { opacity: 1, transform: "none" },
+          { opacity: 0, translate: "0 24px" },
+          { opacity: 1, translate: "0 0" },
         ],
         {
-          duration: 520,
-          delay: Math.min(index * 60, 600),
-          easing: "cubic-bezier(0.22, 1, 0.36, 1)",
+          duration: 560,
+          delay: Math.min(index, 8) * 70,
+          easing: "cubic-bezier(0.2, 1, 0.3, 1)",
           fill: "backwards",
         },
       );
     });
   };
 
+  const hide = (element: HTMLElement) => {
+    element.getAnimations().forEach((animation) => animation.cancel());
+    element.classList.remove("is-revealed");
+  };
+
   const setupReveal = async () => {
-    revealObserver?.disconnect();
+    enterObserver?.disconnect();
+    exitObserver?.disconnect();
     const main = document.querySelector<HTMLElement>("main");
     if (!main) return;
 
@@ -145,23 +160,42 @@ const {
     // Intro parts that didn't animate themselves (intro skipped or failed) join the normal reveal.
     main.querySelectorAll("[data-intro]:not(.is-revealed)").forEach((element) => element.setAttribute("data-reveal", ""));
 
-    const pending = [...document.querySelectorAll<HTMLElement>("main [data-reveal]:not(.is-revealed)")];
+    const pending = [...main.querySelectorAll<HTMLElement>(revealTargets)].filter(
+      (element) => !(element.hasAttribute("data-intro") && element.classList.contains("is-revealed")),
+    );
     if (!pending.length) return;
 
-    revealObserver = new IntersectionObserver((entries) => {
-      const visible = entries.filter((entry) => entry.isIntersecting).map((entry) => entry.target as HTMLElement);
-      if (visible.length) revealInOrder(visible);
-    }, { threshold: 0.1 });
-    pending.forEach((element) => revealObserver!.observe(element));
+    // In once it is 6% of the window past the edge; out once it has fully left.
+    enterObserver = new IntersectionObserver((entries) => {
+      const arriving = entries
+        .filter((entry) => entry.isIntersecting && !entry.target.classList.contains("is-revealed"))
+        .map((entry) => entry.target as HTMLElement);
+      if (arriving.length) revealInOrder(arriving);
+    }, { rootMargin: "-6% 0px -6% 0px" });
+    exitObserver = new IntersectionObserver((entries) => {
+      entries.forEach((entry) => {
+        if (!entry.isIntersecting && entry.target.classList.contains("is-revealed")) hide(entry.target as HTMLElement);
+      });
+    });
+    pending.forEach((element) => {
+      enterObserver!.observe(element);
+      exitObserver!.observe(element);
+    });
   };
 
   // Keyboard users tabbing ahead of the scroll still see what they focus.
   document.addEventListener("focusin", (event) => {
-    const element = (event.target as HTMLElement).closest<HTMLElement>("[data-reveal]:not(.is-revealed)");
+    const target = event.target as HTMLElement;
+    const element = [...document.querySelectorAll<HTMLElement>(revealTargets)].find(
+      (candidate) => !candidate.classList.contains("is-revealed") && candidate.contains(target),
+    );
     if (element) revealInOrder([element]);
   });
 
   setupReveal();
   document.addEventListener("astro:page-load", setupReveal);
-  document.addEventListener("astro:before-swap", () => revealObserver?.disconnect());
+  document.addEventListener("astro:before-swap", () => {
+    enterObserver?.disconnect();
+    exitObserver?.disconnect();
+  });
 </script>

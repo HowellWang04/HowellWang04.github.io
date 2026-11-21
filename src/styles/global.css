@@ -75,14 +75,14 @@ html[data-theme="portfolio-light"] :is(.reveal-card, .card):hover {
     box-shadow: 0 18px 40px -20px rgba(60, 38, 28, 0.28);
 }
 
-/* Page reveal: [data-reveal] blocks start hidden in the HTML and are revealed by BaseLayout's script,
-   top to bottom and left to right. */
-:is([data-reveal], [data-intro]):not(.is-revealed) {
+/* Scroll reveal: [data-reveal] elements and the children of [data-reveal-children] start hidden in the HTML and
+   are revealed by BaseLayout's script as the scroll reaches them. */
+:is([data-reveal], [data-intro], [data-reveal-children] > *):not(.is-revealed) {
     opacity: 0;
 }
 
 @media (prefers-reduced-motion: reduce) {
-    :is([data-reveal], [data-intro]):not(.is-revealed) {
+    :is([data-reveal], [data-intro], [data-reveal-children] > *):not(.is-revealed) {
         opacity: 1;
     }
 }
@@ -107,4 +107,53 @@ html[data-theme="portfolio-light"] :is(.reveal-card, .card):hover {
 @keyframes page-enter-down {
     from { opacity: 0; transform: translateY(-20px); }
     to { opacity: 1; transform: translateY(0); }
+}
+
+/* Doodled headings (scripted in index.astro): a highlighter swipe behind the words and a line-drawn icon. */
+/* The heading leaves room on its right for its icon; the doodle's SVG is laid over it by the script. */
+.doodle-heading {
+    position: relative;
+    /* Keeps the doodle's layer behind the words but in front of the page. */
+    isolation: isolate;
+    display: inline-block;
+    padding-right: 1.9em;
+}
+
+/* Behind the words, so the highlighter stroke sits under the ink like a real marker. */
+.doodle-stroke {
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: -1;
+    overflow: visible;
+    pointer-events: none;
+}
+
+.doodle-stroke :is(path, circle) {
+    fill: none;
+    stroke: oklch(var(--p));
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    /* The icon is drawn scaled; keep its line weight in screen pixels. */
+    vector-effect: non-scaling-stroke;
+    stroke-width: 3;
+}
+
+.doodle-icon :is(path, circle) {
+    stroke-width: 2.5;
+}
+
+/* A broad, flat-tipped, see-through highlighter. Multiply lets the paper and the letters show through it. */
+.doodle-stroke .doodle-line {
+    stroke: rgb(245 196 82 / 62%);
+    stroke-width: 0.62em;
+    stroke-linecap: butt;
+    vector-effect: none;
+    mix-blend-mode: multiply;
+}
+
+/* Multiply vanishes on a dark page, so a dimmer amber is laid on normally there. */
+html[data-theme="dark"] .doodle-stroke .doodle-line {
+    stroke: rgb(214 150 60 / 38%);
+    mix-blend-mode: normal;
 }

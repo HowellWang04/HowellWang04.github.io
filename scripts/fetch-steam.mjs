@@ -1,6 +1,6 @@
 // Fetches the Steam numbers for the home page (level, game count, total hours, when the account started, recently
-// played games with their achievement progress, and the most played games of all time) and writes them to
-// src/data/steam.json. Needs a Steam Web API key in STEAM_API_KEY; without one it leaves the file as it is.
+// played games with their achievement progress, the most played games of all time, and the whole library) and writes
+// them to src/data/steam.json. Needs a Steam Web API key in STEAM_API_KEY; without one it leaves the file as it is.
 // The profile has to be public for Steam to share the game details.
 import { readFile, writeFile } from "node:fs/promises";
 
@@ -70,6 +70,16 @@ try {
     minutesTwoWeeks: games.reduce((sum, game) => sum + game.playtime_2weeks, 0),
     recent,
     favorites: favoriteGames,
+    // Every owned game, most played first. Asking the store for each cover would take too many requests, so the
+    // page guesses the cover URL and falls back to this small icon when a game keeps its cover elsewhere.
+    library: [...owned].sort((a, b) => b.playtime_forever - a.playtime_forever).map((game) => ({
+      appid: game.appid,
+      name: game.name,
+      minutes: game.playtime_forever,
+      icon: game.img_icon_url
+        ? `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`
+        : null,
+    })),
   };
   await writeFile(new URL("../src/data/steam.json", import.meta.url), JSON.stringify(data, null, 2) + "\n");
   console.log(`fetch-steam: level ${data.level}, ${data.gameCount} games, ${Math.round(data.minutesTotal / 60)} hours, `
