@@ -16,8 +16,12 @@ const api = `https://${code}.goatcounter.com/api/v0`;
 const range = `start=2020-01-01T00:00:00Z&end=${new Date().toISOString().slice(0, 13)}:00:00Z`;
 
 const get = async (path) => {
-  const response = await fetch(`${api}${path}`, { headers: { Authorization: `Bearer ${token}` } });
-  if (!response.ok) throw new Error(`GoatCounter ${path} answered ${response.status}`);
+  const response = await fetch(`${api}${path}`, {
+    headers: { Authorization: `Bearer ${token}`, "Content-Type": "application/json" },
+  });
+  if (!response.ok) {
+    throw new Error(`GoatCounter ${path} answered ${response.status}: ${(await response.text()).slice(0, 200)}`);
+  }
   return response.json();
 };
 
