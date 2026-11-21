@@ -12,8 +12,10 @@ if (!token || !code) {
 }
 
 const api = `https://${code}.goatcounter.com/api/v0`;
-// Count from well before the site started counting, so the numbers cover all time.
-const range = `start=2020-01-01T00:00:00Z&end=${new Date().toISOString().slice(0, 13)}:00:00Z`;
+// Count from well before the site started counting, so the numbers cover all time. Locations are kept per day, so
+// the range runs to the end of tomorrow; ending at the current hour leaves today out of them.
+const tomorrow = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString().slice(0, 10);
+const range = `start=2020-01-01T00:00:00Z&end=${tomorrow}T23:59:59Z`;
 
 const get = async (path) => {
   const response = await fetch(`${api}${path}`, {
