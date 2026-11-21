@@ -1,4 +1,5 @@
-// Fetches the Steam numbers for the home page (level, game count, recently played games) and writes them to
+// Fetches the Steam numbers for the home page (level, game count, total hours, when the account started, recently
+// played games with their achievement progress, and the most played games of all time) and writes them to
 // src/data/steam.json. Needs a Steam Web API key in STEAM_API_KEY; without one it leaves the file as it is.
 // The profile has to be public for Steam to share the game details.
 import { readFile, writeFile } from "node:fs/promises";
@@ -25,29 +26,54 @@ const headerImage = async (appid) => {
   return details?.success ? details.data.header_image : null;
 };
 
+// How many of a game's achievements are unlocked. Games without achievements answer with an error, so they get null.
+const achievements = async (appid) => {
+  const response = await fetch(
+    `https://api.steampowered.com/ISteamUserStats/GetPlayerAchievements/v1/?appid=${appid}&key=${key}&steamid=${steamId}`,
+  );
+  const list = response.ok ? (await response.json()).playerstats?.achievements : undefined;
+  return list?.length ? { done: list.filter((item) => item.achieved).length, total: list.length } : null;
+};
+
 try {
-  const [{ player_level }, { game_count }, { games = [] }] = await Promise.all([
+  const [{ player_level }, { game_count, games: owned = [] }, { games = [] }, { players: [player] = [] }] = await Promise.all([
     get("IPlayerService/GetSteamLevel/v1/?"),
-    get("IPlayerService/GetOwnedGames/v1/?include_played_free_games=1"),
+    get("IPlayerService/GetOwnedGames/v1/?include_played_free_games=1&include_appinfo=1"),
     get("IPlayerService/GetRecentlyPlayedGames/v1/?"),
+    get(`ISteamUser/GetPlayerSummaries/v2/?steamids=${steamId}`),
   ]);
 
-  // The three games played most in the last two weeks.
+  // The three games played most in the last two weeks, and the three played most of all time.
   const top = [...games].sort((a, b) => b.playtime_2weeks - a.playtime_2weeks).slice(0, 3);
-  const recent = await Promise.all(top.map(async (game) => ({
-    appid: game.appid,
-    name: game.name,
-    minutesTwoWeeks: game.playtime_2weeks,
-    image: await headerImage(game.appid),
-  })));
+  const favorites = [...owned].sort((a, b) => b.playtime_forever - a.playtime_forever).slice(0, 3);
+  const [recent, favoriteGames] = await Promise.all([
+    Promise.all(top.map(async (game) => ({
+      appid: game.appid,
+      name: game.name,
+      minutesTwoWeeks: game.playtime_2weeks,
+      image: await headerImage(game.appid),
+      achievements: await achievements(game.appid),
+    }))),
+    Promise.all(favorites.map(async (game) => ({
+      appid: game.appid,
+      name: game.name,
+      minutes: game.playtime_forever,
+      image: await headerImage(game.appid),
+    }))),
+  ]);
   const data = {
     level: player_level,
     gameCount: game_count,
+    minutesTotal: owned.reduce((sum, game) => sum + game.playtime_forever, 0),
+    // Seconds since 1970; only there when the profile is public.
+    memberSince: player?.timecreated ? new Date(player.timecreated * 1000).getUTCFullYear() : null,
     minutesTwoWeeks: games.reduce((sum, game) => sum + game.playtime_2weeks, 0),
     recent,
+    favorites: favoriteGames,
   };
   await writeFile(new URL("../src/data/steam.json", import.meta.url), JSON.stringify(data, null, 2) + "\n");
-  console.log(`fetch-steam: level ${data.level}, ${data.gameCount} games, ${recent.length} played recently.`);
+  console.log(`fetch-steam: level ${data.level}, ${data.gameCount} games, ${Math.round(data.minutesTotal / 60)} hours, `
+    + `${recent.length} played recently, ${favoriteGames.length} favorites.`);
 } catch (error) {
   // A Steam hiccup shouldn't stop the site from deploying; the card just shows the data it already has.
   console.warn(`fetch-steam: ${error.message}, keeping the current Steam data.`);

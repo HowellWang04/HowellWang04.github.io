@@ -1,6 +1,6 @@
 ---
-// Where to find me for a game: a Steam card with what I've been playing (fetched daily by scripts/fetch-steam.mjs)
-// and a PlayStation card with my online ID.
+// Where to find me for a game: a Steam card with my numbers, what I've been playing and what I've played most
+// (fetched daily by scripts/fetch-steam.mjs), and a PlayStation card with my online ID.
 import LocalizedText from "./LocalizedText.astro";
 import steam from "../data/steam.json";
 import { siPlaystation, siSteam } from "simple-icons";
@@ -9,6 +9,14 @@ import { PSN_ID, STEAM_ID } from "../config";
 const steamUrl = `https://steamcommunity.com/profiles/${STEAM_ID}/`;
 const psnUrl = `https://profile.playstation.com/${PSN_ID}`;
 const hours = (minutes: number) => (minutes / 60).toFixed(1);
+
+// The numbers across the top of the Steam card; the ones Steam didn't share are left out.
+const stats = [
+  { value: steam.level, en: "Level", zh: "等级" },
+  { value: steam.gameCount, en: "Games", zh: "游戏数" },
+  { value: steam.minutesTotal && Math.round(steam.minutesTotal / 60).toLocaleString("en-US"), en: "Hours played", zh: "累计小时" },
+  { value: steam.memberSince, en: "On Steam since", zh: "入坑年份" },
+].filter(({ value }) => value);
 ---
 
 <section id="play" class="scroll-mt-20 pt-16">
@@ -21,25 +29,56 @@ const hours = (minutes: number) => (minutes / 60).toFixed(1);
         <span class="play-arrow" aria-hidden="true">→</span>
       </span>
       {steam.level !== null && (
-        <span class="play-stats">
-          <LocalizedText en={`Level ${steam.level} · ${steam.gameCount} games`} zh={`${steam.level} 级 · ${steam.gameCount} 款游戏`} />
-          {steam.minutesTwoWeeks ? <LocalizedText
-            en={`${hours(steam.minutesTwoWeeks)} hours in the past two weeks`}
-            zh={`过去两周游玩 ${hours(steam.minutesTwoWeeks)} 小时`} /> : null}
+        <span class="play-tiles">
+          {stats.map(({ value, en, zh }) => (
+            <span class="play-tile">
+              <span class="play-tile-value">{value}</span>
+              <span class="play-tile-label"><LocalizedText en={en} zh={zh} /></span>
+            </span>
+          ))}
         </span>
       )}
-      {steam.recent.length > 0 ? (
+      {steam.recent.length > 0 && (
         <span class="play-recent">
-          <span class="play-label"><LocalizedText en="Recently played" zh="最近在玩" /></span>
+          <span class="play-label">
+            <LocalizedText en="Recently played" zh="最近在玩" />
+            {steam.minutesTwoWeeks ? <LocalizedText
+              en={`${hours(steam.minutesTwoWeeks)} h in two weeks`}
+              zh={`两周 ${hours(steam.minutesTwoWeeks)} 小时`} /> : null}
+          </span>
           {steam.recent.map((game) => (
             <span class="play-game">
               {game.image && <img src={game.image} alt="" width="460" height="215" loading="lazy" />}
-              <span class="play-game-name">{game.name}</span>
+              <span class="play-game-info">
+                <span class="play-game-name">{game.name}</span>
+                {/* Achievement progress, for games that have achievements. */}
+                {game.achievements && (
+                  <span class="play-achievements">
+                    <span class="play-bar"><span style={`--done: ${game.achievements.done / game.achievements.total}`}></span></span>
+                    <span class="play-achievements-count">{game.achievements.done}/{game.achievements.total}</span>
+                  </span>
+                )}
+              </span>
               <span class="play-game-hours">{hours(game.minutesTwoWeeks)} h</span>
             </span>
           ))}
         </span>
-      ) : (
+      )}
+      {steam.favorites.length > 0 && (
+        <span class="play-recent">
+          <span class="play-label"><LocalizedText en="All-time favorites" zh="玩得最久" /></span>
+          {steam.favorites.map((game) => (
+            <span class="play-game">
+              {game.image && <img src={game.image} alt="" width="460" height="215" loading="lazy" />}
+              <span class="play-game-info">
+                <span class="play-game-name">{game.name}</span>
+              </span>
+              <span class="play-game-hours">{Math.round(game.minutes / 60).toLocaleString("en-US")} h</span>
+            </span>
+          ))}
+        </span>
+      )}
+      {steam.level === null && (
         <span class="play-note"><LocalizedText en="Add me as a friend on Steam" zh="在 Steam 上加我好友" /></span>
       )}
     </a>
@@ -110,12 +149,38 @@ const hours = (minutes: number) => (minutes / 60).toFixed(1);
     transform: translateX(4px);
   }
 
-  .play-stats {
+  /* A row of small number tiles: big figure, small label under it. */
+  .play-tiles {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 0.5rem;
+  }
+
+  @media (min-width: 1100px) {
+    .play-tiles {
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+    }
+  }
+
+  .play-tile {
     display: flex;
-    flex-wrap: wrap;
-    gap: 0.25rem 1rem;
-    font-size: 0.9rem;
-    opacity: 0.75;
+    flex-direction: column;
+    gap: 0.15rem;
+    padding: 0.6rem 0.75rem;
+    border-radius: 0.6rem;
+    background: color-mix(in srgb, currentColor 5%, transparent);
+  }
+
+  .play-tile-value {
+    font-family: var(--font-heading);
+    font-size: 1.35rem;
+    font-weight: 700;
+    line-height: 1.1;
+  }
+
+  .play-tile-label {
+    font-size: 0.75rem;
+    opacity: 0.6;
   }
 
   .play-recent {
@@ -125,6 +190,10 @@ const hours = (minutes: number) => (minutes / 60).toFixed(1);
   }
 
   .play-label {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    margin-top: 0.25rem;
     font-size: 0.75rem;
     letter-spacing: 0.15em;
     text-transform: uppercase;
@@ -144,11 +213,49 @@ const hours = (minutes: number) => (minutes / 60).toFixed(1);
     border-radius: 0.35rem;
   }
 
+  .play-game-info {
+    display: flex;
+    flex-direction: column;
+    gap: 0.3rem;
+    min-width: 0;
+    flex: 1;
+  }
+
   .play-game-name {
     min-width: 0;
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+  }
+
+  /* Achievement progress: a thin bar that fills to the share unlocked, with the count beside it. */
+  .play-achievements {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 0.75rem;
+  }
+
+  .play-bar {
+    flex: 1;
+    height: 0.3rem;
+    overflow: hidden;
+    border-radius: 999px;
+    background: color-mix(in srgb, currentColor 12%, transparent);
+  }
+
+  .play-bar span {
+    display: block;
+    width: calc(var(--done) * 100%);
+    height: 100%;
+    border-radius: inherit;
+    background: oklch(var(--p));
+  }
+
+  .play-achievements-count {
+    flex-shrink: 0;
+    font-family: var(--font-heading);
+    opacity: 0.6;
   }
 
   .play-game-hours {

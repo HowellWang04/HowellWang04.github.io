@@ -1,6 +1,9 @@
 {
   "level": null,
   "gameCount": null,
+  "minutesTotal": null,
+  "memberSince": null,
   "minutesTwoWeeks": null,
-  "recent": []
+  "recent": [],
+  "favorites": []
 }
