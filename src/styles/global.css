@@ -1,9 +1,16 @@
 /* Source Serif 4 for body text, Courier Prime for headings (loaded in BaseHead). Neither has Chinese glyphs,
-   so Chinese text uses LXGW WenKai GB: Regular in body text, Medium in headings. */
+   so Chinese text uses Alimama FangYuanTi, a rounded variable font that covers every weight. It isn't sliced, so the
+   whole file (about 2.8 MB) loads once and is cached after that; swap shows the fallback until it arrives. */
+@font-face {
+    font-family: "Alimama FangYuanTi VF";
+    src: url(https://cdn.jsdelivr.net/npm/@fontpkg/alimama-fang-yuan-ti-vf@1.0.5/AlimamaFangYuanTiVF-Thin.woff2) format("woff2");
+    font-weight: 100 900;
+    font-display: swap;
+}
+
 :root {
-    --font-body: "Source Serif 4", "LXGW WenKai GB", Georgia, serif;
-    /* The web package names its Medium weight as a separate family. */
-    --font-heading: "Courier Prime", "LXGW WenKai GB Medium", "LXGW WenKai GB", "Courier New", monospace;
+    --font-body: "Source Serif 4", "Alimama FangYuanTi VF", Georgia, serif;
+    --font-heading: "Courier Prime", "Alimama FangYuanTi VF", "Courier New", monospace;
     /* Handwritten notes: Caveat for English, Long Cang for Chinese. */
     --font-hand: "Caveat", "Long Cang", cursive;
 }
@@ -12,15 +19,9 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
 }
 
-/* Bold headings get WenKai Medium as-is; don't let the browser smear a fake bold on top. */
+/* FangYuanTi has real bold weights; don't let the browser smear a fake bold on top. */
 h1, h2, h3, h4, h5, h6, .font-heading {
     font-synthesis-weight: none;
-}
-
-/* WenKai glyphs sit high in a 20px badge; give Chinese badges more room and nudge the text down. */
-html[lang="zh-CN"] .badge:has([data-zh]) {
-    height: auto;
-    padding: 0.1875rem 0.75rem 0.0625rem;
 }
 
 .time-line-container>div:last-child .education__time>.education__line {

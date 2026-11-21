@@ -22,7 +22,7 @@ const stats = [
 ---
 
 <section id="play" class="scroll-mt-20 pt-16">
-  <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Play With Me" zh="来一起玩" /></div>
+  <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Find Me on Every Platform" zh="各个游戏平台都有我的身影" /></div>
   <div class="play-grid">
     <a class="play-card reveal-card rounded-lg bg-base-100" href={steamUrl} target="_blank" rel="noopener noreferrer" data-reveal>
       <span class="play-platform">
@@ -80,8 +80,10 @@ const stats = [
           ))}
         </span>
       )}
-      {steam.level === null && (
+      {steam.level === null ? (
         <span class="play-note"><LocalizedText en="Add me as a friend on Steam" zh="在 Steam 上加我好友" /></span>
+      ) : (
+        <span class="play-source"><LocalizedText en="Fetched daily from the Steam Web API" zh="数据每日从 Steam Web API 抓取" /></span>
       )}
     </a>
 
@@ -105,8 +107,10 @@ const stats = [
         <!-- Friend codes have to be typed in on the console, so a click copies it. -->
         <button type="button" class="play-copy" data-copy={SWITCH_FRIEND_CODE}>
           <span class="play-id font-heading">{SWITCH_FRIEND_CODE}</span>
-          <svg class="play-copy-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a1 1 0 0 1 1-1h9" /></svg>
-          <span class="play-copied" data-copied hidden><LocalizedText en="Copied" zh="已复制" /></span>
+          <span class="play-copy-mark">
+            <svg class="play-copy-icon" viewBox="0 0 24 24" aria-hidden="true"><rect x="9" y="9" width="11" height="11" rx="2" /><path d="M5 15V5a1 1 0 0 1 1-1h9" /></svg>
+            <span class="play-copied" data-copied hidden><LocalizedText en="Copied" zh="已复制" /></span>
+          </span>
         </button>
         <span class="play-note"><LocalizedText en="Add me as a friend on Switch" zh="在 Switch 上加我好友" /></span>
         {nintendo.recent.length > 0 && (
@@ -133,6 +137,7 @@ const stats = [
                 </span>
               ))}
             </span>
+            <span class="play-source"><LocalizedText en="Fetched daily from the Nintendo Switch Parental Controls API" zh="数据每日从任天堂 Switch 家长控制 API 抓取" /></span>
           </>
         )}
       </div>
@@ -393,7 +398,18 @@ const stats = [
     transform: scale(1.1);
   }
 
+  /* "Copied" floats just above the mark, so it never pushes the code onto a second line. */
+  .play-copy-mark {
+    position: relative;
+    display: inline-flex;
+  }
+
   .play-copied {
+    position: absolute;
+    bottom: calc(100% + 0.3rem);
+    left: 50%;
+    transform: translateX(-50%);
+    white-space: nowrap;
     font-size: 0.8rem;
     color: oklch(var(--p));
   }
@@ -406,6 +422,14 @@ const stats = [
   .play-note {
     font-size: 0.9rem;
     opacity: 0.7;
+  }
+
+  /* Where the numbers come from, in small print at the foot of the card. */
+  .play-source {
+    margin-top: auto;
+    font-size: 0.68rem;
+    font-style: italic;
+    opacity: 0.45;
   }
 
   @media (prefers-reduced-motion: reduce) {

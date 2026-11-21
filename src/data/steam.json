@@ -1,9 +1,50 @@
 {
-  "level": null,
-  "gameCount": null,
-  "minutesTotal": null,
-  "memberSince": null,
-  "minutesTwoWeeks": null,
-  "recent": [],
-  "favorites": []
+  "level": 35,
+  "gameCount": 159,
+  "minutesTotal": 257580,
+  "memberSince": 2021,
+  "minutesTwoWeeks": 5550,
+  "recent": [
+    {
+      "appid": 365670,
+      "name": "Blender",
+      "minutesTwoWeeks": 5010,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/365670/fbedd6412dcde3dc204536a601d7145576808888/header.jpg?t=1794327213",
+      "achievements": null
+    },
+    {
+      "appid": 2868840,
+      "name": "Slay the Spire 2",
+      "minutesTwoWeeks": 402,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2868840/b0958d387dc366211e0f353443710cfcf9fdb020/header.jpg?t=1787169309",
+      "achievements": null
+    },
+    {
+      "appid": 2321960,
+      "name": "Spirit Crossing",
+      "minutesTwoWeeks": 126,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2321960/ef5229ee7c51162c7233296443ef0520408387cd/header.jpg?t=1794892094",
+      "achievements": null
+    }
+  ],
+  "favorites": [
+    {
+      "appid": 2868840,
+      "name": "Slay the Spire 2",
+      "minutes": 26700,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/2868840/b0958d387dc366211e0f353443710cfcf9fdb020/header.jpg?t=1787169309"
+    },
+    {
+      "appid": 730,
+      "name": "Counter-Strike 2",
+      "minutes": 24360,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/730/162664aa5da85f418105350c5d67ca565f6c3713/header.jpg?t=1793054556"
+    },
+    {
+      "appid": 1172470,
+      "name": "Apex Legends",
+      "minutes": 23280,
+      "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/dc5c390e9a273a7248f75c1b2d59987f6179323c/header_alt_assets_7.jpg?t=1794958367"
+    }
+  ]
 }

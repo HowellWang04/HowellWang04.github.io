@@ -1,6 +1,6 @@
 ---
 // Typographic cover for projects without cover art: the title is set as a small print, sized to fit the frame.
-// Anything after a colon in the title becomes a handwritten subtitle.
+// Anything after a colon in the title becomes a subtitle.
 const { class: className = "", title = "" } = Astro.props;
 
 const [main, ...rest] = title.split(":");
@@ -110,12 +110,10 @@ const style = [
 
   .title-cover-sub {
     margin: 1.5cqw 0 0;
-    font-family: "Caveat", cursive;
+    font-family: var(--font-body);
     font-weight: 600;
-    font-size: 9cqw;
-    line-height: 1;
+    font-size: 6cqw;
+    line-height: 1.1;
     color: oklch(var(--p));
-    transform: rotate(-2deg);
-    transform-origin: left center;
   }
 </style>
