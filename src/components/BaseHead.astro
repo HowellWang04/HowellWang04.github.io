@@ -2,6 +2,7 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
+import { GOATCOUNTER_CODE } from '../config';
 
 export interface Props {
 	title: string;
@@ -47,3 +48,23 @@ const { title, description, image = '/social_img.webp', ogType = 'website' } = A
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
+
+<!-- Visitor counting (GoatCounter: no cookies, localhost is ignored). Page changes don't reload the page, so the
+     script below counts each page itself instead of letting count.js count only the first one. -->
+{GOATCOUNTER_CODE && (
+	<script is:inline async data-goatcounter={`https://${GOATCOUNTER_CODE}.goatcounter.com/count`} data-goatcounter-settings='{"no_onload": true}' src="https://gc.zgo.at/count.js"></script>
+)}
+
+<script>
+	// count.js loads async, so the first page may arrive before it does; wait a few seconds for it.
+	const countPage = () => {
+		let tries = 0;
+		const timer = window.setInterval(() => {
+			const goatcounter = (window as any).goatcounter;
+			if (goatcounter?.count) goatcounter.count({ path: location.pathname });
+			if (goatcounter?.count || ++tries > 50) window.clearInterval(timer);
+		}, 100);
+	};
+
+	if (document.querySelector("[data-goatcounter]")) document.addEventListener("astro:page-load", countPage);
+</script>

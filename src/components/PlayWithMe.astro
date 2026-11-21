@@ -1,0 +1,182 @@
+---
+// Where to find me for a game: a Steam card with what I've been playing (fetched daily by scripts/fetch-steam.mjs)
+// and a PlayStation card with my online ID.
+import LocalizedText from "./LocalizedText.astro";
+import steam from "../data/steam.json";
+import { siPlaystation, siSteam } from "simple-icons";
+import { PSN_ID, STEAM_ID } from "../config";
+
+const steamUrl = `https://steamcommunity.com/profiles/${STEAM_ID}/`;
+const psnUrl = `https://profile.playstation.com/${PSN_ID}`;
+const hours = (minutes: number) => (minutes / 60).toFixed(1);
+---
+
+<section id="play" class="scroll-mt-20 pt-16">
+  <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Play With Me" zh="来一起玩" /></div>
+  <div class="play-grid">
+    <a class="play-card reveal-card rounded-lg bg-base-100" href={steamUrl} target="_blank" rel="noopener noreferrer" data-reveal>
+      <span class="play-platform">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
+        Steam
+        <span class="play-arrow" aria-hidden="true">→</span>
+      </span>
+      {steam.level !== null && (
+        <span class="play-stats">
+          <LocalizedText en={`Level ${steam.level} · ${steam.gameCount} games`} zh={`${steam.level} 级 · ${steam.gameCount} 款游戏`} />
+          {steam.minutesTwoWeeks ? <LocalizedText
+            en={`${hours(steam.minutesTwoWeeks)} hours in the past two weeks`}
+            zh={`过去两周游玩 ${hours(steam.minutesTwoWeeks)} 小时`} /> : null}
+        </span>
+      )}
+      {steam.recent.length > 0 ? (
+        <span class="play-recent">
+          <span class="play-label"><LocalizedText en="Recently played" zh="最近在玩" /></span>
+          {steam.recent.map((game) => (
+            <span class="play-game">
+              {game.image && <img src={game.image} alt="" width="460" height="215" loading="lazy" />}
+              <span class="play-game-name">{game.name}</span>
+              <span class="play-game-hours">{hours(game.minutesTwoWeeks)} h</span>
+            </span>
+          ))}
+        </span>
+      ) : (
+        <span class="play-note"><LocalizedText en="Add me as a friend on Steam" zh="在 Steam 上加我好友" /></span>
+      )}
+    </a>
+
+    <a class="play-card reveal-card rounded-lg bg-base-100" href={psnUrl} target="_blank" rel="noopener noreferrer" data-reveal>
+      <span class="play-platform">
+        <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siPlaystation.path} /></svg>
+        PlayStation
+        <span class="play-arrow" aria-hidden="true">→</span>
+      </span>
+      <span class="play-id font-heading">{PSN_ID}</span>
+      <span class="play-note"><LocalizedText en="Add me as a friend on PlayStation" zh="在 PlayStation 上加我好友" /></span>
+    </a>
+  </div>
+</section>
+
+<style>
+  /* minmax(0, ...) lets a long game name shorten with an ellipsis instead of widening the card. */
+  .play-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 1.25rem;
+  }
+
+  @media (min-width: 768px) {
+    .play-grid {
+      grid-template-columns: minmax(0, 3fr) minmax(0, 2fr);
+      align-items: start;
+    }
+  }
+
+  .play-card {
+    display: flex;
+    flex-direction: column;
+    gap: 0.75rem;
+    padding: 1.25rem 1.5rem;
+    transition: transform 240ms ease, box-shadow 240ms ease;
+  }
+
+  .play-card:hover {
+    transform: translateY(-3px);
+  }
+
+  .play-platform {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    font-family: var(--font-heading);
+    font-size: 1.25rem;
+    font-weight: 700;
+  }
+
+  .play-platform svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    fill: currentColor;
+  }
+
+  /* The arrow slides over on hover, like the other outbound links. */
+  .play-arrow {
+    margin-left: auto;
+    opacity: 0.5;
+    transition: transform 240ms ease, opacity 240ms ease;
+  }
+
+  .play-card:hover .play-arrow {
+    opacity: 1;
+    transform: translateX(4px);
+  }
+
+  .play-stats {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.25rem 1rem;
+    font-size: 0.9rem;
+    opacity: 0.75;
+  }
+
+  .play-recent {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr);
+    gap: 0.6rem;
+  }
+
+  .play-label {
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    opacity: 0.55;
+  }
+
+  .play-game {
+    display: flex;
+    align-items: center;
+    gap: 0.85rem;
+  }
+
+  .play-game img {
+    width: 5.5rem;
+    height: auto;
+    flex-shrink: 0;
+    border-radius: 0.35rem;
+  }
+
+  .play-game-name {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  .play-game-hours {
+    margin-left: auto;
+    flex-shrink: 0;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  .play-id {
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  .play-note {
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .play-card,
+    .play-arrow {
+      transition: none;
+    }
+
+    .play-card:hover {
+      transform: none;
+    }
+  }
+</style>

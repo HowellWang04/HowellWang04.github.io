@@ -1,6 +1,8 @@
 ---
 import LocalizedText from "./LocalizedText.astro";
+import visitors from "../data/visitors.json";
 const today = new Date();
+const places = visitors.countries.length;
 ---
 
 <footer class="footer footer-center block mb-5 pt-10">
@@ -11,5 +13,63 @@ const today = new Date();
     <LocalizedText en="Built with" zh="基于" />
     <a href="https://astrofy-template.netlify.app/" target="_blank" class="font-bold">Astrofy</a>
   </div>
+  <!-- A small extra, kept out of the main navigation: the visitor map. -->
+  <div class="pt-2">
+    <a href="/visitors" class="visitor-link opacity-75">
+      <svg class="visitor-globe" viewBox="0 0 24 24" aria-hidden="true">
+        <circle cx="12" cy="12" r="9" />
+        <path d="M3 12h18" />
+        <ellipse class="globe-meridian" cx="12" cy="12" rx="4" ry="9" />
+      </svg>
+      {places > 0
+        ? <LocalizedText en={`Visitors from ${places} ${places === 1 ? "country or region" : "countries and regions"}`} zh={`来自 ${places} 个国家和地区的访客`} />
+        : <LocalizedText en="Visitor map" zh="访客地图" />}
+    </a>
+  </div>
 </footer>
-<style></style>
+
+<style>
+  .visitor-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    transition: opacity 200ms ease;
+  }
+
+  .visitor-link:hover,
+  .visitor-link:focus-visible {
+    opacity: 1;
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
+  .visitor-globe {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.6;
+  }
+
+  /* On hover the meridian sweeps across, so the globe looks like it is turning. */
+  .globe-meridian {
+    transform-origin: 12px 12px;
+  }
+
+  .visitor-link:is(:hover, :focus-visible) .globe-meridian {
+    animation: globe-turn 1.6s linear infinite;
+  }
+
+  @keyframes globe-turn {
+    from { transform: scaleX(-2.25); }
+    to { transform: scaleX(2.25); }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .visitor-link:is(:hover, :focus-visible) .globe-meridian {
+      animation: none;
+    }
+  }
+</style>

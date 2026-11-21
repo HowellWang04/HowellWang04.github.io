@@ -1,0 +1,393 @@
+---
+// A small extra page, linked only from the footer: where the site's visitors come from, on a globe that can be
+// dragged around and zoomed. The counts come from src/data/visitors.json, which scripts/fetch-visitors.mjs
+// refreshes before each build.
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LocalizedText from "../components/LocalizedText.astro";
+import visitors from "../data/visitors.json";
+import { geoCentroid, geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
+import { feature } from "topojson-client";
+import polygonClipping from "polygon-clipping";
+import countries from "i18n-iso-countries";
+import en from "i18n-iso-countries/langs/en.json";
+import zh from "i18n-iso-countries/langs/zh.json";
+import world110 from "world-atlas/countries-110m.json";
+import world50 from "world-atlas/countries-50m.json";
+
+countries.registerLocale(en);
+countries.registerLocale(zh);
+// Taiwan is named as a province of China, Hong Kong and Macao as China's special administrative regions.
+const names: Record<string, { en: string; zh: string }> = {
+  TW: { en: "Taiwan Province, China", zh: "中国台湾省" },
+  HK: { en: "Hong Kong SAR, China", zh: "中国香港特别行政区" },
+  MO: { en: "Macao SAR, China", zh: "中国澳门特别行政区" },
+};
+const nameOf = (code: string) => names[code] ?? {
+  en: countries.getName(code, "en", { select: "alias" }) ?? code,
+  zh: countries.getName(code, "zh") ?? code,
+};
+
+// Taiwan, Hong Kong and Macao are part of China on the globe: they light up with it and add to its shade.
+const partOf: Record<string, string> = { TW: "CN", HK: "CN", MO: "CN" };
+const groupOf = (code: string) => partOf[code] ?? code;
+
+const counts = new Map(visitors.countries.map(({ code, count }) => [code, count]));
+const groupTotals = new Map<string, number>();
+counts.forEach((count, code) => groupTotals.set(groupOf(code), (groupTotals.get(groupOf(code)) ?? 0) + count));
+const max = Math.max(1, ...groupTotals.values());
+// Log scale, so one country with most of the visitors doesn't wash every other one out.
+const shade = (count: number) => (0.35 + 0.65 * Math.log(1 + count) / Math.log(1 + max)).toFixed(2);
+
+// Antarctica only takes up room.
+const toShapes = (world: any) =>
+  (feature(world, world.objects.countries) as any).features.filter((shape: any) => shape.id !== "010");
+const codeOf = (shape: any) => (shape.id ? countries.numericToAlpha2(shape.id) : undefined);
+const shapes = toShapes(world110);
+
+// The map data puts South Tibet (Zangnan), south of the McMahon Line, in India; here it is part of China. This
+// outline's southern edge follows the foothills along the Assam plain. The rest of it reaches well past India's
+// borders, and clipping it to India's shape supplies the true outline there.
+const zangnanOutline = [[
+  [92.05, 26.9], [92.55, 26.95], [93.0, 26.95], [93.45, 26.95], [93.85, 27.0], [94.1, 27.35], [94.4, 27.55],
+  [94.7, 27.75], [95.05, 27.85], [95.35, 27.9], [95.6, 27.6], [96.05, 27.55], [96.05, 27.3], [95.8, 27.22],
+  [95.45, 27.22], [95.25, 27.1], [95.2, 26.9], [95.2, 26.6], [96.5, 26.0], [98.5, 26.0], [98.5, 30.5],
+  [91.0, 30.5], [91.0, 27.3], [91.9, 26.95], [92.05, 26.9],
+]];
+const polygonsOf = (geometry: any) => (geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates);
+// d3 wants outer rings clockwise and holes anticlockwise; polygon-clipping returns the opposite.
+const ringArea = (ring: number[][]) =>
+  ring.slice(1).reduce((sum, [x, y], i) => sum + ring[i][0] * y - x * ring[i][1], 0);
+const toD3 = (multi: any) => ({
+  type: "MultiPolygon",
+  coordinates: multi.map((polygon: any) =>
+    polygon.map((ring: any, i: number) => ((ringArea(ring) > 0) === (i === 0) ? [...ring].reverse() : ring))),
+});
+const china = shapes.find((shape: any) => shape.id === "156");
+const india = shapes.find((shape: any) => shape.id === "356");
+const zangnan = polygonClipping.intersection(polygonsOf(india.geometry), zangnanOutline as any);
+china.geometry = toD3(polygonClipping.union(polygonsOf(china.geometry), zangnan));
+india.geometry = toD3(polygonClipping.difference(polygonsOf(india.geometry), zangnan));
+
+// Small places (Singapore, Hong Kong...) are missing from the coarse map, so visited ones get a dot instead,
+// placed with the detailed map.
+const drawn = new Set(shapes.map(codeOf));
+const dots = toShapes(world50)
+  .map((shape: any) => ({ shape, code: codeOf(shape) }))
+  .filter(({ code }) => code && counts.has(code) && !drawn.has(code))
+  .map(({ shape, code }) => ({ code, at: geoCentroid(shape).map((n) => +n.toFixed(2)) }));
+
+// The browser redraws the globe as it turns, so it gets the shapes too, rounded to keep the page small.
+const round = (value: any): any => (typeof value === "number" ? Math.round(value * 10) / 10 : value.map(round));
+const geometries = shapes.map((shape: any) => ({ type: shape.geometry.type, coordinates: round(shape.geometry.coordinates) }));
+
+// Countries are drawn in groups, so China lights up as a whole.
+type Part = { kind: "shape" | "dot"; index: number; code?: string };
+const groups = new Map<string, Part[]>();
+shapes.forEach((shape: any, index: number) => {
+  const code = codeOf(shape);
+  const key = code ? groupOf(code) : `shape-${index}`;
+  groups.set(key, [...(groups.get(key) ?? []), { kind: "shape", index, code }]);
+});
+dots.forEach(({ code }: any, index: number) => {
+  groups.set(groupOf(code), [...(groups.get(groupOf(code)) ?? []), { kind: "dot", index, code }]);
+});
+
+// The first view faces East Asia.
+// The globe fills the height; the browser widens the view to the card's shape.
+const size = 600;
+const wide = 900;
+const rotate: [number, number] = [-105, -25];
+const projection = geoOrthographic().rotate(rotate)
+  .fitExtent([[(wide - size) / 2 + 16, 16], [(wide + size) / 2 - 16, size - 16]], { type: "Sphere" });
+const path = geoPath(projection).digits(1);
+const scale = projection.scale();
+const front = (at: number[]) => {
+  const point = projection(at as [number, number]);
+  return path({ type: "Point", coordinates: at }) ? point : undefined;
+};
+const globeData = JSON.stringify({ size, scale, rotate, geometries, dots: dots.map(({ at }: any) => at) });
+
+const ranked = visitors.countries.map(({ code, count }) => ({ code, count, name: nameOf(code) }));
+const places = ranked.length;
+---
+
+<BaseLayout title="Visitors">
+  <section class="visitors">
+    <h1 class="text-3xl font-bold font-heading mb-3" data-reveal><LocalizedText en="Visitor Map" zh="访客地图" /></h1>
+    <p class="mb-8 opacity-80" data-reveal>
+      {places > 0
+        ? <LocalizedText
+            en={`${visitors.total} visitors from ${places} ${places === 1 ? "country or region" : "countries and regions"} have stopped by so far.`}
+            zh={`目前已有来自 ${places} 个国家和地区的 ${visitors.total} 位访客来过这里。`} />
+        : <LocalizedText en="No visitors counted yet. You might be the first." zh="还没有统计到访客，你也许是第一位。" />}
+    </p>
+
+    <!-- data-lenis-prevent-wheel: the wheel zooms the globe here instead of scrolling the page. -->
+    <figure class="map-card" data-reveal data-visitor-map data-lenis-prevent-wheel>
+      <svg viewBox={`0 0 ${wide} ${size}`} class="globe" role="img" aria-label="Globe showing where visitors come from" data-globe>
+        <path class="globe-sphere" d={path({ type: "Sphere" })} data-globe-sphere />
+        <path class="globe-graticule" d={path(geoGraticule10())} data-globe-graticule />
+        {[...groups].map(([group, parts]) => {
+          const total = groupTotals.get(group) ?? 0;
+          return (
+            <g class:list={["country-group", { "is-visited": total > 0 }]} style={total ? `--shade: ${shade(total)}` : undefined}>
+              {parts.map(({ kind, index, code }) => {
+                const label = total && code
+                  ? { "data-country": code, "data-name-en": nameOf(code).en, "data-name-zh": nameOf(code).zh, "data-count": counts.get(code) ?? 0 }
+                  : {};
+                if (kind === "shape") return <path class="country" d={path(shapes[index])} data-shape={index} {...label} />;
+                const at = front(dots[index].at);
+                return <circle class="country dot" r="5" cx={at?.[0].toFixed(1)} cy={at?.[1].toFixed(1)}
+                  style={at ? undefined : "display: none"} data-dot={index} {...label} />;
+              })}
+            </g>
+          );
+        })}
+      </svg>
+      <div class="map-tooltip" data-map-tooltip hidden></div>
+      <script type="application/json" data-globe-data set:html={globeData}></script>
+    </figure>
+
+    {places > 0 && (
+      <ol class="place-list" data-reveal>
+        {ranked.map(({ code, count, name }) => (
+          <li>
+            <span class="place-name"><LocalizedText en={name.en} zh={name.zh} /></span>
+            <span class="place-count">{count}</span>
+          </li>
+        ))}
+      </ol>
+    )}
+  </section>
+</BaseLayout>
+
+<script>
+  import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
+
+  const graticule = geoGraticule10();
+
+  // Dragging turns the globe; the wheel or a pinch zooms it. Hovering (or tapping) a visited country shows its
+  // name and visitor count beside the pointer.
+  const setupGlobe = () => {
+    const map = document.querySelector<HTMLElement>("[data-visitor-map]");
+    const globe = map?.querySelector<SVGSVGElement>("[data-globe]");
+    const tooltip = map?.querySelector<HTMLElement>("[data-map-tooltip]");
+    if (!map || !globe || !tooltip || map.dataset.bound) return;
+    map.dataset.bound = "true";
+
+    const data = JSON.parse(map.querySelector("[data-globe-data]")!.textContent!);
+    const projection = geoOrthographic().scale(data.scale).rotate(data.rotate);
+    const path = geoPath(projection).digits(1);
+    const sphere = globe.querySelector("[data-globe-sphere]")!;
+    const lines = globe.querySelector("[data-globe-graticule]")!;
+    const shapes = [...globe.querySelectorAll<SVGPathElement>("[data-shape]")];
+    const dots = [...globe.querySelectorAll<SVGCircleElement>("[data-dot]")];
+    let rotation: [number, number] = data.rotate;
+    let zoom = 1;
+    let frame = 0;
+
+    const render = () => {
+      frame = 0;
+      projection.rotate(rotation).scale(data.scale * zoom);
+      sphere.setAttribute("d", path({ type: "Sphere" }) ?? "");
+      lines.setAttribute("d", path(graticule) ?? "");
+      shapes.forEach((shape) => shape.setAttribute("d", path(data.geometries[Number(shape.dataset.shape)]) ?? ""));
+      dots.forEach((dot) => {
+        const at = data.dots[Number(dot.dataset.dot)];
+        // Only dots on the side facing the viewer show.
+        const facing = geoDistance(at, [-rotation[0], -rotation[1]]) < Math.PI / 2;
+        dot.style.display = facing ? "" : "none";
+        if (!facing) return;
+        const [x, y] = projection(at)!;
+        dot.setAttribute("cx", x.toFixed(1));
+        dot.setAttribute("cy", y.toFixed(1));
+      });
+    };
+    const redraw = () => {
+      if (!frame) frame = requestAnimationFrame(render);
+    };
+    // Match the view to the globe's box (wider on desktop, square on phones), with the globe in the middle.
+    const fit = () => {
+      const bounds = globe.getBoundingClientRect();
+      const width = data.size * bounds.width / bounds.height;
+      globe.setAttribute("viewBox", `0 0 ${width} ${data.size}`);
+      projection.translate([width / 2, data.size / 2]);
+      redraw();
+    };
+    const zoomBy = (factor: number) => {
+      zoom = Math.min(8, Math.max(1, zoom * factor));
+      redraw();
+    };
+
+    // Pointers on the globe: one drags, two pinch.
+    const pointers = new Map<number, { x: number; y: number }>();
+    const spread = () => {
+      const [a, b] = [...pointers.values()];
+      return Math.hypot(a.x - b.x, a.y - b.y);
+    };
+
+    globe.addEventListener("pointerdown", (event) => {
+      globe.setPointerCapture(event.pointerId);
+      pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+      globe.classList.add("is-dragging");
+      tooltip.hidden = true;
+    });
+
+    globe.addEventListener("pointermove", (event) => {
+      const last = pointers.get(event.pointerId);
+      if (!last) return;
+      if (pointers.size === 1) {
+        // Degrees per screen pixel, so the spot under the pointer roughly follows it.
+        const step = (180 / Math.PI) / (data.scale * zoom) * (data.size / globe.getBoundingClientRect().height);
+        rotation = [rotation[0] + (event.clientX - last.x) * step,
+          Math.max(-90, Math.min(90, rotation[1] - (event.clientY - last.y) * step))];
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        redraw();
+      } else {
+        const before = spread();
+        pointers.set(event.pointerId, { x: event.clientX, y: event.clientY });
+        if (before > 0) zoomBy(spread() / before);
+      }
+    });
+
+    const release = (event: PointerEvent) => {
+      pointers.delete(event.pointerId);
+      if (!pointers.size) globe.classList.remove("is-dragging");
+    };
+    globe.addEventListener("pointerup", release);
+    globe.addEventListener("pointercancel", release);
+
+    globe.addEventListener("wheel", (event) => {
+      event.preventDefault();
+      zoomBy(Math.exp(-event.deltaY * 0.0015));
+    }, { passive: false });
+
+    map.addEventListener("pointermove", (event) => {
+      const place = (event.target as Element).closest<SVGElement>("[data-country]");
+      if (!place || pointers.size) {
+        tooltip.hidden = true;
+        return;
+      }
+      const zh = document.documentElement.lang === "zh-CN";
+      const count = Number(place.dataset.count);
+      const name = zh ? place.dataset.nameZh : place.dataset.nameEn;
+      tooltip.textContent = zh ? `${name} · ${count} 位访客` : `${name} · ${count} ${count === 1 ? "visitor" : "visitors"}`;
+      const bounds = map.getBoundingClientRect();
+      tooltip.style.left = `${event.clientX - bounds.left}px`;
+      tooltip.style.top = `${event.clientY - bounds.top}px`;
+      tooltip.hidden = false;
+    });
+    map.addEventListener("pointerleave", () => (tooltip.hidden = true));
+
+    fit();
+    new ResizeObserver(fit).observe(globe);
+  };
+
+  setupGlobe();
+  document.addEventListener("astro:page-load", setupGlobe);
+</script>
+
+<style>
+  /* The page column shrinks to its content, so give the map the column's full width. */
+  .visitors {
+    width: min(852px, calc(100vw - 3rem));
+  }
+
+  .map-card {
+    position: relative;
+    overflow: hidden;
+    border: 1px solid color-mix(in srgb, currentColor 12%, transparent);
+    border-radius: 1rem;
+    background: oklch(var(--b1));
+  }
+
+  .globe {
+    display: block;
+    width: 100%;
+    height: auto;
+    aspect-ratio: 3 / 2;
+    cursor: grab;
+    /* Vertical swipes still scroll the page on phones; sideways swipes turn the globe. */
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  @media (max-width: 640px) {
+    .globe {
+      aspect-ratio: 1;
+    }
+  }
+
+  .globe.is-dragging {
+    cursor: grabbing;
+  }
+
+  .globe-sphere {
+    fill: oklch(var(--b2));
+    stroke: color-mix(in srgb, currentColor 15%, transparent);
+    stroke-width: 1;
+  }
+
+  .globe-graticule {
+    fill: none;
+    stroke: color-mix(in srgb, currentColor 7%, transparent);
+    stroke-width: 0.5;
+  }
+
+  .country {
+    fill: oklch(var(--b3));
+    stroke: oklch(var(--b1));
+    stroke-width: 0.5;
+  }
+
+  .country-group.is-visited .country {
+    fill: oklch(var(--p));
+    fill-opacity: var(--shade);
+    transition: fill-opacity 200ms ease;
+  }
+
+  /* Hovering any part of a country lights up all of it. */
+  .country-group.is-visited:hover .country {
+    fill-opacity: 1;
+  }
+
+  /* Small places sit on top of bigger shapes (Hong Kong and Macao on China's coast), so their dots stay solid
+     with a light ring to stand out. */
+  .country-group.is-visited .country.dot {
+    fill-opacity: 1;
+    stroke-width: 1.5;
+  }
+
+  .map-tooltip {
+    position: absolute;
+    z-index: 1;
+    padding: 0.3rem 0.6rem;
+    border-radius: 0.5rem;
+    background: oklch(var(--bc));
+    color: oklch(var(--b1));
+    font-size: 0.8rem;
+    white-space: nowrap;
+    pointer-events: none;
+    transform: translate(-50%, calc(-100% - 0.75rem));
+  }
+
+  .place-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(12rem, 1fr));
+    gap: 0.25rem 2rem;
+    margin-top: 2rem;
+  }
+
+  .place-list li {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.4rem 0;
+    border-bottom: 1px solid color-mix(in srgb, currentColor 10%, transparent);
+  }
+
+  .place-count {
+    font-family: var(--font-heading);
+    opacity: 0.7;
+  }
+</style>
