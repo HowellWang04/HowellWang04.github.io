@@ -49,16 +49,18 @@ const sides = [
 
 <section id="hobbies" class="scroll-mt-20 pt-16">
   <!-- Doodled like the other home headings (index.astro draws it): a highlighter swipe, then three icons for the three
-       cards below: a bowl with a leaf, a dumbbell, and two beamed notes. -->
+       cards below: a steaming bowl with chopsticks, a dumbbell, and two beamed notes. -->
   <div class="text-3xl w-full font-bold font-heading mb-8" data-reveal>
     <span class="doodle-heading" style="--doodle-icons: 3">
       <LocalizedText en="Beyond Games" zh="游戏之外" />
       <svg class="doodle-stroke" aria-hidden="true">
         <path class="doodle-line" />
         <g class="doodle-icon">
-          <path d="M5 15H43C43 23.5 34.5 29 24 29C13.5 29 5 23.5 5 15Z" />
-          <path d="M24 14C23 8 27 4 34 3C35 9 31 13 24 14Z" />
-          <path d="M25.5 12.5L31 6.5" />
+          <path d="M5 14H43" />
+          <path d="M7 14C8 23 15 28 24 28C33 28 40 23 41 14" />
+          <path d="M19 28.5L20 31H28L29 28.5" />
+          <path d="M27 13L39 2M31 13L43 3" />
+          <path d="M13 10C11 8 15 6 13 3M19 10C17 8 21 6 19 3" />
         </g>
         <g class="doodle-icon">
           <path d="M7 8H10C10.6 8 11 8.4 11 9V23C11 23.6 10.6 24 10 24H7C6.4 24 6 23.6 6 23V9C6 8.4 6.4 8 7 8Z" />
@@ -128,7 +130,8 @@ const sides = [
           <rect x="16" y="0" width="8" height="7" rx="1.5" />
           <circle cx="20" cy="12" r="5.5" />
           <circle class="turntable-pivot" cx="20" cy="12" r="2" />
-          <path d="M11 86L17 85L18.5 95L12.5 96Z" />
+          <!-- The headshell: a trapezoid running on along the arm, narrow where it joins and wider at the stylus end. -->
+          <path d="M15.99 88.16L16.48 97.22L10.1 96.72L12.01 87.84Z" />
         </svg>
       </div>
       <ul class="record-sides">
