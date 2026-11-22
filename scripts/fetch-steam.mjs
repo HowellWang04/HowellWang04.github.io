@@ -26,6 +26,14 @@ const headerImage = async (appid) => {
   return details?.success ? details.data.header_image : null;
 };
 
+// The address the library page guesses for a game's cover. Steam answers it with a 404 for most games that keep their
+// cover elsewhere, but with a tiny blank placeholder (about 1.4 KB) for some, so both count as missing.
+const guessedCover = (appid) => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`;
+const coverIsMissing = async (appid) => {
+  const response = await fetch(guessedCover(appid), { method: "HEAD" });
+  return !response.ok || Number(response.headers.get("content-length")) < 5000;
+};
+
 // How many of a game's achievements are unlocked. Games without achievements answer with an error, so they get null.
 const achievements = async (appid) => {
   const response = await fetch(
@@ -71,15 +79,17 @@ try {
     recent,
     favorites: favoriteGames,
     // Every owned game, most played first. Asking the store for each cover would take too many requests, so the
-    // page guesses the cover URL and falls back to this small icon when a game keeps its cover elsewhere.
-    library: [...owned].sort((a, b) => b.playtime_forever - a.playtime_forever).map((game) => ({
+    // page guesses the cover URL; only the few games whose guessed cover is missing ask the store for the real one
+    // (image). If that fails too, the page falls back to this small icon.
+    library: await Promise.all([...owned].sort((a, b) => b.playtime_forever - a.playtime_forever).map(async (game) => ({
       appid: game.appid,
       name: game.name,
       minutes: game.playtime_forever,
       icon: game.img_icon_url
         ? `https://media.steampowered.com/steamcommunity/public/images/apps/${game.appid}/${game.img_icon_url}.jpg`
         : null,
-    })),
+      ...(await coverIsMissing(game.appid).catch(() => false) && { image: await headerImage(game.appid) }),
+    }))),
   };
   await writeFile(new URL("../src/data/steam.json", import.meta.url), JSON.stringify(data, null, 2) + "\n");
   console.log(`fetch-steam: level ${data.level}, ${data.gameCount} games, ${Math.round(data.minutesTotal / 60)} hours, `
