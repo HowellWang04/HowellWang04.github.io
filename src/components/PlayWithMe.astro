@@ -15,7 +15,25 @@ const hours = (minutes: number) => (minutes / 60).toFixed(1);
 const libraryHours = (minutes: number) => minutes >= 600 ? Math.round(minutes / 60).toLocaleString("en-US") : hours(minutes);
 // Most games keep their cover at this address; the few that don't fall back to their icon (see the script).
 const cover = (appid: number) => `https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/${appid}/header.jpg`;
-const library = steam.library ?? [];
+// Galgames stay off the library list, by app ID.
+const hiddenGames = new Set([
+  2458530, // 魔女的夜宴
+  1044620, // Aokana - Four Rhythms Across the Blue
+  1200110, // Memories Off -Innocent Fille- for Dearest
+  1293820, // YOU and ME and HER: A Love Story
+  3682050, // Sickly Days and Summer Traces
+  412830, // STEINS;GATE
+  825630, // STEINS;GATE 0
+  970560, // STEINS;GATE: My Darling's Embrace
+]);
+// The library lists the games I've played, galgames aside.
+const library = (steam.library ?? []).filter((game) => game.minutes > 0 && !hiddenGames.has(game.appid));
+const sorts = [
+  { key: "most", en: "Playtime, most first", zh: "游玩时长从高到低" },
+  { key: "least", en: "Playtime, least first", zh: "游玩时长从低到高" },
+  { key: "name", en: "Name, A to Z", zh: "名称 A 到 Z" },
+  { key: "nameReverse", en: "Name, Z to A", zh: "名称 Z 到 A" },
+];
 
 // The numbers across the top of the Steam card; the ones Steam didn't share are left out.
 const stats = [
@@ -180,11 +198,14 @@ const stats = [
             <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
             <LocalizedText en="My Steam Library" zh="我的 Steam 游戏库" />
           </h2>
-          <p class="library-sub">
-            <LocalizedText
-              en={`${library.length} games, most played first`}
-              zh={`${library.length} 款游戏，按游玩时长排序`} />
-          </p>
+          <div class="library-sort">
+            <label for="library-sort"><LocalizedText en="Sort by" zh="排序" /></label>
+            <span class="library-sort-field">
+              <select id="library-sort" data-library-sort>
+                {sorts.map(({ key, en, zh }) => <option value={key} data-en={en} data-zh={zh}>{en}</option>)}
+              </select>
+            </span>
+          </div>
         </div>
         <button type="button" class="library-close" data-library-close>
           <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
@@ -193,15 +214,16 @@ const stats = [
       </header>
       <ul class="library-grid">
         {library.map((game) => (
-          <li class="library-game">
+          <li class="library-game" data-minutes={game.minutes} data-name={game.name}>
             <img src={cover(game.appid)} data-icon={game.icon} alt="" width="460" height="215" loading="lazy" />
             <span class="library-name" title={game.name}>{game.name}</span>
-            <span class="library-hours">
-              {game.minutes > 0 ? `${libraryHours(game.minutes)} h` : <LocalizedText en="Not played yet" zh="还没玩过" />}
-            </span>
+            <span class="library-hours">{libraryHours(game.minutes)} h</span>
           </li>
         ))}
       </ul>
+      <p class="library-note">
+        <LocalizedText en="Games I haven't played yet aren't listed." zh="还没玩过的游戏没有列出。" />
+      </p>
     </dialog>
   )}
 </section>
@@ -259,6 +281,22 @@ const stats = [
       if (event.target === dialog) dialog.close();
     });
     dialog.addEventListener("close", () => lenis?.start());
+
+    // The games come most played first; the sort menu reorders them in place.
+    const grid = dialog.querySelector<HTMLElement>(".library-grid")!;
+    const games = [...grid.children] as HTMLElement[];
+    const byName = new Intl.Collator(["en", "zh"], { numeric: true, sensitivity: "base" });
+    const orders: Record<string, (a: HTMLElement, b: HTMLElement) => number> = {
+      most: (a, b) => Number(b.dataset.minutes) - Number(a.dataset.minutes),
+      least: (a, b) => Number(a.dataset.minutes) - Number(b.dataset.minutes),
+      name: (a, b) => byName.compare(a.dataset.name!, b.dataset.name!),
+      nameReverse: (a, b) => byName.compare(b.dataset.name!, a.dataset.name!),
+    };
+    const sort = dialog.querySelector<HTMLSelectElement>("[data-library-sort]")!;
+    sort.addEventListener("change", () => {
+      grid.append(...[...games].sort(orders[sort.value]));
+      dialog.scrollTop = 0;
+    });
 
     // A game whose cover isn't at the usual address shows its small icon instead, or an empty tile without one.
     dialog.addEventListener("error", (event) => {
@@ -643,10 +681,65 @@ const stats = [
     fill: currentColor;
   }
 
-  .library-sub {
-    margin-top: 0.2rem;
-    font-size: 0.85rem;
+  /* "Sort by [menu]": a native select dressed as a pill with a chevron. */
+  .library-sort {
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+    margin-top: 0.75rem;
+    font-size: 0.8rem;
+  }
+
+  .library-sort label {
     opacity: 0.6;
+  }
+
+  .library-sort-field {
+    position: relative;
+  }
+
+  .library-sort-field::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    right: 0.9rem;
+    width: 0.4rem;
+    height: 0.4rem;
+    border-right: 1.5px solid currentColor;
+    border-bottom: 1.5px solid currentColor;
+    opacity: 0.7;
+    translate: 0 -70%;
+    rotate: 45deg;
+    pointer-events: none;
+  }
+
+  .library-sort select {
+    appearance: none;
+    padding: 0.3rem 2.2rem 0.3rem 0.9rem;
+    border: 1px solid oklch(var(--bc) / 0.15);
+    border-radius: 999px;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    cursor: pointer;
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+
+  .library-sort select:hover {
+    border-color: oklch(var(--bc) / 0.3);
+    background: color-mix(in srgb, currentColor 6%, transparent);
+  }
+
+  .library-sort option {
+    background: oklch(var(--b1));
+    color: oklch(var(--bc));
+  }
+
+  .library-note {
+    padding: 0 1.5rem 1.5rem;
+    font-size: 0.68rem;
+    font-style: italic;
+    opacity: 0.45;
   }
 
   .library-close {

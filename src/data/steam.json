@@ -47,5 +47,960 @@
       "image": "https://shared.akamai.steamstatic.com/store_item_assets/steam/apps/1172470/dc5c390e9a273a7248f75c1b2d59987f6179323c/header_alt_assets_7.jpg?t=1794958367"
     }
   ],
-  "library": []
+  "library": [
+    {
+      "appid": 2868840,
+      "name": "Slay the Spire 2",
+      "minutes": 26700,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2868840/f92b09dab91f1d1738f72fe0dd9be18dcc2901f9.jpg"
+    },
+    {
+      "appid": 730,
+      "name": "Counter-Strike 2",
+      "minutes": 24360,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/730/8dbc71957312bbd3baea65848b545be9eae2a355.jpg"
+    },
+    {
+      "appid": 1172470,
+      "name": "Apex Legends",
+      "minutes": 23280,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1172470/8986dd626da56db5f3fe09bc1b8871739de8b00d.jpg"
+    },
+    {
+      "appid": 892970,
+      "name": "Valheim",
+      "minutes": 21780,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/892970/2f64c9a826e2c6cf3253fea4834c2e612db09143.jpg"
+    },
+    {
+      "appid": 1450120,
+      "name": "The Legend of Heroes: Sen no Kiseki I KAI -Thors Military Academy 1204-",
+      "minutes": 21660,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1450120/dc0c827e9a9f6d8572e6d6bce9bec1b2be63f135.jpg"
+    },
+    {
+      "appid": 949230,
+      "name": "Cities: Skylines II",
+      "minutes": 21300,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/949230/2dfa1f3e740ae5300bf59e9a14066391dab4727a.jpg"
+    },
+    {
+      "appid": 365670,
+      "name": "Blender",
+      "minutes": 20220,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/365670/48733cd333eea6e40711a1b9c6dde32ffe363ced.jpg"
+    },
+    {
+      "appid": 431960,
+      "name": "Wallpaper Engine",
+      "minutes": 19200,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/431960/72edaed9d748c6cf7397ffb1c83f0b837b9ebd9d.jpg"
+    },
+    {
+      "appid": 2807960,
+      "name": "Battlefield™ 6",
+      "minutes": 6360,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2807960/3059e94fb89816fe1929a238ac2b55e8be348408.jpg"
+    },
+    {
+      "appid": 1449690,
+      "name": "The Walking Dead: The Telltale Definitive Series",
+      "minutes": 5760,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1449690/bd1fd090e72bc6584f1b271341a1be6d7fe6881e.jpg"
+    },
+    {
+      "appid": 427410,
+      "name": "Abiotic Factor",
+      "minutes": 4740,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/427410/789cca4e4e51a6649f5728d870d3a602e3c453fe.jpg"
+    },
+    {
+      "appid": 1850570,
+      "name": "DEATH STRANDING DIRECTOR'S CUT",
+      "minutes": 3840,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1850570/dd1abd2566c95d1e89408570719657a663591f8f.jpg"
+    },
+    {
+      "appid": 2458530,
+      "name": "魔女的夜宴",
+      "minutes": 3300,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2458530/cba4da3d4d301df7aa297fc543cc419f7212b3da.jpg"
+    },
+    {
+      "appid": 3419430,
+      "name": "Bongo Cat",
+      "minutes": 2700,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3419430/b25d4b846c745bdf809f5657af00298e0ae62465.jpg"
+    },
+    {
+      "appid": 2357570,
+      "name": "Overwatch®",
+      "minutes": 2280,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2357570/da42bd294c941d5947b1bc2c2b2efa1313d36a91.jpg"
+    },
+    {
+      "appid": 1245620,
+      "name": "ELDEN RING",
+      "minutes": 2220,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1245620/b6e290dd5a92ce98f89089a207733c70c41a1871.jpg"
+    },
+    {
+      "appid": 400,
+      "name": "Portal",
+      "minutes": 2040,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/400/cfa928ab4119dd137e50d728e8fe703e4e970aff.jpg"
+    },
+    {
+      "appid": 609320,
+      "name": "FAR: Lone Sails",
+      "minutes": 1980,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/609320/3e1dc29370610797cfebed20bb202f5bffd236fe.jpg"
+    },
+    {
+      "appid": 2050650,
+      "name": "Resident Evil 4",
+      "minutes": 1920,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2050650/817358b8013c55831ea10d031ef9c0b151110826.jpg"
+    },
+    {
+      "appid": 3447040,
+      "name": "Sora no Kiseki the 1st",
+      "minutes": 1860,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3447040/47ae886dc4f8d7615a961cda4a820d92e0c1faa7.jpg"
+    },
+    {
+      "appid": 275850,
+      "name": "No Man's Sky",
+      "minutes": 1860,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/275850/fccb20f309ac5ae05b3cb4576a8a3357edf86f2e.jpg"
+    },
+    {
+      "appid": 1044620,
+      "name": "Aokana - Four Rhythms Across the Blue",
+      "minutes": 1560,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1044620/a00d9c3180443e60ada178223086dca080450e1a.jpg"
+    },
+    {
+      "appid": 1568590,
+      "name": "Goose Goose Duck",
+      "minutes": 1500,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1568590/3b802d5010d6d5d72c93a8565b260c6042cc9390.jpg"
+    },
+    {
+      "appid": 620,
+      "name": "Portal 2",
+      "minutes": 1500,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/620/25a5a16b2423bf7487ac5340b5b0948cef48c5f8.jpg"
+    },
+    {
+      "appid": 1623730,
+      "name": "Palworld",
+      "minutes": 1380,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1623730/f5523077a8f4c923c2e8d8c17794b3319035fa73.jpg"
+    },
+    {
+      "appid": 1200110,
+      "name": "Memories Off -Innocent Fille- for Dearest",
+      "minutes": 1320,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1200110/587d4e7500ffbf38d068a0e92005ecc07cbc740c.jpg"
+    },
+    {
+      "appid": 1888930,
+      "name": "The Last of Us™ Part I",
+      "minutes": 1320,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1888930/6991d13038a61e35bade3aabea400c74bbbf966d.jpg"
+    },
+    {
+      "appid": 1086940,
+      "name": "Baldur's Gate 3",
+      "minutes": 1260,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1086940/d866cae7ea1e471fdbc206287111f1b642373bd9.jpg"
+    },
+    {
+      "appid": 526870,
+      "name": "Satisfactory",
+      "minutes": 1200,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/526870/ee3406fe5ec813b1987ad67e37e5cd6fb4f620e6.jpg"
+    },
+    {
+      "appid": 1687950,
+      "name": "Persona 5 Royal",
+      "minutes": 1140,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1687950/2f868d8c16fc357dc7122d440b9de3916e36e6fa.jpg"
+    },
+    {
+      "appid": 1260320,
+      "name": "Party Animals",
+      "minutes": 1140,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1260320/868cd2d22c96076658ff5b572c4dc790c200de7e.jpg"
+    },
+    {
+      "appid": 1293820,
+      "name": "YOU and ME and HER: A Love Story",
+      "minutes": 1080,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1293820/9579b1e188fda057dddf9aeea8e4efe5f1d4baa6.jpg"
+    },
+    {
+      "appid": 2358720,
+      "name": "Black Myth: Wukong",
+      "minutes": 1020,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2358720/764ad8ff458f7020d63a3f7f0abf6ad8882c05df.jpg"
+    },
+    {
+      "appid": 2073850,
+      "name": "THE FINALS",
+      "minutes": 1020,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2073850/9532db560dca3b4982f4af3f5981b6b2ce2a6909.jpg"
+    },
+    {
+      "appid": 1811950,
+      "name": "The Legend of Heroes: Kuro no Kiseki",
+      "minutes": 900,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1811950/2640aa05523a2a42dc47d468dcb7b5faa42d20b7.jpg"
+    },
+    {
+      "appid": 413150,
+      "name": "Stardew Valley",
+      "minutes": 840,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/413150/35d1377200084a4034238c05b0c8930451e2fb40.jpg"
+    },
+    {
+      "appid": 648580,
+      "name": "428 Shibuya Scramble",
+      "minutes": 840,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/648580/c3d415dbfe7b3a965cb1cfd654c83e3114842882.jpg"
+    },
+    {
+      "appid": 582010,
+      "name": "Monster Hunter: World",
+      "minutes": 780,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/582010/6ec147f2d423f435e15eb79b3d82f771913de634.jpg"
+    },
+    {
+      "appid": 883710,
+      "name": "Resident Evil 2",
+      "minutes": 780,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/883710/86ef2fdebeced746313994ccf2d7afb1f2887bf0.jpg"
+    },
+    {
+      "appid": 2408820,
+      "name": "Luma Island",
+      "minutes": 660,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2408820/12dd17ec0a964c8a552adfe171c7fa0083b7ebd5.jpg"
+    },
+    {
+      "appid": 289070,
+      "name": "Sid Meier's Civilization VI",
+      "minutes": 600,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/289070/9dc914132fec244adcede62fb8e7524a72a7398c.jpg"
+    },
+    {
+      "appid": 412830,
+      "name": "STEINS;GATE",
+      "minutes": 600,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/412830/adddf0c18983e5b0e2a8967939a774a201589674.jpg"
+    },
+    {
+      "appid": 2567870,
+      "name": "Chained Together",
+      "minutes": 588,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2567870/231b8f624ff26721431fe5749fa5ab5bccd75ff4.jpg"
+    },
+    {
+      "appid": 3240220,
+      "name": "Grand Theft Auto V Enhanced",
+      "minutes": 588,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3240220/8355a7bbdb704f727bfba80ec56bc7228991338e.jpg"
+    },
+    {
+      "appid": 306130,
+      "name": "The Elder Scrolls Online",
+      "minutes": 582,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/306130/2a0f43963c08a3755682adb2369918c9ad07ef1b.jpg"
+    },
+    {
+      "appid": 578080,
+      "name": "PUBG: BATTLEGROUNDS",
+      "minutes": 576,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/578080/609f27278aa70697c13bf99f32c5a0248c381f9d.jpg"
+    },
+    {
+      "appid": 447040,
+      "name": "Watch_Dogs 2",
+      "minutes": 570,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/447040/49dc5c3e4053e40159ffa73d2121daadbc467fe2.jpg"
+    },
+    {
+      "appid": 1522820,
+      "name": "Orcs Must Die! 3",
+      "minutes": 558,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1522820/e637d019db32c830fe82c663644f8d3a46072c15.jpg"
+    },
+    {
+      "appid": 255710,
+      "name": "Cities: Skylines",
+      "minutes": 546,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/255710/6cf7b10dd29db28448ef79698ed2118a03617d63.jpg"
+    },
+    {
+      "appid": 814380,
+      "name": "Sekiro™: Shadows Die Twice",
+      "minutes": 516,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/814380/2704fb9c5465045d00a5b19a0cb1e9bdabbd15cc.jpg"
+    },
+    {
+      "appid": 438100,
+      "name": "VRChat",
+      "minutes": 504,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/438100/52c5f93bd9f8de008307f5fad95023600267462c.jpg"
+    },
+    {
+      "appid": 2076040,
+      "name": "THE FINALS PLAYTEST",
+      "minutes": 504,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2076040/5c445c6a035d0e462068ec4d164e2224a2e7cc94.jpg"
+    },
+    {
+      "appid": 1962700,
+      "name": "Subnautica 2",
+      "minutes": 450,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1962700/a6810ae79dc1592fdd890f463311cb5b8df8aa3c.jpg"
+    },
+    {
+      "appid": 1235140,
+      "name": "Yakuza: Like a Dragon",
+      "minutes": 432,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1235140/2dd517dc392377291d18d89722d26f737795829d.jpg"
+    },
+    {
+      "appid": 739630,
+      "name": "Phasmophobia",
+      "minutes": 426,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/739630/125673b382059f666ec81477173380a76e1df0be.jpg"
+    },
+    {
+      "appid": 1808500,
+      "name": "ARC Raiders",
+      "minutes": 414,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1808500/c284e73b6f3321864805d66f99924a0da9f0b219.jpg"
+    },
+    {
+      "appid": 740130,
+      "name": "Tales of ARISE",
+      "minutes": 372,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/740130/1e1ffcc518e7c1576caf4c7e1bfec3bca930abe2.jpg"
+    },
+    {
+      "appid": 648800,
+      "name": "Raft",
+      "minutes": 360,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/648800/6a9ae357c4133b1b631b520edd25b1974f3afb68.jpg"
+    },
+    {
+      "appid": 880940,
+      "name": "Pummel Party",
+      "minutes": 348,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/880940/0e2e222010d009ca46b575cc5c53a23250434341.jpg"
+    },
+    {
+      "appid": 1046480,
+      "name": "THE IDOLM@STER STARLIT SEASON ",
+      "minutes": 348,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1046480/cac99bd88aa194dd6747d50cf3125fbf93802067.jpg"
+    },
+    {
+      "appid": 1238810,
+      "name": "Battlefield™ V",
+      "minutes": 342,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1238810/23ded6a957b5ec7525679c2e7bdac90c0653dbc8.jpg"
+    },
+    {
+      "appid": 251570,
+      "name": "7 Days to Die",
+      "minutes": 318,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/251570/f6515dd177b2992aebcb563151fbe836a600f364.jpg"
+    },
+    {
+      "appid": 1766060,
+      "name": "HumanitZ",
+      "minutes": 312,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1766060/4e298075dd52c90556ca68efa9d319f3c6cc5d69.jpg"
+    },
+    {
+      "appid": 3564740,
+      "name": "Where Winds Meet",
+      "minutes": 294,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3564740/531ce29af277670c3aedc30d3b0bef92ee1b18c4.jpg"
+    },
+    {
+      "appid": 205100,
+      "name": "Dishonored",
+      "minutes": 282,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/205100/74f8ee1ba536e0759e64a9bf801fc013e16c8dd1.jpg"
+    },
+    {
+      "appid": 440900,
+      "name": "Conan Exiles Enhanced",
+      "minutes": 276,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/440900/399859f8bdaeef066f14029d5f1910960545fbd9.jpg"
+    },
+    {
+      "appid": 105600,
+      "name": "Terraria",
+      "minutes": 264,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/105600/858961e95fbf869f136e1770d586e0caefd4cfac.jpg"
+    },
+    {
+      "appid": 728880,
+      "name": "Overcooked! 2",
+      "minutes": 246,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/728880/bac36f471109038ae0b40619de4109d475f86a54.jpg"
+    },
+    {
+      "appid": 513710,
+      "name": "SCUM",
+      "minutes": 234,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/513710/c25483e3e989239b932901118e44cf71606b5973.jpg"
+    },
+    {
+      "appid": 3682050,
+      "name": "Sickly Days and Summer Traces",
+      "minutes": 234,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3682050/957319a7d2aa557b255bf8222a10f8a196a9048e.jpg"
+    },
+    {
+      "appid": 12210,
+      "name": "Grand Theft Auto IV: The Complete Edition",
+      "minutes": 222,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/12210/a3cf6a64c73f991898a9e34681d0db8226eaa191.jpg"
+    },
+    {
+      "appid": 409710,
+      "name": "BioShock Remastered",
+      "minutes": 216,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/409710/eb72262cd3ccc3219dd76392be3b60a4b6cbfd38.jpg"
+    },
+    {
+      "appid": 976310,
+      "name": "Mortal Kombat 11",
+      "minutes": 198,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/976310/315c46ce25bcb6afa47473588b5fd8edeb3afdfa.jpg"
+    },
+    {
+      "appid": 239140,
+      "name": "Dying Light",
+      "minutes": 192,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/239140/d575b4ba3480fe20aaeda8e8f498c3e47033069d.jpg"
+    },
+    {
+      "appid": 391220,
+      "name": "Rise of the Tomb Raider",
+      "minutes": 186,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/391220/0b8a37f32ed2b7c934be8aa94d53f71e274c6497.jpg"
+    },
+    {
+      "appid": 39210,
+      "name": "FINAL FANTASY XIV Online",
+      "minutes": 180,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/39210/98527a5229540d86ced171d8a5dff2f8a560fe80.jpg"
+    },
+    {
+      "appid": 753640,
+      "name": "Outer Wilds",
+      "minutes": 180,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/753640/8d0c2dcfc599445affcbad76a34d89478c022780.jpg"
+    },
+    {
+      "appid": 403640,
+      "name": "Dishonored 2",
+      "minutes": 174,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/403640/6d6bac950a234764a353c518607dcd01973f5b65.jpg"
+    },
+    {
+      "appid": 1281930,
+      "name": "tModLoader",
+      "minutes": 174,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1281930/e8a125078a31b8475994e8ce4d8d6fdd6becc131.jpg"
+    },
+    {
+      "appid": 70,
+      "name": "Half-Life",
+      "minutes": 174,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/70/95be6d131fc61f145797317ca437c9765f24b41c.jpg"
+    },
+    {
+      "appid": 990080,
+      "name": "Hogwarts Legacy",
+      "minutes": 138,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/990080/a9ecb94f249768d0ee5ccecbffe8d8c06d9bed59.jpg"
+    },
+    {
+      "appid": 3293260,
+      "name": "Waterpark Simulator",
+      "minutes": 138,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3293260/748bc3c1e0c66dd914345c3c0f59226cf0ed0294.jpg"
+    },
+    {
+      "appid": 692850,
+      "name": "Bloodstained: Ritual of the Night",
+      "minutes": 132,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/692850/993b57262d28db59ca1afee53681a4c1c87a254f.jpg"
+    },
+    {
+      "appid": 1174180,
+      "name": "Red Dead Redemption 2",
+      "minutes": 132,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1174180/5106abd9c1187a97f23295a0ba9470c94804ec6c.jpg"
+    },
+    {
+      "appid": 108600,
+      "name": "Project Zomboid",
+      "minutes": 132,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/108600/2bd4642ae337e378e7b04a19d19683425c5f81a4.jpg"
+    },
+    {
+      "appid": 1203620,
+      "name": "Enshrouded",
+      "minutes": 120,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1203620/b51ff4aa19722a1f3587b35f37f590a998f36a9a.jpg"
+    },
+    {
+      "appid": 1196590,
+      "name": "Resident Evil Village",
+      "minutes": 114,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1196590/d97fb0681f9517c65a9d7ba9dd7e63f775375645.jpg"
+    },
+    {
+      "appid": 1030840,
+      "name": "Mafia: Definitive Edition",
+      "minutes": 114,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1030840/883ceebf7d8ebce37c9244a62777ef4a800393ce.jpg"
+    },
+    {
+      "appid": 386940,
+      "name": "Ultimate Chicken Horse",
+      "minutes": 114,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/386940/07e45651fd2e37fde1d512c4cb77238ff5ce97c0.jpg"
+    },
+    {
+      "appid": 359870,
+      "name": "FINAL FANTASY X/X-2 HD Remaster",
+      "minutes": 114,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/359870/86616d56239e83099e90940c8c9424489aee2ceb.jpg"
+    },
+    {
+      "appid": 990630,
+      "name": "The Last Campfire",
+      "minutes": 102,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/990630/a6601e3e8776e4c71d20869ae2ca1cad23d41cc0.jpg"
+    },
+    {
+      "appid": 976730,
+      "name": "Halo: The Master Chief Collection",
+      "minutes": 96,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/976730/196a45d8df1981ff6b6b1872a38dc38f6c22875d.jpg"
+    },
+    {
+      "appid": 2943180,
+      "name": "Virtual Cottage 2",
+      "minutes": 96,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2943180/d201a632ee03c0f57e558cac6e534e0acc9da758.jpg"
+    },
+    {
+      "appid": 1551360,
+      "name": "Forza Horizon 5",
+      "minutes": 96,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1551360/6c1d20c62c4613263548323052c62cece488876b.jpg"
+    },
+    {
+      "appid": 268910,
+      "name": "Cuphead",
+      "minutes": 78,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/268910/c19f1bd916b6d171e94089d03112ec4e4e4da84e.jpg"
+    },
+    {
+      "appid": 381210,
+      "name": "Dead by Daylight",
+      "minutes": 72,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/381210/aa152097a700fd6f4707397ce41794ea30874790.jpg"
+    },
+    {
+      "appid": 1938090,
+      "name": "Call of Duty®",
+      "minutes": 66,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1938090/8eaf32220060344996cbf11f697a4f4be943e5f3.jpg"
+    },
+    {
+      "appid": 2507950,
+      "name": "Delta Force",
+      "minutes": 60,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2507950/52bc6c4bf0c232cf30d66eb3d1638bf099bc6061.jpg"
+    },
+    {
+      "appid": 677620,
+      "name": "Splitgate",
+      "minutes": 54,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/677620/03e452b180ff77986c3957819bde4c69448a2d0f.jpg"
+    },
+    {
+      "appid": 3527290,
+      "name": "PEAK",
+      "minutes": 48,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3527290/b3a992fd5991bd2f4c956d58e062b0ce2988d6cd.jpg"
+    },
+    {
+      "appid": 203160,
+      "name": "Tomb Raider",
+      "minutes": 48,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/203160/3ee640a8aba6992678e36f4e40cba9c71c02348b.jpg"
+    },
+    {
+      "appid": 1627720,
+      "name": "Lies of P",
+      "minutes": 42,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1627720/978b39341282c22c22264141f9618c36094b4214.jpg"
+    },
+    {
+      "appid": 952060,
+      "name": "Resident Evil 3",
+      "minutes": 36,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/952060/136b7a39787b0d8df93cf3b757c36ae1eb392784.jpg"
+    },
+    {
+      "appid": 714010,
+      "name": "Aimlabs",
+      "minutes": 36,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/714010/7f3b535e80a43dc0baadd4258d4b38c34c845f0c.jpg"
+    },
+    {
+      "appid": 611980,
+      "name": "Oik 2",
+      "minutes": 36,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/611980/ba71a7ff6e97e592296298d40f609f3ce75af08a.jpg"
+    },
+    {
+      "appid": 429660,
+      "name": "Tales of Berseria",
+      "minutes": 30,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/429660/bc14b91107afcf731e5c324e3f1ef83098d8a8fa.jpg"
+    },
+    {
+      "appid": 750920,
+      "name": "Shadow of the Tomb Raider",
+      "minutes": 30,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/750920/7db38cff16091c9c058892fcfeee102a6ed589d9.jpg"
+    },
+    {
+      "appid": 1072420,
+      "name": "DRAGON QUEST BUILDERS™ 2",
+      "minutes": 24,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1072420/dcf43c3815bcec83a52728ffa6a35aed201be97b.jpg"
+    },
+    {
+      "appid": 2707930,
+      "name": "Palia",
+      "minutes": 24,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2707930/98de4ad85ffe8ab6d7b73f5aeb5b8295304fa6eb.jpg"
+    },
+    {
+      "appid": 1638230,
+      "name": "Xuan-Yuan Sword: Mists Beyond the Mountains",
+      "minutes": 18,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1638230/3cc3e32f260a5867dd5bb960e811101af2fbd914.jpg"
+    },
+    {
+      "appid": 2702360,
+      "name": "Nightingale Playtest",
+      "minutes": 18,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/2702360/557757f43c615c72cea0a434c3f32a8a6bd2d4ba.jpg"
+    },
+    {
+      "appid": 863550,
+      "name": "HITMAN™ 2",
+      "minutes": 18,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/863550/3f7c071da7a338e03f6243b73c02c072f1bacee9.jpg"
+    },
+    {
+      "appid": 877280,
+      "name": "SAO Utils 2: Progressive",
+      "minutes": 18,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/877280/ab16d51fcd68f9b86c1313fe1d9beb0e563afce1.jpg"
+    },
+    {
+      "appid": 1902490,
+      "name": "Aperture Desk Job",
+      "minutes": 18,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1902490/3e71e5682e61ce692a4475b9d16ea6e026ac3233.jpg"
+    },
+    {
+      "appid": 304240,
+      "name": "Resident Evil",
+      "minutes": 18,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/304240/a60a960c76f26ab81773d4f2d372836db37a0012.jpg"
+    },
+    {
+      "appid": 870780,
+      "name": "Control Ultimate Edition",
+      "minutes": 12,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/870780/3438e3a03c82194349d66f99ee642ba59cbcc3dc.jpg"
+    },
+    {
+      "appid": 553420,
+      "name": "TUNIC",
+      "minutes": 12,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/553420/f4c05eb0f62914cf03a33c820e42359dad439912.jpg"
+    },
+    {
+      "appid": 1669980,
+      "name": "Volcano Princess",
+      "minutes": 12,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1669980/632f02980c8e38bd482a9162ce0380b8aff9c882.jpg"
+    },
+    {
+      "appid": 638230,
+      "name": "Journey",
+      "minutes": 6,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/638230/8538c0cb998e844ce5c78683f322e9ca81075a34.jpg"
+    },
+    {
+      "appid": 413410,
+      "name": "Danganronpa: Trigger Happy Havoc",
+      "minutes": 6,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/413410/221f5116c2c1d46fa71a7b014b5e882334a2d0da.jpg"
+    },
+    {
+      "appid": 304430,
+      "name": "INSIDE",
+      "minutes": 6,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/304430/047e00c80d6aca008ce5eaaf54df4d98c822ee19.jpg"
+    },
+    {
+      "appid": 3132930,
+      "name": "Monument Valley 3",
+      "minutes": 6,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/3132930/57a805cbe5c3a78fe67bea5fa3c1b18ad771f92b.jpg"
+    },
+    {
+      "appid": 1546570,
+      "name": "Sword and Fairy",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1546570/7b3be840b3562e019f3bd6aebe11e9f5b7e65d48.jpg"
+    },
+    {
+      "appid": 312520,
+      "name": "Rain World",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/312520/5854494b840a18a660a495d6259d562b51f21240.jpg"
+    },
+    {
+      "appid": 20,
+      "name": "Team Fortress Classic",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/20/38ea7ebe3c1abbbbf4eabdbef174c41a972102b9.jpg"
+    },
+    {
+      "appid": 50,
+      "name": "Half-Life: Opposing Force",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/50/04e81206c10e12416908c72c5f22aad411b3aeef.jpg"
+    },
+    {
+      "appid": 130,
+      "name": "Half-Life: Blue Shift",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/130/b06fdee488b3220362c11704be4edad82abeed08.jpg"
+    },
+    {
+      "appid": 220,
+      "name": "Half-Life 2",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/220/fcfb366051782b8ebf2aa297f3b746395858cb62.jpg"
+    },
+    {
+      "appid": 280,
+      "name": "Half-Life: Source",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/280/b4f572a6cc5a6a84ae84634c31414b9123d2f26b.jpg"
+    },
+    {
+      "appid": 320,
+      "name": "Half-Life 2: Deathmatch",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/320/795e85364189511f4990861b578084deef086cb1.jpg"
+    },
+    {
+      "appid": 360,
+      "name": "Half-Life Deathmatch: Source",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/360/40b8a62efff5a9ab356e5c56f5c8b0532c8e1aa3.jpg"
+    },
+    {
+      "appid": 7670,
+      "name": "BioShock",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/7670/9a7c9f640a76e6a32592277dbbc36a0f6da05372.jpg"
+    },
+    {
+      "appid": 8850,
+      "name": "BioShock 2",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/8850/f5eda925c0e57373aaea4cae17b6f175115a8d54.jpg"
+    },
+    {
+      "appid": 8870,
+      "name": "BioShock Infinite",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/8870/4ebaf5f9ee74f50152f7ff361debef7553fa0e4e.jpg"
+    },
+    {
+      "appid": 48000,
+      "name": "LIMBO",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/48000/463f57855017564301b17050fba73804b3bd86d6.jpg"
+    },
+    {
+      "appid": 206440,
+      "name": "To the Moon",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/206440/6e29eb4076a6253fdbccb987a2a21746d2df54d7.jpg"
+    },
+    {
+      "appid": 271590,
+      "name": "Grand Theft Auto V Legacy",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/271590/1e72f87eb927fa1485e68aefaff23c7fd7178251.jpg"
+    },
+    {
+      "appid": 339340,
+      "name": "Resident Evil 0",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/339340/db120ea03830d200f5ba41567b2dd4556aa33705.jpg"
+    },
+    {
+      "appid": 346110,
+      "name": "ARK: Survival Evolved",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/346110/fef1799533131c10f538d2dd697bbbd89e663265.jpg"
+    },
+    {
+      "appid": 362890,
+      "name": "Black Mesa",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/362890/51182b6a74035eb913b353d5d60e596c3804daf6.jpg"
+    },
+    {
+      "appid": 377160,
+      "name": "Fallout 4",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/377160/779c4356ebe32af2af7c9f0bbba595dfe872cd7f.jpg"
+    },
+    {
+      "appid": 407530,
+      "name": "ARK: Survival Of The Fittest",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/407530/807c673cddebbfee0700a947a75f4872ad136e9b.jpg"
+    },
+    {
+      "appid": 409720,
+      "name": "BioShock 2 Remastered",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/409720/97527a02b36f8ac4aba21005c2d953cc908a08e1.jpg"
+    },
+    {
+      "appid": 413420,
+      "name": "Danganronpa 2: Goodbye Despair",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/413420/912bb82c4ee0f7734ed28c97fde01a1371978896.jpg"
+    },
+    {
+      "appid": 489830,
+      "name": "The Elder Scrolls V: Skyrim Special Edition",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/489830/0dfe3eed5658f9fbd8b62f8021038c0a4190f21d.jpg"
+    },
+    {
+      "appid": 514580,
+      "name": "Cooking Witch",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/514580/68b94c6ae4c62f2c4f8ad90de8af64db36d322ef.jpg"
+    },
+    {
+      "appid": 567640,
+      "name": "Danganronpa V3: Killing Harmony",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/567640/27e0b08d9506a81bc9f8d3a3616fb455106bfa68.jpg"
+    },
+    {
+      "appid": 668580,
+      "name": "Atomic Heart",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/668580/2a9828aaf232ea5c4b2575212786c62166306390.jpg"
+    },
+    {
+      "appid": 688420,
+      "name": "Bad North: Jotunn Edition",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/688420/038a9c080d91b1963b51498541a718f844a0f162.jpg"
+    },
+    {
+      "appid": 825630,
+      "name": "STEINS;GATE 0",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/825630/32ed7216259d8bd3e339bb6d8a0376c4b0c8cad3.jpg"
+    },
+    {
+      "appid": 931180,
+      "name": "Conan Exiles - Public Beta Client",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/931180/67a32c9bdd0738df619162c70bdebfe8a735abec.jpg"
+    },
+    {
+      "appid": 952070,
+      "name": "RESIDENT EVIL RESISTANCE",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/952070/05c0148e8e414361742c38e3709ca9cdd9c637a8.jpg"
+    },
+    {
+      "appid": 970560,
+      "name": "STEINS;GATE: My Darling's Embrace",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/970560/43ce69b4dca1e8412316487932233b199eb98fa3.jpg"
+    },
+    {
+      "appid": 1237970,
+      "name": "Titanfall® 2",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1237970/d73c7e572859bd7490947d1aeab5c33eda18fd64.jpg"
+    },
+    {
+      "appid": 1265920,
+      "name": "Life is Strange Remastered",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1265920/3f7aa3eec440654761e24eb37d769ca3f4fb5c5c.jpg"
+    },
+    {
+      "appid": 1265930,
+      "name": "Life is Strange: Before the Storm Remastered",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1265930/787f74af7924c85faa517dd9e50e08791f772438.jpg"
+    },
+    {
+      "appid": 1328670,
+      "name": "Mass Effect™ Legendary Edition",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1328670/443ed7dba43882ef4298f8ed15bf67f323461e14.jpg"
+    },
+    {
+      "appid": 1401390,
+      "name": "Party Animals Playtest",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1401390/e8e08a9e75ad004ae6a3772db18c31a231a38a21.jpg"
+    },
+    {
+      "appid": 1604030,
+      "name": "V Rising",
+      "minutes": 0,
+      "icon": "https://media.steampowered.com/steamcommunity/public/images/apps/1604030/d18204000a839feb84393b3d860c17cd4a4b269c.jpg"
+    }
+  ]
 }
