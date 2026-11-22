@@ -114,7 +114,7 @@ const sides = [
     </article>
 
     <!-- A turntable seen from above: a record with light catching its grooves, a knob, a pitch slider and a tonearm.
-         Playing a side swings the arm onto the record and spins the label, which shows the song's album cover. -->
+         Playing a side swings the arm onto the record and spins it, its label showing the song's album cover. -->
     <article class="hobby-card paper taped record" data-reveal data-record>
       <span class="recipe-no">ON THE TURNTABLE</span>
       <h2 class="recipe-title record-title"><LocalizedText en="I Love Jazz" zh="喜欢听爵士乐" /></h2>
@@ -434,9 +434,15 @@ const sides = [
     height: 10rem;
     border-radius: 50%;
     background: #2b2724;
+    animation: record-spin 3s linear infinite paused;
   }
 
-  /* Light catching the grooves in two opposite arcs. It stays put while the record turns, as a reflection would. */
+  /* While a side plays, the whole record turns, grooves and label together. */
+  .record[data-playing] .turntable-disc {
+    animation-play-state: running;
+  }
+
+  /* Light catching the grooves in two opposite arcs. It turns with the record so the spin shows. */
   .turntable-shine {
     position: absolute;
     inset: 0;
@@ -458,7 +464,6 @@ const sides = [
     border-radius: 50%;
     background: oklch(var(--p));
     box-shadow: inset 0 0 0 0.5rem color-mix(in oklch, oklch(var(--p)) 80%, #000);
-    animation: record-spin 3s linear infinite paused;
     transition: width 400ms ease, height 400ms ease;
   }
 
@@ -474,13 +479,12 @@ const sides = [
     translate: -50% -50%;
   }
 
-  /* While a side plays, the label is its album cover and turns. */
+  /* While a side plays, the label is its album cover. */
   .record[data-playing] .turntable-label {
     width: 4.4rem;
     height: 4.4rem;
     background: var(--art, oklch(var(--p))) center / var(--art-zoom, cover);
     box-shadow: 0 0 0 2px rgb(0 0 0 / 45%);
-    animation-play-state: running;
   }
 
   .record[data-playing] .turntable-label::after {
@@ -676,7 +680,7 @@ const sides = [
       transition: none;
     }
 
-    .turntable-label {
+    .turntable-disc {
       animation: none;
     }
   }
