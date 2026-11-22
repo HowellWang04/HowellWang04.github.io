@@ -122,7 +122,7 @@ const stats = [
       )}
       {library.length > 0 && (
         <button type="button" class="play-library-open" data-library-open>
-          <LocalizedText en={`Browse all ${library.length} games`} zh={`浏览全部 ${library.length} 款游戏`} />
+          <LocalizedText en="Browse my Steam library" zh="浏览我的 Steam 游戏库" />
           <span aria-hidden="true">→</span>
         </button>
       )}
@@ -183,7 +183,7 @@ const stats = [
                 </span>
               ))}
             </span>
-            <span class="play-source"><LocalizedText en="Fetched daily from the Nintendo Switch Parental Controls API" zh="数据每日从任天堂 Switch 家长控制 API 抓取" /></span>
+            <span class="play-source"><LocalizedText en="Fetched daily from the Switch Parental Controls API" zh="数据每日从任天堂 Switch 家长控制 API 抓取" /></span>
           </>
         )}
       </div>
@@ -192,44 +192,47 @@ const stats = [
 
   {library.length > 0 && (
     <dialog class="library-dialog bg-base-100 text-base-content" data-library data-lenis-prevent aria-labelledby="library-title">
-      <header class="library-header bg-base-100">
-        <div>
-          <h2 id="library-title" class="library-title">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
-            <LocalizedText en="My Steam Library" zh="我的 Steam 游戏库" />
-          </h2>
-          <div class="library-sort">
-            <label for="library-sort"><LocalizedText en="Sort by" zh="排序" /></label>
-            <span class="library-sort-field">
-              <select id="library-sort" data-library-sort>
-                {sorts.map(({ key, en, zh }) => <option value={key} data-en={en} data-zh={zh}>{en}</option>)}
-              </select>
-            </span>
+      <div data-dialog-scroll>
+        <header class="library-header bg-base-100">
+          <div>
+            <h2 id="library-title" class="library-title">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><path d={siSteam.path} /></svg>
+              <LocalizedText en="My Steam Library" zh="我的 Steam 游戏库" />
+            </h2>
+            <div class="library-sort">
+              <label for="library-sort"><LocalizedText en="Sort by" zh="排序" /></label>
+              <span class="library-sort-field">
+                <select id="library-sort" data-library-sort>
+                  {sorts.map(({ key, en, zh }) => <option value={key} data-en={en} data-zh={zh}>{en}</option>)}
+                </select>
+              </span>
+            </div>
           </div>
-        </div>
-        <button type="button" class="library-close" data-library-close>
-          <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
-          <span class="sr-only"><LocalizedText en="Close" zh="关闭" /></span>
-        </button>
-      </header>
-      <ul class="library-grid">
-        {library.map((game) => (
-          <li class="library-game" data-minutes={game.minutes} data-name={game.name}>
-            <img src={cover(game.appid)} data-icon={game.icon} alt="" width="460" height="215" loading="lazy" />
-            <span class="library-name" title={game.name}>{game.name}</span>
-            <span class="library-hours">{libraryHours(game.minutes)} h</span>
-          </li>
-        ))}
-      </ul>
-      <p class="library-note">
-        <LocalizedText en="Games I haven't played yet aren't listed." zh="还没玩过的游戏没有列出。" />
-      </p>
+          <button type="button" class="library-close" data-library-close>
+            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" /></svg>
+            <span class="sr-only"><LocalizedText en="Close" zh="关闭" /></span>
+          </button>
+        </header>
+        <ul class="library-grid">
+          {library.map((game) => (
+            <li class="library-game" data-minutes={game.minutes} data-name={game.name}>
+              <img src={cover(game.appid)} data-icon={game.icon} alt="" width="460" height="215" loading="lazy" />
+              <span class="library-name" title={game.name}>{game.name}</span>
+              <span class="library-hours">{libraryHours(game.minutes)} h</span>
+            </li>
+          ))}
+        </ul>
+        <p class="library-note">
+          <LocalizedText en="Games I haven't played yet aren't listed." zh="还没玩过的游戏没有列出。" />
+        </p>
+      </div>
     </dialog>
   )}
 </section>
 
 <script>
   import { lenis } from "../scripts/smooth-scroll";
+  import { attachScrollbar } from "../scripts/dialog-scrollbar";
 
   // Copies the Switch friend code and says so for a moment.
   const setupCopy = () => {
@@ -258,23 +261,29 @@ const stats = [
     const open = document.querySelector<HTMLButtonElement>("[data-library-open]");
     if (!dialog || !open || dialog.dataset.bound) return;
     dialog.dataset.bound = "true";
+    const scroller = attachScrollbar(dialog);
     const still = () => window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const easing = "cubic-bezier(0.2, 1, 0.3, 1)";
+
+    // The first screenful of games cascades in, on opening and after each sort.
+    const cascade = (start: number) => {
+      dialog.querySelectorAll<HTMLElement>(".library-game").forEach((game, index) => {
+        game.getAnimations().forEach((animation) => animation.cancel());
+        if (index > 15) return;
+        game.animate(
+          [{ opacity: 0, translate: "0 16px" }, { opacity: 1, translate: "0 0" }],
+          { duration: 520, delay: start + index * 40, easing, fill: "backwards" },
+        );
+      });
+    };
 
     open.addEventListener("click", () => {
       lenis?.stop();
       dialog.showModal();
-      dialog.scrollTop = 0;
+      scroller.scrollTop = 0;
       if (still()) return;
-      const easing = "cubic-bezier(0.2, 1, 0.3, 1)";
       dialog.animate([{ opacity: 0, transform: "translateY(16px)" }, { opacity: 1, transform: "none" }], { duration: 420, easing });
-      // The first screenful of games cascades in.
-      dialog.querySelectorAll<HTMLElement>(".library-game").forEach((game, index) => {
-        if (index > 15) return;
-        game.animate(
-          [{ opacity: 0, translate: "0 16px" }, { opacity: 1, translate: "0 0" }],
-          { duration: 520, delay: 100 + index * 40, easing, fill: "backwards" },
-        );
-      });
+      cascade(100);
     });
     dialog.querySelector("[data-library-close]")!.addEventListener("click", () => dialog.close());
     dialog.addEventListener("click", (event) => {
@@ -295,7 +304,8 @@ const stats = [
     const sort = dialog.querySelector<HTMLSelectElement>("[data-library-sort]")!;
     sort.addEventListener("change", () => {
       grid.append(...[...games].sort(orders[sort.value]));
-      dialog.scrollTop = 0;
+      scroller.scrollTop = 0;
+      if (!still()) cascade(0);
     });
 
     // A game whose cover isn't at the usual address shows its small icon instead, or an empty tile without one.
@@ -641,8 +651,7 @@ const stats = [
     padding: 0;
     border: 0;
     border-radius: 1.25rem;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
     box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
   }
 

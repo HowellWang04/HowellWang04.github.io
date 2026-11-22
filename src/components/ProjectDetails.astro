@@ -16,7 +16,7 @@ const facts = [
 
 <project-details class="block">
   <dialog id={dialogId} class="project-dialog" aria-labelledby={`${dialogId}-title`} data-lenis-prevent>
-    <div class="project-sheet bg-base-100 text-base-content text-left">
+    <div class="project-sheet bg-base-100 text-base-content text-left" data-dialog-scroll>
       <header class="project-header border-b border-base-300 bg-base-100">
         <div>
           <p class="text-sm opacity-60"><LocalizedText en="Project breakdown" zh="项目详解" /></p>
@@ -106,12 +106,14 @@ const facts = [
 
 <script>
   import { lenis } from "../scripts/smooth-scroll";
+  import { attachScrollbar } from "../scripts/dialog-scrollbar";
 
   class ProjectDetails extends HTMLElement {
     connectedCallback() {
       if (this.dataset.bound) return;
       this.dataset.bound = "true";
       const dialog = this.querySelector<HTMLDialogElement>("dialog")!;
+      attachScrollbar(dialog);
       const trigger = this.parentElement!.querySelector<HTMLButtonElement>("[data-project-open]")!;
 
       // Start fetching the cover as soon as the card is hovered or focused, so it doesn't pop in mid-animation.
@@ -244,8 +246,7 @@ const facts = [
     padding: 0;
     border: 0;
     border-radius: 1.25rem;
-    overflow-y: auto;
-    overscroll-behavior: contain;
+    overflow: hidden;
     box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
   }
 

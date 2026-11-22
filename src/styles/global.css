@@ -38,6 +38,36 @@ html {
     scrollbar-gutter: stable !important;
 }
 
+/* Pop-up windows scroll an inner [data-dialog-scroll] element with its native bar hidden, and draw their own slim
+   thumb instead (src/scripts/dialog-scrollbar.ts). */
+[data-dialog-scroll] {
+    max-height: inherit;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: none;
+}
+
+[data-dialog-scroll]::-webkit-scrollbar {
+    display: none;
+}
+
+.dialog-thumb {
+    position: absolute;
+    top: 0;
+    right: 0.3rem;
+    z-index: 2;
+    width: 0.375rem;
+    border-radius: 999px;
+    background: oklch(var(--bc) / 0.25);
+    touch-action: none;
+    transition: background-color 200ms ease;
+}
+
+.dialog-thumb:hover,
+.dialog-thumb.is-dragging {
+    background: oklch(var(--bc) / 0.45);
+}
+
 /* Scroll nav links glide to their section. */
 @media (prefers-reduced-motion: no-preference) {
     html {
