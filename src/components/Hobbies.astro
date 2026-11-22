@@ -1,5 +1,5 @@
 ---
-// What I do outside games, as three things taped to the page: a recipe card whose method is how I got into
+// What I do outside games, as three flat cards: a recipe card whose method is how I got into
 // healthy cooking, a page from a training log for strength training, and a record whose two sides are my favorite band
 // and my favorite jazz musician.
 import LocalizedText from "./LocalizedText.astro";
@@ -90,7 +90,7 @@ const sides = [
 
   <div class="hobby-grid">
     <!-- An index card from a recipe box: ruled lines, a red rule under the title, and the steps as the method. -->
-    <article class="hobby-card paper taped recipe" data-reveal>
+    <article class="hobby-card paper recipe" data-reveal>
       <header class="recipe-head">
         <span class="recipe-no">RECIPE No.01</span>
         <h2 class="recipe-title"><LocalizedText en="Healthy Recipes" zh="研究健康食谱" /></h2>
@@ -101,7 +101,7 @@ const sides = [
     </article>
 
     <!-- A page torn from a training log: graph paper and a line-drawn barbell. -->
-    <article class="hobby-card paper taped training" data-reveal>
+    <article class="hobby-card paper training" data-reveal>
       <span class="recipe-no">TRAINING LOG</span>
       <h2 class="recipe-title"><LocalizedText en="Strength Training" zh="力量训练" /></h2>
       <p class="training-since"><LocalizedText en="Building muscle since 2025" zh="2025 年开始增肌" /></p>
@@ -117,7 +117,7 @@ const sides = [
 
     <!-- A turntable seen from above: a record with light catching its grooves, a knob, a pitch slider and a tonearm.
          Playing a side swings the arm onto the record and spins it, its label showing the song's album cover. -->
-    <article class="hobby-card paper taped record" data-reveal data-record>
+    <article class="hobby-card paper record" data-reveal data-record>
       <span class="recipe-no">ON THE TURNTABLE</span>
       <h2 class="recipe-title record-title"><LocalizedText en="I Love Jazz" zh="喜欢听爵士乐" /></h2>
       <div class="turntable" aria-hidden="true">
@@ -302,7 +302,6 @@ const sides = [
     border: 1px solid oklch(var(--bc) / 0.12);
     border-radius: 1.25rem;
     background: oklch(var(--b1));
-    box-shadow: 0 12px 28px -18px rgb(60 38 28 / 45%);
     font-size: 0.95rem;
     line-height: 1.75;
   }
@@ -321,39 +320,21 @@ const sides = [
     rotate: 45deg;
   }
 
-  /* Paper taped to the page, like the game photos (the paper and the tape are in global.css). */
-  /* Hovering straightens the card and lifts it a little off the page: a slow ease out so it settles gently. */
+  /* Flat cards, like the game photos (the card itself is .paper in global.css). Hovering lifts a card a little: a slow
+     ease out so it settles gently. */
   .hobby-card {
     --settle: 650ms cubic-bezier(0.25, 1, 0.5, 1);
     position: relative;
     padding: 1.25rem 1.5rem 1.5rem;
-    transition: rotate var(--settle), transform var(--settle), box-shadow var(--settle);
+    transition: transform var(--settle);
   }
 
-  .hobby-card::before {
-    top: -0.65rem;
-    left: 50%;
-    width: 38%;
-    translate: -50% 0;
-    rotate: 3deg;
-  }
-
-  .recipe {
-    rotate: -1.5deg;
-  }
-
-  .record {
-    rotate: 1.2deg;
-  }
-
-  /* Graph paper: fine squares, ruled from the paper's own ink colour so it works in both themes. */
+  /* Graph paper: fine squares, ruled from the card's own ink colour so it works in both themes. */
   .training {
-    rotate: 0.8deg;
     background-image:
       linear-gradient(color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
-      linear-gradient(90deg, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
-      var(--paper-light), var(--paper-grain);
-    background-size: 1rem 1rem, 1rem 1rem, auto, auto;
+      linear-gradient(90deg, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px);
+    background-size: 1rem 1rem;
   }
 
   .training-since {
@@ -374,17 +355,9 @@ const sides = [
     stroke-linejoin: round;
   }
 
-  @media (min-width: 768px) {
-    .record {
-      margin-top: 1.5rem;
-    }
-  }
-
   @media (hover: hover) {
     .hobby-card:hover {
-      rotate: 0deg;
       transform: translateY(-4px);
-      box-shadow: var(--paper-edge), var(--paper-shadow), 0 28px 40px -26px rgb(40 28 20 / 45%);
     }
   }
 
@@ -439,7 +412,6 @@ const sides = [
     border: 3px solid #2e2a27;
     border-radius: 0.9rem;
     background: #f2e6c9;
-    box-shadow: 0 4px 12px -4px rgb(0 0 0 / 35%);
   }
 
   .turntable-disc {

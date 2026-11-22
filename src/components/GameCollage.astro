@@ -1,7 +1,7 @@
 ---
 import LocalizedText from "./LocalizedText.astro";
 
-// A scrapbook wall: each game is a taped-down photo with its title and a few words about it, laid out in straight rows.
+// A wall of flat cards: each game is a photo with its title and a few words about it, laid out in straight rows.
 // Steam games use Steam's 600x900 library capsule art; other covers are cropped to the same 2:3 frame.
 const steamCover = (appId: number) => `https://cdn.cloudflare.steamstatic.com/steam/apps/${appId}/library_600x900.jpg`;
 
@@ -74,11 +74,9 @@ const photos: Photo[] = [
 ---
 
 <ul class="collage" data-collage>
-  {photos.map((photo, index) => (
-    <li
-      style={`--tape: ${index % 2 ? -4 : 3}deg`}
-    >
-      <div class="card paper taped">
+  {photos.map((photo) => (
+    <li>
+      <div class="card paper">
         <img src={photo.cover} alt={photo.title} width="600" height="900" loading="lazy" decoding="async" />
         <span class="caption">
           <span class="caption-title"><LocalizedText en={photo.title} zh={photo.titleZh} /></span>
@@ -91,8 +89,7 @@ const photos: Photo[] = [
 <noscript><style>[data-collage] > li { --land: 1 !important; }</style></noscript>
 
 <script>
-  // Scroll-linked drop: each photo falls onto the page from above and its tape sticks
-  // down as it lands. Scrolling back up lifts it off again. Nothing drops until the home intro is done.
+  // Scroll-linked drop: each photo falls onto the page from above and lands. Scrolling back up lifts it off again. Nothing drops until the home intro is done.
   // The middle photo of a row drops straight down; the ones beside it come in at a slant from the outside,
   // mirrored left and right, and a whole row lands together.
   let teardownDrop: (() => void) | undefined;
@@ -179,7 +176,7 @@ const photos: Photo[] = [
     padding: 1rem 0.5rem 2rem;
   }
 
-  /* 0 = still in the air, 1 = taped down. Registered so the first deal can ease each photo down. */
+  /* 0 = still in the air, 1 = landed. Registered so the first deal can ease each photo down. */
   @property --land {
     syntax: "<number>";
     inherits: true;
@@ -214,32 +211,6 @@ const photos: Photo[] = [
     transition: transform 320ms cubic-bezier(0.22, 1, 0.36, 1);
   }
 
-  /* The shadow spreads while the photo is still in the air. A fixed wide shadow fades in on its own layer, instead of
-     the card's shadow growing, so a falling photo never has to be repainted. */
-  .card::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    z-index: -1;
-    box-shadow: 0 38px 48px -12px rgb(40 28 20 / 45%);
-    opacity: var(--lift, 0);
-    will-change: opacity;
-    pointer-events: none;
-  }
-
-  /* A strip of semi-transparent tape (its look is in global.css) holding each photo to the page. Once the photo has
-     landed, the tape is pressed on in one go: it comes down slightly larger and askew, then settles flat onto the
-     paper. z-index: the photo's filter gives it its own layer, which would otherwise be drawn over the tape. */
-  .card::before {
-    --stick: clamp(0, calc((var(--land) - 0.82) * 5.5), 1);
-    top: -0.65rem;
-    left: 50%;
-    z-index: 1;
-    width: 42%;
-    opacity: var(--stick);
-    transform: translateX(-50%) rotate(calc(var(--tape) + (1 - var(--stick)) * 9deg)) scale(calc(1.35 - var(--stick) * 0.35));
-  }
-
   /* Hover only on devices with a mouse, so a tap on a phone doesn't leave a card stuck raised. */
   @media (hover: hover) {
     .card:hover {
@@ -252,10 +223,7 @@ const photos: Photo[] = [
     width: 100%;
     aspect-ratio: 2 / 3;
     object-fit: cover;
-    filter: sepia(0.15) saturate(0.9);
-    /* A hairline where the print meets the paper. */
-    outline: 1px solid rgb(0 0 0 / 8%);
-    outline-offset: -1px;
+    border-radius: 0.4rem;
   }
 
   .caption {
