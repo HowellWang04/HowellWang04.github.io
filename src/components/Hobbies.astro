@@ -49,25 +49,25 @@ const sides = [
 
 <section id="hobbies" class="scroll-mt-20 pt-16">
   <!-- Doodled like the other home headings (index.astro draws it): a highlighter swipe, then three icons for the three
-       cards below: a steaming bowl with chopsticks, a dumbbell, and two beamed notes. -->
+       cards below: a leaf on a shallow plate, a dumbbell, and two beamed notes. -->
   <div class="text-3xl w-full font-bold font-heading mb-8" data-reveal>
     <span class="doodle-heading" style="--doodle-icons: 3">
       <LocalizedText en="Beyond Games" zh="游戏之外" />
       <svg class="doodle-stroke" aria-hidden="true">
         <path class="doodle-line" />
         <g class="doodle-icon">
-          <path d="M5 14H43" />
-          <path d="M7 14C8 23 15 28 24 28C33 28 40 23 41 14" />
-          <path d="M19 28.5L20 31H28L29 28.5" />
-          <path d="M27 13L39 2M31 13L43 3" />
-          <path d="M13 10C11 8 15 6 13 3M19 10C17 8 21 6 19 3" />
+          <path d="M3 20H45" />
+          <path d="M8 20C10 24.5 16 26.5 24 26.5C32 26.5 38 24.5 40 20" />
+          <path d="M13 18C13 9 21 4 34 4C34 13 26 18 13 18Z" />
+          <path d="M15 17L31 6.5" />
+          <path d="M20 13.8L19 9.5M25 10.5L24.5 6.5M22.5 12.2L27 14.5M27.5 9L32 10.5" />
         </g>
         <g class="doodle-icon">
-          <path d="M7 8H10C10.6 8 11 8.4 11 9V23C11 23.6 10.6 24 10 24H7C6.4 24 6 23.6 6 23V9C6 8.4 6.4 8 7 8Z" />
-          <path d="M11 11.5H14V20.5H11" />
+          <path d="M6 11.5H9V20.5H6Z" />
+          <path d="M10 8H13C13.6 8 14 8.4 14 9V23C14 23.6 13.6 24 13 24H10C9.4 24 9 23.6 9 23V9C9 8.4 9.4 8 10 8Z" />
           <path d="M14 16H34" />
-          <path d="M37 11.5H34V20.5H37" />
-          <path d="M38 8H41C41.6 8 42 8.4 42 9V23C42 23.6 41.6 24 41 24H38C37.4 24 37 23.6 37 23V9C37 8.4 37.4 8 38 8Z" />
+          <path d="M35 8H38C38.6 8 39 8.4 39 9V23C39 23.6 38.6 24 38 24H35C34.4 24 34 23.6 34 23V9C34 8.4 34.4 8 35 8Z" />
+          <path d="M39 11.5H42V20.5H39Z" />
         </g>
         <g class="doodle-icon">
           <path d="M16 25V8L40 3V20" />
@@ -102,13 +102,13 @@ const sides = [
     <article class="hobby-card paper taped training" data-reveal>
       <span class="recipe-no">TRAINING LOG</span>
       <h2 class="recipe-title"><LocalizedText en="Strength Training" zh="力量训练" /></h2>
-      <p class="training-since"><LocalizedText en="Building muscle since 2024" zh="2024 年开始增肌" /></p>
+      <p class="training-since"><LocalizedText en="Building muscle since 2025" zh="2025 年开始增肌" /></p>
       <svg class="training-barbell" viewBox="0 0 120 36" aria-hidden="true">
         <path d="M4 18H116" />
-        <rect x="16" y="4" width="8" height="28" rx="2" />
-        <rect x="26" y="9" width="6" height="18" rx="1.5" />
-        <rect x="96" y="4" width="8" height="28" rx="2" />
-        <rect x="88" y="9" width="6" height="18" rx="1.5" />
+        <rect x="17" y="9" width="6" height="18" rx="1.5" />
+        <rect x="24" y="4" width="8" height="28" rx="2" />
+        <rect x="88" y="4" width="8" height="28" rx="2" />
+        <rect x="97" y="9" width="6" height="18" rx="1.5" />
         <path d="M35 14V22M85 14V22" />
       </svg>
     </article>
@@ -116,6 +116,8 @@ const sides = [
     <!-- A turntable seen from above: a record with light catching its grooves, a knob, a pitch slider and a tonearm.
          Playing a side swings the arm onto the record and spins the label, which shows the song's album cover. -->
     <article class="hobby-card paper taped record" data-reveal data-record>
+      <span class="recipe-no">ON THE TURNTABLE</span>
+      <h2 class="recipe-title record-title"><LocalizedText en="I Love Jazz" zh="喜欢听爵士" /></h2>
       <div class="turntable" aria-hidden="true">
         <span class="turntable-disc">
           <span class="turntable-shine"></span>
@@ -408,6 +410,10 @@ const sides = [
   }
 
   /* The turntable: a cream plinth outlined in ink, like a line drawing, with the accent colour on the label. */
+  .record-title {
+    margin-bottom: 1rem;
+  }
+
   .turntable {
     position: relative;
     width: 15rem;
