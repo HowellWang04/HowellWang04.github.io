@@ -177,7 +177,8 @@ const stats = [
                 <span class="play-game">
                   {game.image && <img class="play-icon" src={game.image} alt="" width="256" height="256" loading="lazy" />}
                   <span class="play-game-info">
-                    <span class="play-game-name">{game.name}</span>
+                    <!-- Named in English on the English page when the fetch found an English name. -->
+                    <span class="play-game-name play-game-name-full" data-en={game.nameEn ?? game.name} data-zh={game.name}>{game.nameEn ?? game.name}</span>
                   </span>
                   <span class="play-game-hours">{hours(game.minutes)} h</span>
                 </span>
@@ -495,6 +496,17 @@ const stats = [
     white-space: nowrap;
   }
 
+  /* The Switch card is narrow and its English names run long (The Legend of Zelda: Ocarina of Time), so its names
+     are a little smaller and may take two lines instead of being cut short. */
+  .play-game-name-full {
+    display: -webkit-box;
+    font-size: 0.875rem;
+    line-height: 1.3;
+    white-space: normal;
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+  }
+
   /* Achievement progress: a thin bar that fills to the share unlocked, with the count beside it. */
   .play-achievements {
     display: flex;
@@ -644,9 +656,9 @@ const stats = [
 
   /* The library dialog: a sticky header over a grid of game covers. */
   .library-dialog {
-    width: min(64rem, calc(100vw - 2rem));
+    width: min(54rem, calc(100vw - 3rem));
     max-width: none;
-    max-height: calc(100dvh - 2rem);
+    max-height: min(82dvh, 46rem);
     margin: auto;
     padding: 0;
     border: 0;

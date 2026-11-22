@@ -263,7 +263,7 @@ const places = visitors.countries.length;
       <button type="button" class="fun-toggle" aria-pressed="false" data-fun-toggle>
         <span class="fun-teaser">
           <span class="fun-spark" aria-hidden="true">✦</span>
-          <LocalizedText en="Psst… want a fun fact about Guanhao?" zh="嘘，想知道王冠豪的一个小秘密吗？" />
+          <LocalizedText en="This map has a bit of my story too" zh="这张地图上，也有我的故事" />
         </span>
         <span class="fun-close">
           <LocalizedText en="Okay, tuck them away" zh="好啦，收起来" />
@@ -273,6 +273,11 @@ const places = visitors.countries.length;
       <div class="map-tooltip" data-map-tooltip hidden></div>
       <script type="application/json" data-globe-data set:html={globeData}></script>
     </figure>
+    <!-- Where the numbers come from, in the same small print as the platform cards on the home page. -->
+    <p class="map-source" data-reveal>
+      <LocalizedText en="Visitor data fetched daily from" zh="访客数据每日来自" />
+      <a href="https://www.goatcounter.com/" target="_blank" rel="noopener noreferrer">GoatCounter</a>
+    </p>
   </section>
 </BaseLayout>
 
@@ -579,6 +584,19 @@ const places = visitors.countries.length;
     width: min(852px, calc(100vw - 3rem));
   }
 
+  .map-source {
+    margin-top: 0.6rem;
+    font-size: 0.68rem;
+    font-style: italic;
+    text-align: right;
+    opacity: 0.45;
+  }
+
+  .map-source a {
+    text-decoration: underline;
+    text-underline-offset: 0.2em;
+  }
+
   .map-card {
     position: relative;
     overflow: hidden;
@@ -807,7 +825,7 @@ const places = visitors.countries.length;
     font-size: 1.2rem;
     line-height: 1.2;
     text-align: left;
-    transform: rotate(-2deg);
+    transform: rotate(2deg);
     transform-origin: 90% 50%;
     animation: fun-wiggle 4.5s ease-in-out 1.5s infinite;
     transition: transform 320ms cubic-bezier(0.34, 1.56, 0.64, 1), box-shadow 320ms ease;
@@ -820,10 +838,10 @@ const places = visitors.countries.length;
   }
 
   @keyframes fun-wiggle {
-    0%, 82%, 100% { transform: rotate(-2deg); }
-    86% { transform: rotate(-6deg) scale(1.04); }
-    90% { transform: rotate(2deg) scale(1.04); }
-    94% { transform: rotate(-4deg); }
+    0%, 82%, 100% { transform: rotate(2deg); }
+    86% { transform: rotate(6deg) scale(1.04); }
+    90% { transform: rotate(-2deg) scale(1.04); }
+    94% { transform: rotate(4deg); }
   }
 
   .fun-spark {

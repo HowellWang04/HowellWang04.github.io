@@ -1,0 +1,674 @@
+---
+// What I do outside games, as three things taped to the page: a recipe card whose method is how I got into
+// healthy cooking, a page from a training log for strength training, and a record whose two sides are my favorite band
+// and my favorite jazz musician.
+import LocalizedText from "./LocalizedText.astro";
+
+const steps = [
+  { en: "It started with the gym, and I began to care about what I eat", zh: "源于健身，开始注重饮食" },
+  { en: "Now I cook my own meals: low sodium, low saturated fat, high in omega-3 fats and antioxidants", zh: "自己做低钠、低饱和脂肪、高 Omega-3 脂肪、高抗氧化的饮食" },
+];
+// Each side plays 30 seconds of one song from a start I picked, streamed from NetEase Cloud Music's public song link.
+// NetEase only serves its songs inside mainland China, so everywhere else (or if the link fails) it plays Apple Music's
+// official 30 second preview instead (found with the iTunes Search API by track ID; if a preview stops loading, look it
+// up again).
+const sides = [
+  {
+    key: "a",
+    side: { en: "Side A", zh: "A 面" },
+    name: "Lamp",
+    profile: "https://en.wikipedia.org/wiki/Lamp_(band)",
+    // Baidu Baike has no entry for Lamp, so visitors in China get the band's NetEase Cloud Music page.
+    profileCn: "https://music.163.com/#/artist?id=20287",
+    note: { en: "My favorite band · Jazz pop", zh: "最喜欢的乐队 · Jazz Pop" },
+    song: "泡沫綺譚",
+    netease: 769611,
+    start: 43,
+    preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ec/f9/f5/ecf9f5dd-d31b-9263-0bf2-2b406a47d9a9/mzaf_8136333232274894382.plus.aac.p.m4a",
+    link: "https://music.apple.com/album/264778470?i=264778698",
+    art: "https://is1-ssl.mzstatic.com/image/thumb/Music/a4/89/ab/mzi.bwqidfes.jpg/300x300bb.jpg",
+  },
+  {
+    key: "b",
+    side: { en: "Side B", zh: "B 面" },
+    name: "Bill Evans",
+    profile: "https://en.wikipedia.org/wiki/Bill_Evans",
+    profileCn: "https://baike.baidu.com/item/%E6%AF%94%E5%B0%94%C2%B7%E8%89%BE%E6%96%87%E6%96%AF",
+    note: { en: "My favorite jazz musician · Piano trio", zh: "最喜欢的爵士音乐家 · 钢琴三重奏" },
+    song: "Alice in Wonderland",
+    netease: 1965613314,
+    start: 331,
+    preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/8f/0e/15/8f0e159f-0866-8364-d69e-5dacd97538dd/mzaf_11811728737444229825.plus.aac.p.m4a",
+    link: "https://music.apple.com/album/1440926338?i=1440926789",
+    art: "https://is1-ssl.mzstatic.com/image/thumb/Music124/v4/3d/f2/ab/3df2ab45-5e51-b4b6-07dd-daefe8c0ecbc/00888072305090.rgb.jpg/300x300bb.jpg",
+    // This reissue's cover has a white border around the photo; zoom past it so the round label shows only the photo.
+    artZoom: "150%",
+  },
+];
+---
+
+<section id="hobbies" class="scroll-mt-20 pt-16">
+  <!-- Doodled like the other home headings (index.astro draws it): a highlighter swipe, then three icons for the three
+       cards below: a bowl with a leaf, a dumbbell, and two beamed notes. -->
+  <div class="text-3xl w-full font-bold font-heading mb-8" data-reveal>
+    <span class="doodle-heading" style="--doodle-icons: 3">
+      <LocalizedText en="Beyond Games" zh="游戏之外" />
+      <svg class="doodle-stroke" aria-hidden="true">
+        <path class="doodle-line" />
+        <g class="doodle-icon">
+          <path d="M5 15H43C43 23.5 34.5 29 24 29C13.5 29 5 23.5 5 15Z" />
+          <path d="M24 14C23 8 27 4 34 3C35 9 31 13 24 14Z" />
+          <path d="M25.5 12.5L31 6.5" />
+        </g>
+        <g class="doodle-icon">
+          <path d="M7 8H10C10.6 8 11 8.4 11 9V23C11 23.6 10.6 24 10 24H7C6.4 24 6 23.6 6 23V9C6 8.4 6.4 8 7 8Z" />
+          <path d="M11 11.5H14V20.5H11" />
+          <path d="M14 16H34" />
+          <path d="M37 11.5H34V20.5H37" />
+          <path d="M38 8H41C41.6 8 42 8.4 42 9V23C42 23.6 41.6 24 41 24H38C37.4 24 37 23.6 37 23V9C37 8.4 37.4 8 38 8Z" />
+        </g>
+        <g class="doodle-icon">
+          <path d="M16 25V8L40 3V20" />
+          <circle cx="11.5" cy="25.5" r="4.5" />
+          <circle cx="35.5" cy="20.5" r="4.5" />
+        </g>
+      </svg>
+    </span>
+  </div>
+
+  <!-- Said by me, in a speech bubble like the one greeting visitors on the visitor map. -->
+  <p class="hobby-bubble" data-reveal>
+    <LocalizedText
+      en="Just like with games, when I love something I want to know more about it. I took MUSIC 7, a jazz course at Penn State, because I love listening to jazz, and NUTR SCI 132 at UW–Madison because I like researching nutritious food. Both taught me a lot, and helped me understand what I love."
+      zh="和游戏一样，对喜欢的东西，我总想了解得更多。因为喜欢听爵士乐，我在 Penn State 选了爵士乐赏析课 MUSIC 7；因为喜欢研究营养丰富的饮食，我在 UW–Madison 选了 NUTR SCI 132。这些课都让我学到了更多知识，也更了解自己热爱的东西。"
+    />
+  </p>
+
+  <div class="hobby-grid">
+    <!-- An index card from a recipe box: ruled lines, a red rule under the title, and the steps as the method. -->
+    <article class="hobby-card paper taped recipe" data-reveal>
+      <header class="recipe-head">
+        <span class="recipe-no">RECIPE No.01</span>
+        <h2 class="recipe-title"><LocalizedText en="Healthy Recipes" zh="研究健康食谱" /></h2>
+      </header>
+      <ol class="recipe-steps">
+        {steps.map((step) => <li><LocalizedText {...step} /></li>)}
+      </ol>
+    </article>
+
+    <!-- A page torn from a training log: graph paper and a line-drawn barbell. -->
+    <article class="hobby-card paper taped training" data-reveal>
+      <span class="recipe-no">TRAINING LOG</span>
+      <h2 class="recipe-title"><LocalizedText en="Strength Training" zh="力量训练" /></h2>
+      <p class="training-since"><LocalizedText en="Building muscle since 2024" zh="2024 年开始增肌" /></p>
+      <svg class="training-barbell" viewBox="0 0 120 36" aria-hidden="true">
+        <path d="M4 18H116" />
+        <rect x="16" y="4" width="8" height="28" rx="2" />
+        <rect x="26" y="9" width="6" height="18" rx="1.5" />
+        <rect x="96" y="4" width="8" height="28" rx="2" />
+        <rect x="88" y="9" width="6" height="18" rx="1.5" />
+        <path d="M35 14V22M85 14V22" />
+      </svg>
+    </article>
+
+    <!-- A turntable seen from above: a record with light catching its grooves, a knob, a pitch slider and a tonearm.
+         Playing a side swings the arm onto the record and spins the label, which shows the song's album cover. -->
+    <article class="hobby-card paper taped record" data-reveal data-record>
+      <div class="turntable" aria-hidden="true">
+        <span class="turntable-disc">
+          <span class="turntable-shine"></span>
+          <span class="turntable-label"></span>
+        </span>
+        <span class="turntable-knob"></span>
+        <span class="turntable-slider"></span>
+        <!-- Drawn in tenths of a rem; the arm turns about its pivot at (20, 12). -->
+        <svg class="turntable-arm" viewBox="0 0 40 100">
+          <path class="turntable-arm-halo" d="M20 12L14 88" />
+          <path class="turntable-arm-line" d="M20 7V12L14 88" />
+          <rect x="16" y="0" width="8" height="7" rx="1.5" />
+          <circle cx="20" cy="12" r="5.5" />
+          <circle class="turntable-pivot" cx="20" cy="12" r="2" />
+          <path d="M11 86L17 85L18.5 95L12.5 96Z" />
+        </svg>
+      </div>
+      <ul class="record-sides">
+        {sides.map(({ key, side, name, profile, profileCn, note, song, artZoom, netease, start, preview, link, art }) => (
+          <li>
+            <span class="record-side"><LocalizedText {...side} /></span>
+            <a class="record-name" href={profile} data-cn-href={profileCn} target="_blank" rel="noopener noreferrer">{name}</a>
+            <span class="record-note"><LocalizedText {...note} /></span>
+            <a class="record-song" href={link} target="_blank" rel="noopener noreferrer">♪ {song}</a>
+            <button type="button" class="record-play" data-netease={netease} data-start={start} data-preview={preview}
+              data-art={art} data-art-zoom={artZoom} data-side={key} aria-pressed="false">
+              <svg viewBox="0 0 24 24" aria-hidden="true">
+                <path class="record-play-icon" d="M8.5 5.5v13l10.5-6.5z" />
+                <path class="record-pause-icon" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
+              </svg>
+              <span class="sr-only"><LocalizedText en={`Play a preview of ${song}`} zh={`试听《${song}》`} /></span>
+            </button>
+          </li>
+        ))}
+      </ul>
+      <audio data-record-audio preload="none"></audio>
+    </article>
+  </div>
+</section>
+
+<script>
+  // One clip plays at a time. Playing a side swings the tonearm onto the record and spins its label, now the song's album cover,
+  // and the button's ring fills as the clip plays. It first tries the whole song from NetEase, starting at the second I
+  // picked and stopping 30 seconds later. If that can't load or start within eight seconds (as outside mainland China),
+  // that press and every later one play Apple Music's preview instead. The audio sits in the page, so leaving the page
+  // stops it.
+  const clip = 30;
+
+  const setupRecord = () => {
+    const record = document.querySelector<HTMLElement>("[data-record]");
+    if (!record || record.dataset.bound) return;
+    record.dataset.bound = "true";
+    const audio = record.querySelector<HTMLAudioElement>("[data-record-audio]")!;
+    let current: HTMLButtonElement | undefined;
+
+    // Wikipedia is blocked in mainland China, so visitors in China's time zone get a Chinese page for each artist.
+    const inChina = ["Asia/Shanghai", "Asia/Chongqing", "Asia/Harbin", "Asia/Urumqi", "PRC"]
+      .includes(Intl.DateTimeFormat().resolvedOptions().timeZone);
+    if (inChina) {
+      record.querySelectorAll<HTMLAnchorElement>("[data-cn-href]").forEach((link) => { link.href = link.dataset.cnHref!; });
+    }
+    let start = 0;
+    let neteaseFailed = false;
+    let wait = 0;
+
+    const stop = () => {
+      window.clearTimeout(wait);
+      audio.pause();
+      current?.setAttribute("aria-pressed", "false");
+      current?.style.removeProperty("--progress");
+      current = undefined;
+      delete record.dataset.playing;
+      record.style.removeProperty("--art");
+      record.style.removeProperty("--art-zoom");
+    };
+
+    const playApple = (button: HTMLButtonElement) => {
+      if (current !== button) return;
+      start = 0;
+      audio.src = button.dataset.preview!;
+      audio.play().catch(stop);
+    };
+
+    // A failed load can be reported more than once (the error and the rejected play()); only the first one falls back,
+    // since loading Apple's preview again would cut off the one just started.
+    const fallBack = (button: HTMLButtonElement) => {
+      if (neteaseFailed) return;
+      neteaseFailed = true;
+      window.clearTimeout(wait);
+      playApple(button);
+    };
+
+    const playNetEase = (button: HTMLButtonElement) => {
+      start = Number(button.dataset.start);
+      audio.src = `https://music.163.com/song/media/outer/url?id=${button.dataset.netease}.mp3#t=${start}`;
+      audio.play().catch(() => current === button && fallBack(button));
+      wait = window.setTimeout(() => {
+        if (current === button && (audio.paused || audio.currentTime < start)) fallBack(button);
+      }, 8000);
+    };
+
+    record.querySelectorAll<HTMLButtonElement>("[data-preview]").forEach((button) => {
+      button.addEventListener("click", () => {
+        const same = current === button;
+        stop();
+        if (same) return;
+        current = button;
+        button.setAttribute("aria-pressed", "true");
+        record.dataset.playing = button.dataset.side;
+        record.style.setProperty("--art", `url("${button.dataset.art}")`);
+        if (button.dataset.artZoom) record.style.setProperty("--art-zoom", button.dataset.artZoom);
+        if (neteaseFailed) playApple(button);
+        else playNetEase(button);
+      });
+    });
+    // The #t= in the address asks for the start already; this makes sure, in case a redirect drops it.
+    audio.addEventListener("loadedmetadata", () => {
+      if (start && audio.currentTime < start) audio.currentTime = start;
+    });
+    audio.addEventListener("error", () => {
+      if (current) fallBack(current);
+    });
+    audio.addEventListener("timeupdate", () => {
+      if (!current || !audio.duration) return;
+      // A NetEase song runs on past its clip; an Apple preview is the clip.
+      const progress = start ? (audio.currentTime - start) / clip : audio.currentTime / audio.duration;
+      current.style.setProperty("--progress", String(Math.min(1, Math.max(0, progress))));
+      if (progress >= 1) stop();
+    });
+    audio.addEventListener("ended", stop);
+  };
+
+  setupRecord();
+  document.addEventListener("astro:page-load", setupRecord);
+</script>
+
+<style>
+  .hobby-grid {
+    display: grid;
+    gap: 2.5rem;
+    padding: 0 0.5rem;
+  }
+
+  /* Two columns on wider screens: the recipe with the training log under it, and the record beside both. */
+  @media (min-width: 768px) {
+    .hobby-grid {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      grid-template-areas: "recipe record" "training record";
+      align-items: start;
+      gap: 2rem;
+    }
+
+    .recipe { grid-area: recipe; }
+    .training { grid-area: training; }
+    .record { grid-area: record; }
+  }
+
+  .hobby-bubble {
+    position: relative;
+    max-width: 36rem;
+    margin: 0 0.5rem 2.75rem;
+    padding: 0.75rem 1.1rem;
+    border: 1px solid oklch(var(--bc) / 0.12);
+    border-radius: 1.25rem;
+    background: oklch(var(--b1));
+    box-shadow: 0 12px 28px -18px rgb(60 38 28 / 45%);
+    font-size: 0.95rem;
+    line-height: 1.75;
+  }
+
+  /* The tail: a small square turned on its corner, half tucked under the bubble's bottom edge near the left. */
+  .hobby-bubble::before {
+    content: "";
+    position: absolute;
+    left: 1.5rem;
+    bottom: -0.4rem;
+    width: 0.75rem;
+    height: 0.75rem;
+    border-right: 1px solid oklch(var(--bc) / 0.12);
+    border-bottom: 1px solid oklch(var(--bc) / 0.12);
+    background: inherit;
+    rotate: 45deg;
+  }
+
+  /* Paper taped to the page, like the game photos (the paper and the tape are in global.css). */
+  /* Hovering straightens the card and lifts it a little off the page: a slow ease out so it settles gently. */
+  .hobby-card {
+    --settle: 650ms cubic-bezier(0.25, 1, 0.5, 1);
+    position: relative;
+    padding: 1.25rem 1.5rem 1.5rem;
+    transition: rotate var(--settle), transform var(--settle), box-shadow var(--settle);
+  }
+
+  .hobby-card::before {
+    top: -0.65rem;
+    left: 50%;
+    width: 38%;
+    translate: -50% 0;
+    rotate: 3deg;
+  }
+
+  .recipe {
+    rotate: -1.5deg;
+  }
+
+  .record {
+    rotate: 1.2deg;
+  }
+
+  /* Graph paper: fine squares, ruled from the paper's own ink colour so it works in both themes. */
+  .training {
+    rotate: 0.8deg;
+    background-image:
+      linear-gradient(color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
+      linear-gradient(90deg, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
+      var(--paper-light), var(--paper-grain);
+    background-size: 1rem 1rem, 1rem 1rem, auto, auto;
+  }
+
+  .training-since {
+    margin-top: 0.25rem;
+    font-family: var(--font-heading);
+    font-size: 0.9rem;
+    opacity: 0.7;
+  }
+
+  .training-barbell {
+    display: block;
+    width: min(100%, 13rem);
+    margin: 1rem auto 0;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  @media (min-width: 768px) {
+    .record {
+      margin-top: 1.5rem;
+    }
+  }
+
+  @media (hover: hover) {
+    .hobby-card:hover {
+      rotate: 0deg;
+      transform: translateY(-4px);
+      box-shadow: var(--paper-edge), var(--paper-shadow), 0 28px 40px -26px rgb(40 28 20 / 45%);
+    }
+  }
+
+  .recipe-head {
+    padding-bottom: 0.5rem;
+    border-bottom: 3px double #d47a6a;
+  }
+
+  .recipe-no {
+    font-family: var(--font-heading);
+    font-size: 0.75rem;
+    letter-spacing: 0.15em;
+    opacity: 0.6;
+  }
+
+  .recipe-title {
+    font-family: var(--font-heading);
+    font-size: 1.5rem;
+    font-weight: 700;
+  }
+
+  /* Ruled lines one text line apart, so wrapped steps still sit on the lines. */
+  .recipe-steps {
+    counter-reset: step;
+    line-height: 2rem;
+    background: repeating-linear-gradient(to bottom, transparent 0 calc(2rem - 1.5px), rgb(110 150 200 / 45%) calc(2rem - 1.5px) 2rem);
+  }
+
+  .recipe-steps li {
+    counter-increment: step;
+    display: flex;
+    gap: 0.75rem;
+    font-size: 0.95rem;
+  }
+
+  .recipe-steps li::before {
+    content: counter(step, decimal-leading-zero);
+    font-family: var(--font-heading);
+    font-weight: 700;
+    color: #d47a6a;
+  }
+
+  /* The turntable: a cream plinth outlined in ink, like a line drawing, with the accent colour on the label. */
+  .turntable {
+    position: relative;
+    width: 15rem;
+    height: 12rem;
+    border: 3px solid #2e2a27;
+    border-radius: 0.9rem;
+    background: #f2e6c9;
+    box-shadow: 0 4px 12px -4px rgb(0 0 0 / 35%);
+  }
+
+  .turntable-disc {
+    position: absolute;
+    top: 1rem;
+    left: 1rem;
+    display: grid;
+    place-items: center;
+    width: 10rem;
+    height: 10rem;
+    border-radius: 50%;
+    background: #2b2724;
+  }
+
+  /* Light catching the grooves in two opposite arcs. It stays put while the record turns, as a reflection would. */
+  .turntable-shine {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    background: repeating-radial-gradient(circle closest-side, transparent 0 5px, rgb(242 230 201 / 85%) 5px 6.5px);
+    -webkit-mask:
+      conic-gradient(from 20deg, #000 0 55deg, #0000 0 180deg, #000 0 235deg, #0000 0),
+      radial-gradient(circle closest-side, #0000 52%, #000 53% 84%, #0000 85%);
+    -webkit-mask-composite: source-in;
+    mask:
+      conic-gradient(from 20deg, #000 0 55deg, #0000 0 180deg, #000 0 235deg, #0000 0) intersect,
+      radial-gradient(circle closest-side, #0000 52%, #000 53% 84%, #0000 85%);
+  }
+
+  .turntable-label {
+    position: relative;
+    width: 3.6rem;
+    height: 3.6rem;
+    border-radius: 50%;
+    background: oklch(var(--p));
+    box-shadow: inset 0 0 0 0.5rem color-mix(in oklch, oklch(var(--p)) 80%, #000);
+    animation: record-spin 3s linear infinite paused;
+    transition: width 400ms ease, height 400ms ease;
+  }
+
+  /* The spindle through the middle. */
+  .turntable-label::after {
+    content: "";
+    position: absolute;
+    inset: 50% auto auto 50%;
+    width: 0.45rem;
+    height: 0.45rem;
+    border-radius: 50%;
+    background: #f2e6c9;
+    translate: -50% -50%;
+  }
+
+  /* While a side plays, the label is its album cover and turns. */
+  .record[data-playing] .turntable-label {
+    width: 4.4rem;
+    height: 4.4rem;
+    background: var(--art, oklch(var(--p))) center / var(--art-zoom, cover);
+    box-shadow: 0 0 0 2px rgb(0 0 0 / 45%);
+    animation-play-state: running;
+  }
+
+  .record[data-playing] .turntable-label::after {
+    background: #1b1b1b;
+    box-shadow: 0 0 0 1.5px rgb(255 255 255 / 35%);
+  }
+
+  @keyframes record-spin {
+    to { rotate: 360deg; }
+  }
+
+  .turntable-knob {
+    position: absolute;
+    left: 0.7rem;
+    bottom: 0.7rem;
+    width: 1.1rem;
+    height: 1.1rem;
+    border-radius: 50%;
+    background: #2e2a27;
+  }
+
+  /* The pitch slider: a track with a small handle across it. */
+  .turntable-slider {
+    position: absolute;
+    right: 0.65rem;
+    bottom: 0.8rem;
+    width: 3px;
+    height: 2.6rem;
+    border-radius: 2px;
+    background: #2e2a27;
+  }
+
+  .turntable-slider::after {
+    content: "";
+    position: absolute;
+    top: 0.7rem;
+    left: 50%;
+    width: 0.75rem;
+    height: 3px;
+    border-radius: 2px;
+    background: #2e2a27;
+    translate: -50% 0;
+  }
+
+  /* The tonearm rests beside the record and swings onto it while a side plays. */
+  .turntable-arm {
+    position: absolute;
+    top: 1rem;
+    left: 10.6rem;
+    z-index: 1;
+    width: 4rem;
+    height: 10rem;
+    overflow: visible;
+    fill: #2e2a27;
+    transform-origin: 50% 12%;
+    transition: rotate 900ms cubic-bezier(0.45, 0, 0.2, 1);
+  }
+
+  /* The arm is the same ink as the record, so a cream edge keeps it apart once it's over the record: a wider cream
+     line under the arm, and a cream outline under each part's fill. */
+  .turntable-arm :is(rect, circle, path) {
+    stroke: #f2e6c9;
+    stroke-width: 1.8;
+    stroke-linejoin: round;
+    paint-order: stroke;
+  }
+
+  .turntable-arm-halo,
+  .turntable-arm-line {
+    fill: none;
+    stroke-linecap: round;
+  }
+
+  .turntable-arm .turntable-arm-halo {
+    stroke: #f2e6c9;
+    stroke-width: 5.4;
+  }
+
+  .turntable-arm .turntable-arm-line {
+    stroke: #2e2a27;
+    stroke-width: 2.4;
+  }
+
+  .turntable-pivot {
+    fill: #f2e6c9;
+  }
+
+  .record[data-playing] .turntable-arm {
+    rotate: 25deg;
+  }
+
+  .record-sides {
+    display: grid;
+    gap: 0.75rem;
+    margin-top: 1.25rem;
+  }
+
+  .record-sides li {
+    display: grid;
+    grid-template-columns: auto 1fr auto;
+    column-gap: 0.75rem;
+    font-size: 0.9rem;
+  }
+
+  .record-side {
+    grid-row: span 3;
+    align-self: start;
+    padding: 0.1rem 0.5rem;
+    border: 1px solid currentColor;
+    border-radius: 999px;
+    font-size: 0.75rem;
+    opacity: 0.7;
+  }
+
+  /* Each name opens the artist's Wikipedia page, or a Chinese page for visitors in China (see the script). */
+  .record-name {
+    width: fit-content;
+    font-weight: 700;
+    text-underline-offset: 0.2em;
+    font-family: var(--font-heading);
+    font-size: 1.1rem;
+  }
+
+  .record-name:hover {
+    text-decoration: underline;
+  }
+
+  .record-note,
+  .record-song {
+    grid-column: 2;
+    opacity: 0.7;
+  }
+
+  .record-song {
+    width: fit-content;
+    font-size: 0.85rem;
+    text-underline-offset: 0.2em;
+  }
+
+  .record-song:hover {
+    text-decoration: underline;
+    opacity: 1;
+  }
+
+  /* A round play button whose ring fills with the preview's progress. */
+  .record-play {
+    position: relative;
+    display: grid;
+    place-items: center;
+    grid-column: 3;
+    grid-row: 1 / span 3;
+    align-self: center;
+    width: 2.5rem;
+    height: 2.5rem;
+    border: 1.5px solid color-mix(in srgb, currentColor 30%, transparent);
+    border-radius: 50%;
+    transition: background-color 200ms ease, border-color 200ms ease;
+  }
+
+  .record-play::before {
+    content: "";
+    position: absolute;
+    inset: -1.5px;
+    border-radius: 50%;
+    background: conic-gradient(oklch(var(--p)) calc(var(--progress, 0) * 1turn), transparent 0);
+    mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
+  }
+
+  .record-play:hover {
+    border-color: color-mix(in srgb, currentColor 55%, transparent);
+    background: color-mix(in srgb, currentColor 8%, transparent);
+  }
+
+  .record-play svg {
+    width: 1.05rem;
+    height: 1.05rem;
+    fill: currentColor;
+  }
+
+  .record-pause-icon,
+  .record-play[aria-pressed="true"] .record-play-icon {
+    display: none;
+  }
+
+  .record-play[aria-pressed="true"] .record-pause-icon {
+    display: inline;
+  }
+
+
+  @media (prefers-reduced-motion: reduce) {
+    .hobby-card,
+    .turntable-arm {
+      transition: none;
+    }
+
+    .turntable-label {
+      animation: none;
+    }
+  }
+</style>

@@ -25,6 +25,26 @@ const appVersion = async () => {
   }
 };
 
+// Parental Controls names games in the console's language (Chinese here), so the English page looks each one up in
+// Nintendo's US store by its application ID and takes the store page's title. Classic games played through Nintendo
+// Switch Online share one application, so the store only knows the collection; those, and any game the store can't
+// find, are named from this list instead, or left in Chinese.
+const englishNames = {
+  "塞尔达传说 时之笛": "The Legend of Zelda: Ocarina of Time",
+};
+const englishTitle = async ({ id, name }) => {
+  if (englishNames[name]) return englishNames[name];
+  try {
+    const response = await fetch(`https://ec.nintendo.com/apps/${id}/US`);
+    if (!response.ok || !response.url.includes("/store/products/")) return null;
+    const title = (await response.text()).match(/<title[^>]*>([^<]+)</)?.[1]
+      ?.replace(/ - Nintendo Official Site$/, "").replace(/ for Nintendo Switch( 2)?$/, "").replace(/[™®]/g, "").trim();
+    return title && !/Nintendo Classics|Nintendo Switch Online/.test(title) ? title : null;
+  } catch {
+    return null;
+  }
+};
+
 try {
   const version = await appVersion();
   const auth = await MoonApi.loginWithSessionToken(token);
@@ -66,10 +86,12 @@ try {
   }
 
   // The three games played most lately.
-  const recent = [...titles.values()]
+  const recent = await Promise.all([...titles.values()]
     .sort((a, b) => b.seconds - a.seconds)
     .slice(0, 3)
-    .map(({ id, name, image, seconds }) => ({ id, name, image, minutes: Math.round(seconds / 60) }));
+    .map(async ({ id, name, image, seconds }) => ({
+      id, name, nameEn: await englishTitle({ id, name }), image, minutes: Math.round(seconds / 60),
+    })));
   const data = { minutesRecent: Math.round(seconds / 60), daysPlayed: days, recent };
   await writeFile(new URL("../src/data/nintendo.json", import.meta.url), JSON.stringify(data, null, 2) + "\n");
   console.log(`fetch-nintendo: app ${version}, ${devices.length} consoles, ${days} days played, ${recent.length} games lately.`);

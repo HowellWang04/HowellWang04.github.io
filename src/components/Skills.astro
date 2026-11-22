@@ -1,0 +1,181 @@
+---
+// My technical skills from the resume, grouped like huxx.me's: each group a row of rounded tags, with the tool's logo
+// where it has one. Logos come from simple-icons, except Java and C#, which simple-icons dropped for trademark reasons;
+// those two come from Devicon (devicon.dev, MIT license, the "plain" one-colour versions).
+import LocalizedText from "./LocalizedText.astro";
+import {
+  siArduino, siBlender, siCplusplus, siDocker, siEspressif, siFastapi, siGitlab, siJavascript, siJira, siMysql,
+  siNginx, siOllama, siPython, siReact, siRedis, siTypescript, siUnity, siUnrealengine,
+} from "simple-icons";
+
+// simple-icons draw on a 24 x 24 grid, Devicon on 128 x 128.
+type Skill = { name: string; zh?: string; icon?: { path: string; viewBox?: string } };
+const devicon = (path: string) => ({ path, viewBox: "0 0 128 128" });
+const java = devicon("M47.617 98.12c-19.192 5.362 11.677 16.439 36.115 5.969-4.003-1.556-6.874-3.351-6.874-3.351-10.897 2.06-15.952 2.222-25.844 1.092-8.164-.935-3.397-3.71-3.397-3.71zm33.189-10.46c-14.444 2.779-22.787 2.69-33.354 1.6-8.171-.845-2.822-4.805-2.822-4.805-21.137 7.016 11.767 14.977 41.309 6.336-3.14-1.106-5.133-3.131-5.133-3.131zm11.319-60.575c.001 0-42.731 10.669-22.323 34.187 6.024 6.935-1.58 13.17-1.58 13.17s15.289-7.891 8.269-17.777c-6.559-9.215-11.587-13.793 15.634-29.58zm9.998 81.144s3.529 2.91-3.888 5.159c-14.102 4.272-58.706 5.56-71.095.171-4.45-1.938 3.899-4.625 6.526-5.192 2.739-.593 4.303-.485 4.303-.485-4.952-3.487-32.013 6.85-13.742 9.815 49.821 8.076 90.817-3.637 77.896-9.468zM85 77.896c2.395-1.634 5.703-3.053 5.703-3.053s-9.424 1.685-18.813 2.474c-11.494.964-23.823 1.154-30.012.326-14.652-1.959 8.033-7.348 8.033-7.348s-8.812-.596-19.644 4.644C17.455 81.134 61.958 83.958 85 77.896zm5.609 15.145c-.108.29-.468.616-.468.616 31.273-8.221 19.775-28.979 4.822-23.725-1.312.464-2 1.543-2 1.543s.829-.334 2.678-.72c7.559-1.575 18.389 10.119-5.032 22.286zM64.181 70.069c-4.614-10.429-20.26-19.553.007-35.559C89.459 14.563 76.492 1.587 76.492 1.587c5.23 20.608-18.451 26.833-26.999 39.667-5.821 8.745 2.857 18.142 14.688 28.815zm27.274 51.748c-19.187 3.612-42.854 3.191-56.887.874 0 0 2.874 2.38 17.646 3.331 22.476 1.437 57-.8 57.816-11.436.001 0-1.57 4.032-18.575 7.231z");
+const csharp = devicon("M117.5 33.5l.3-.2c-.6-1.1-1.5-2.1-2.4-2.6L67.1 2.9c-.8-.5-1.9-.7-3.1-.7-1.2 0-2.3.3-3.1.7l-48 27.9c-1.7 1-2.9 3.5-2.9 5.4v55.7c0 1.1.2 2.3.9 3.4l-.2.1c.5.8 1.2 1.5 1.9 1.9l48.2 27.9c.8.5 1.9.7 3.1.7 1.2 0 2.3-.3 3.1-.7l48-27.9c1.7-1 2.9-3.5 2.9-5.4V36.1c.1-.8 0-1.7-.4-2.6zm-53.5 70c-21.8 0-39.5-17.7-39.5-39.5S42.2 24.5 64 24.5c14.7 0 27.5 8.1 34.3 20l-13 7.5C81.1 44.5 73.1 39.5 64 39.5c-13.5 0-24.5 11-24.5 24.5s11 24.5 24.5 24.5c9.1 0 17.1-5 21.3-12.4l12.9 7.6c-6.8 11.8-19.6 19.8-34.2 19.8zM115 62h-3.2l-.9 4h4.1v5h-5l-1.2 6h-4.9l1.2-6h-3.8l-1.2 6h-4.8l1.2-6H94v-5h3.5l.9-4H94v-5h5.3l1.2-6h4.9l-1.2 6h3.8l1.2-6h4.8l-1.2 6h2.2v5zm-12.7 4h3.8l.9-4h-3.8z");
+const groups: { title: { en: string; zh: string }; skills: Skill[] }[] = [
+  {
+    title: { en: "Programming", zh: "编程语言" },
+    skills: [
+      { name: "C#", icon: csharp },
+      { name: "C/C++", icon: siCplusplus },
+      { name: "Python", icon: siPython },
+      { name: "TypeScript", icon: siTypescript },
+      { name: "JavaScript", icon: siJavascript },
+      { name: "Java", icon: java },
+      { name: "SQL" },
+      { name: "HLSL" },
+    ],
+  },
+  {
+    title: { en: "Game Engines & 3D", zh: "游戏引擎与 3D" },
+    skills: [
+      { name: "Unity 6", icon: siUnity },
+      { name: "HDRP" },
+      { name: "URP" },
+      { name: "Shader Graph" },
+      { name: "ProBuilder" },
+      { name: "Terrain Tools" },
+      { name: "Unreal Engine", icon: siUnrealengine },
+      { name: "Blender", icon: siBlender },
+    ],
+  },
+  {
+    // From the QnA RAG board (models served by Ollama, a Chroma vector database, the system prompts) and the Blender
+    // MCP agent used to model Coal Echoes' buildings.
+    title: { en: "AI & LLMs", zh: "AI 与大模型" },
+    skills: [
+      { name: "RAG" },
+      { name: "Ollama", icon: siOllama },
+      { name: "Local LLMs", zh: "本地大模型" },
+      { name: "Embeddings", zh: "向量嵌入" },
+      { name: "Chroma" },
+      { name: "Prompt Engineering", zh: "提示词工程" },
+      { name: "MCP" },
+      { name: "AI Agents", zh: "AI 智能体" },
+    ],
+  },
+  {
+    title: { en: "Full-Stack Web", zh: "全栈开发" },
+    skills: [
+      { name: "React", icon: siReact },
+      { name: "FastAPI", icon: siFastapi },
+      { name: "REST APIs", zh: "REST API" },
+      { name: "MySQL", icon: siMysql },
+      { name: "Redis", icon: siRedis },
+      { name: "Docker", icon: siDocker },
+      { name: "Nginx", icon: siNginx },
+      { name: "GitLab CI/CD", icon: siGitlab },
+    ],
+  },
+  {
+    title: { en: "Physical Computing & Testing", zh: "硬件与测试" },
+    skills: [
+      { name: "ESP32", icon: siEspressif },
+      { name: "Arduino", icon: siArduino },
+      { name: "Sensor Integration", zh: "传感器集成" },
+      { name: "Jira", icon: siJira },
+      { name: "User Acceptance Testing", zh: "用户验收测试" },
+    ],
+  },
+];
+---
+
+<section id="skills" class="scroll-mt-20 pt-12">
+  <!-- Doodled like the other home headings (index.astro draws it): a highlighter swipe and a pair of code brackets. -->
+  <div class="text-3xl w-full font-bold font-heading mb-6" data-reveal>
+    <span class="doodle-heading">
+      <LocalizedText en="Technical Skills" zh="技术技能" />
+      <svg class="doodle-stroke" aria-hidden="true">
+        <path class="doodle-line" />
+        <g class="doodle-icon">
+          <path d="M15 7L5 16L15 25" />
+          <path d="M33 7L43 16L33 25" />
+          <path d="M27 4L21 28" />
+        </g>
+      </svg>
+    </span>
+  </div>
+
+  <div class="skill-groups">
+    {groups.map(({ title, skills }) => (
+      <div class="skill-group">
+        <h3 class="skill-title" data-reveal><LocalizedText {...title} /></h3>
+        <ul class="skill-list" data-reveal-children>
+          {skills.map(({ name, zh, icon }) => (
+            <li class="skill-chip">
+              {icon && <svg viewBox={icon.viewBox ?? "0 0 24 24"} aria-hidden="true"><path d={icon.path} /></svg>}
+              {zh ? <LocalizedText en={name} zh={zh} /> : name}
+            </li>
+          ))}
+        </ul>
+      </div>
+    ))}
+  </div>
+</section>
+
+<style>
+  .skill-groups {
+    display: grid;
+    gap: 1.75rem 2.5rem;
+  }
+
+  @media (min-width: 768px) {
+    .skill-groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+  }
+
+  .skill-title {
+    margin-bottom: 0.7rem;
+    font-family: var(--font-heading);
+    font-size: 1.05rem;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+    opacity: 0.75;
+  }
+
+  .skill-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.55rem;
+  }
+
+  /* A rounded tag with the tool's logo in the accent colour. */
+  .skill-chip {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.45rem;
+    padding: 0.32rem 0.85rem;
+    border: 1.5px solid color-mix(in oklch, oklch(var(--p)) 55%, transparent);
+    border-radius: 999px;
+    background: color-mix(in oklch, oklch(var(--p)) 7%, transparent);
+    font-size: 0.85rem;
+    font-weight: 600;
+    line-height: 1.3;
+    transition: background-color 200ms ease, border-color 200ms ease, translate 200ms ease;
+  }
+
+  .skill-chip:hover {
+    border-color: oklch(var(--p));
+    background: color-mix(in oklch, oklch(var(--p)) 15%, transparent);
+    translate: 0 -2px;
+  }
+
+  .skill-chip svg {
+    width: 1rem;
+    height: 1rem;
+    flex-shrink: 0;
+    fill: oklch(var(--p));
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .skill-chip {
+      transition: none;
+    }
+
+    .skill-chip:hover {
+      translate: none;
+    }
+  }
+</style>
