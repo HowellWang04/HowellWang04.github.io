@@ -3,7 +3,7 @@
    whole file (about 2.8 MB) loads once and is cached after that; swap shows the fallback until it arrives. */
 @font-face {
     font-family: "Alimama FangYuanTi VF";
-    src: url(https://cdn.jsdelivr.net/npm/@fontpkg/alimama-fang-yuan-ti-vf@1.0.5/AlimamaFangYuanTiVF-Thin.woff2) format("woff2");
+    src: url(/fonts/AlimamaFangYuanTiVF-Thin.woff2) format("woff2");
     font-weight: 100 900;
     font-display: swap;
 }
