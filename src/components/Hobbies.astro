@@ -21,12 +21,14 @@ const sides = [
     // Baidu Baike has no entry for Lamp, so visitors in China get the band's NetEase Cloud Music page.
     profileCn: "https://music.163.com/#/artist?id=20287",
     note: { en: "My favorite band · Jazz pop", zh: "最喜欢的乐队 · 爵士流行" },
-    song: "泡沫綺譚",
-    netease: 769611,
-    start: 43,
-    preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/ec/f9/f5/ecf9f5dd-d31b-9263-0bf2-2b406a47d9a9/mzaf_8136333232274894382.plus.aac.p.m4a",
-    link: "https://music.apple.com/album/264778470?i=264778698",
-    art: "https://is1-ssl.mzstatic.com/image/thumb/Music/a4/89/ab/mzi.bwqidfes.jpg/300x300bb.jpg",
+    song: "二十歳の恋",
+    netease: 22666074,
+    start: 0,
+    preview: "https://audio-ssl.itunes.apple.com/itunes-assets/AudioPreview211/v4/f5/21/7c/f5217c82-e398-3cb9-88ab-e5e8b3b2a560/mzaf_10745760043820647493.plus.aac.p.m4a",
+    // Skip the preview's first 4 seconds, so it plays the last 26.
+    previewStart: 4,
+    link: "https://music.apple.com/album/297101313?i=297101325",
+    art: "https://is1-ssl.mzstatic.com/image/thumb/Music/25/19/08/mzi.ncyyqxsr.jpg/300x300bb.jpg",
   },
   {
     key: "b",
@@ -137,14 +139,14 @@ const sides = [
         </svg>
       </div>
       <ul class="record-sides">
-        {sides.map(({ key, side, name, profile, profileCn, note, song, artZoom, netease, start, preview, link, art }) => (
+        {sides.map(({ key, side, name, profile, profileCn, note, song, artZoom, netease, start, preview, previewStart, link, art }) => (
           <li>
             <span class="record-side"><LocalizedText {...side} /></span>
             <a class="record-name" href={profile} data-cn-href={profileCn} target="_blank" rel="noopener noreferrer">{name}</a>
             <span class="record-note"><LocalizedText {...note} /></span>
             <a class="record-song" href={link} target="_blank" rel="noopener noreferrer">♪ {song}</a>
             <button type="button" class="record-play" data-netease={netease} data-start={start} data-preview={preview}
-              data-art={art} data-art-zoom={artZoom} data-side={key} aria-pressed="false">
+              data-preview-start={previewStart} data-art={art} data-art-zoom={artZoom} data-side={key} aria-pressed="false">
               <svg viewBox="0 0 24 24" aria-hidden="true">
                 <path class="record-play-icon" d="M8.5 5.5v13l10.5-6.5z" />
                 <path class="record-pause-icon" d="M7 5h3.5v14H7zM13.5 5H17v14h-3.5z" />
@@ -154,14 +156,15 @@ const sides = [
           </li>
         ))}
       </ul>
-      <audio data-record-audio preload="none"></audio>
+      <audio data-record-audio preload="auto"></audio>
     </article>
   </div>
 </section>
 
 <script>
-  // One clip plays at a time. Playing a side swings the tonearm onto the record and spins its label, now the song's album cover,
-  // and the button's ring fills as the clip plays. It first tries the whole song from NetEase, starting at the second I
+  // One clip plays at a time. Playing a side swings the tonearm onto the record and starts loading the clip; once the arm
+  // lands, the record starts turning and the clip starts playing, the label now the song's album cover, and the button's
+  // ring fills as the clip plays. It first tries the whole song from NetEase, starting at the second I
   // picked and stopping 30 seconds later. If that can't load or start within eight seconds (as outside mainland China),
   // that press and every later one play Apple Music's preview instead. The audio sits in the page, so leaving the page
   // stops it.
@@ -172,6 +175,7 @@ const sides = [
     if (!record || record.dataset.bound) return;
     record.dataset.bound = "true";
     const audio = record.querySelector<HTMLAudioElement>("[data-record-audio]")!;
+    const arm = record.querySelector<SVGElement>(".turntable-arm")!;
     let current: HTMLButtonElement | undefined;
 
     // Wikipedia is blocked in mainland China, so visitors in China's time zone get a Chinese page for each artist.
@@ -181,8 +185,11 @@ const sides = [
       record.querySelectorAll<HTMLAnchorElement>("[data-cn-href]").forEach((link) => { link.href = link.dataset.cnHref!; });
     }
     let start = 0;
+    let fullSong = false;
     let neteaseFailed = false;
     let wait = 0;
+    // Settles when the tonearm lands on the record; rejects if the swing is cut short.
+    let landed: Promise<unknown> = Promise.resolve();
 
     const stop = () => {
       window.clearTimeout(wait);
@@ -191,15 +198,17 @@ const sides = [
       current?.style.removeProperty("--progress");
       current = undefined;
       delete record.dataset.playing;
+      delete record.dataset.spinning;
       record.style.removeProperty("--art");
       record.style.removeProperty("--art-zoom");
     };
 
     const playApple = (button: HTMLButtonElement) => {
       if (current !== button) return;
-      start = 0;
-      audio.src = button.dataset.preview!;
-      audio.play().catch(stop);
+      start = Number(button.dataset.previewStart ?? 0);
+      fullSong = false;
+      audio.src = `${button.dataset.preview}#t=${start}`;
+      landed.then(() => current === button && audio.play()).catch(() => current === button && stop());
     };
 
     // A failed load can be reported more than once (the error and the rejected play()); only the first one falls back,
@@ -213,8 +222,9 @@ const sides = [
 
     const playNetEase = (button: HTMLButtonElement) => {
       start = Number(button.dataset.start);
+      fullSong = true;
       audio.src = `https://music.163.com/song/media/outer/url?id=${button.dataset.netease}.mp3#t=${start}`;
-      audio.play().catch(() => current === button && fallBack(button));
+      landed.then(() => current === button && audio.play()).catch(() => current === button && fallBack(button));
       wait = window.setTimeout(() => {
         if (current === button && (audio.paused || audio.currentTime < start)) fallBack(button);
       }, 8000);
@@ -230,6 +240,14 @@ const sides = [
         record.dataset.playing = button.dataset.side;
         record.style.setProperty("--art", `url("${button.dataset.art}")`);
         if (button.dataset.artZoom) record.style.setProperty("--art-zoom", button.dataset.artZoom);
+        // The clip loads during the swing, but the record turns and the clip plays only once the tonearm lands. Reading
+        // the style first starts the swing, so it shows up in getAnimations(); if the arm is already down (switching
+        // sides), there's nothing to wait for. Stopping mid swing cancels it, and nothing plays.
+        getComputedStyle(arm).rotate;
+        landed = Promise.all(arm.getAnimations().map((swing) => swing.finished));
+        landed.then(() => {
+          if (current === button) record.dataset.spinning = "";
+        }, () => {});
         if (neteaseFailed) playApple(button);
         else playNetEase(button);
       });
@@ -243,8 +261,8 @@ const sides = [
     });
     audio.addEventListener("timeupdate", () => {
       if (!current || !audio.duration) return;
-      // A NetEase song runs on past its clip; an Apple preview is the clip.
-      const progress = start ? (audio.currentTime - start) / clip : audio.currentTime / audio.duration;
+      // A NetEase song runs on past its clip; an Apple preview is the clip, from its start to its end.
+      const progress = fullSong ? (audio.currentTime - start) / clip : (audio.currentTime - start) / (audio.duration - start);
       current.style.setProperty("--progress", String(Math.min(1, Math.max(0, progress))));
       if (progress >= 1) stop();
     });
@@ -437,8 +455,8 @@ const sides = [
     animation: record-spin 3s linear infinite paused;
   }
 
-  /* While a side plays, the whole record turns, grooves and label together. */
-  .record[data-playing] .turntable-disc {
+  /* Once the tonearm has landed, the whole record turns, grooves and label together. */
+  .record[data-spinning] .turntable-disc {
     animation-play-state: running;
   }
 
