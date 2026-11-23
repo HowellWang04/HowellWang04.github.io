@@ -18,12 +18,9 @@ const facts = [
   <dialog id={dialogId} class="project-dialog" aria-labelledby={`${dialogId}-title`} data-lenis-prevent>
     <div class="project-sheet bg-base-100 text-base-content text-left" data-dialog-scroll>
       <header class="project-header border-b border-base-300 bg-base-100">
-        <div>
-          <p class="text-sm opacity-60"><LocalizedText en="Project breakdown" zh="项目详解" /></p>
-          <h2 id={`${dialogId}-title`} class="text-2xl sm:text-3xl font-bold mt-1">{titleZh ? <LocalizedText en={title} zh={titleZh} /> : title}</h2>
-        </div>
+        <h2 id={`${dialogId}-title`} class="text-2xl sm:text-3xl font-bold">{titleZh ? <LocalizedText en={title} zh={titleZh} /> : title}</h2>
         <form method="dialog">
-          <button class="btn btn-sm btn-ghost rounded-full" autofocus>
+          <button class="btn btn-sm btn-ghost" autofocus>
             <LocalizedText en="Close" zh="关闭" /><span aria-hidden="true">×</span>
           </button>
         </form>
@@ -37,10 +34,10 @@ const facts = [
           </div>
         </div>
 
-        <dl class="project-facts rounded-xl bg-base-200">
+        <dl class="project-facts border-y border-base-300">
           {facts.map(({ label, value }) => (
-            <div>
-              <dt class="text-sm opacity-60 mb-2"><LocalizedText {...label} /></dt>
+            <div class="project-row">
+              <dt class="text-sm opacity-60"><LocalizedText {...label} /></dt>
               <dd class:list={["text-base", !value && "opacity-60"]}><LocalizedText {...(value ?? pending)} /></dd>
             </div>
           ))}
@@ -59,27 +56,31 @@ const facts = [
         <section class="project-section">
           <h3 class="text-lg font-bold">{details.contributionGroups?.length ? <LocalizedText en="My Contributions & Implementation" zh="我的贡献与技术实现" /> : <LocalizedText en="Tools & technology" zh="技术栈与工具" />}</h3>
           {details.contributionGroups?.length ? (
-            <div class="tech-grid">
+            <div class="tech-list">
               {details.contributionGroups.map((group) => (
-                <article class="tech-card bg-base-200 border border-base-300">
-                  <h4 class="tech-title"><LocalizedText {...group.title} /></h4>
-                  <p class="tech-tools">{group.tools}</p>
-                  <p class="tech-summary"><LocalizedText {...group.summary} /></p>
-                  <details class="tech-details border-t border-base-300">
-                    <summary><LocalizedText en="Implementation details" zh="实现细节" /></summary>
-                    <div class="tech-detail-body">
-                      {group.details.map((paragraph) => <p><LocalizedText {...paragraph} /></p>)}
-                    </div>
-                  </details>
+                <article class="project-row tech-item border-t border-base-300">
+                  <div>
+                    <h4 class="tech-title"><LocalizedText {...group.title} /></h4>
+                    <p class="tech-tools">{group.tools}</p>
+                  </div>
+                  <div>
+                    <p class="tech-summary"><LocalizedText {...group.summary} /></p>
+                    <details class="tech-details">
+                      <summary><LocalizedText en="Implementation details" zh="实现细节" /></summary>
+                      <div class="tech-detail-body">
+                        {group.details.map((paragraph) => <p><LocalizedText {...paragraph} /></p>)}
+                      </div>
+                    </details>
+                  </div>
                 </article>
               ))}
             </div>
           ) : details.stack?.length ? (
-            <ul class="grid gap-3 mt-4">
+            <ul class="tech-list">
               {details.stack.map((tool) => (
-                <li class="flex flex-col sm:flex-row gap-2 sm:gap-4">
-                  <span class="badge badge-outline h-auto min-h-6 py-1 shrink-0">{tool.name}</span>
-                  <p class="text-base leading-relaxed"><LocalizedText {...tool.use} /></p>
+                <li class="project-row tech-item border-t border-base-300">
+                  <span class="tech-title">{tool.name}</span>
+                  <p class="tech-summary"><LocalizedText {...tool.use} /></p>
                 </li>
               ))}
             </ul>
@@ -95,8 +96,8 @@ const facts = [
           ) : <p class="text-base opacity-60 mt-3"><LocalizedText en="My individual responsibilities and contributions will be added here." zh="我的具体职责与个人贡献尚待补充。" /></p>}
         </section>}
 
-        {details.links?.length && <div class="project-links flex flex-wrap gap-3 mt-8">
-          {details.links.map((link) => <a class="btn btn-sm btn-primary rounded-full" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
+        {details.links?.length && <div class="project-links flex flex-wrap gap-x-6 gap-y-3 mt-8">
+          {details.links.map((link) => <a class="inline-flex items-center gap-1.5 border-b border-primary/40 pb-0.5 text-sm font-semibold text-primary transition-colors hover:border-primary" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
         </div>}
 
       </div>
@@ -133,29 +134,11 @@ const facts = [
       });
 
       dialog.querySelectorAll<HTMLDetailsElement>(".tech-details").forEach((details) => this.bindDetails(details));
-      // Start every visit with all details collapsed and the cards back to equal row heights.
+      // Start every visit with all details collapsed.
       dialog.addEventListener("close", () => {
         lenis?.start();
         dialog.querySelectorAll<HTMLDetailsElement>(".tech-details").forEach((details) => { details.open = false; });
-        dialog.querySelectorAll<HTMLElement>(".tech-grid").forEach((grid) => this.unlockCardHeights(grid));
       });
-    }
-
-    // Cards in a row stretch to equal height. Before a card grows, pin each card's current height as its minimum
-    // and stop stretching, so only the expanding card gets taller and its neighbour keeps its size.
-    lockCardHeights(grid: HTMLElement) {
-      if (grid.dataset.locked) return;
-      grid.dataset.locked = "true";
-      grid.querySelectorAll<HTMLElement>(".tech-card").forEach((card) => {
-        card.style.minHeight = `${card.getBoundingClientRect().height}px`;
-      });
-      grid.style.alignItems = "start";
-    }
-
-    unlockCardHeights(grid: HTMLElement) {
-      delete grid.dataset.locked;
-      grid.style.alignItems = "";
-      grid.querySelectorAll<HTMLElement>(".tech-card").forEach((card) => { card.style.minHeight = ""; });
     }
 
     bindDetails(details: HTMLDetailsElement) {
@@ -168,7 +151,6 @@ const facts = [
 
       summary.addEventListener("click", (event) => {
         event.preventDefault();
-        this.lockCardHeights(details.closest<HTMLElement>(".tech-grid")!);
         const startHeight = details.getBoundingClientRect().height;
         animation?.cancel();
         fade?.cancel();
@@ -215,20 +197,6 @@ const facts = [
         ],
         { duration: 420, easing },
       );
-
-      // Sections cascade in one after another, then each contribution card follows in turn.
-      const items = dialog.querySelectorAll<HTMLElement>(
-        ".project-overview, .project-facts, .project-section > h3, .tech-card, .project-section li, .project-section > p, .project-links",
-      );
-      items.forEach((item, index) => {
-        item.animate(
-          [
-            { opacity: 0, transform: "translateY(8px)" },
-            { opacity: 1, transform: "none" },
-          ],
-          { duration: 520, delay: 120 + Math.min(index * 70, 700), easing, fill: "backwards" },
-        );
-      });
     }
   }
 
@@ -252,7 +220,6 @@ const facts = [
 
   .project-dialog::backdrop {
     background: rgb(10 12 18 / 65%);
-    backdrop-filter: blur(4px);
     animation: backdrop-in 320ms ease;
   }
 
@@ -284,16 +251,23 @@ const facts = [
   .project-overview { display: flex; gap: 1.5rem; align-items: center; }
   /* Same width and 16:9 frame as the card thumbnail, so the cover reads the same in both places. */
   .project-cover { width: 13rem; height: auto; aspect-ratio: 16 / 9; object-fit: cover; flex-shrink: 0; }
-  .project-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 1.5rem; padding: 1.25rem; margin-top: 1.75rem; }
+  /* Facts and contributions are ruled rows on one grid: a label column as wide as the cover, then the text. */
+  .project-row { display: grid; grid-template-columns: 13rem minmax(0, 1fr); column-gap: 1.5rem; align-items: start; }
+  .project-facts { margin-top: 1.75rem; padding: 0.5rem 0; }
+  .project-facts .project-row { padding: 0.5rem 0; }
+  /* The label is smaller than its value; the same line height keeps their first lines level. */
+  .project-facts dt { line-height: 1.5rem; }
+  /* LocalizedText is an inline-block, which would drop the bullet to the item's last line. */
+  .project-section li > :global(span) { display: block; }
   .project-section { margin-top: 2rem; }
   .project-photo { margin-top: 1rem; }
   .project-photo img { width: 100%; max-width: 28rem; height: auto; }
-  .tech-grid { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 1rem; margin-top: 1rem; }
-  .tech-card { display: flex; flex-direction: column; min-width: 0; padding: 1.25rem; border-radius: 0.875rem; }
+  .tech-list { margin-top: 1rem; }
+  .tech-item { padding: 1rem 0; }
   .tech-title { font-size: 1rem; font-weight: 700; line-height: 1.5; }
-  .tech-tools { min-height: 3em; margin-top: 0.375rem; font-size: 0.8125rem; line-height: 1.5; opacity: 0.65; overflow-wrap: anywhere; }
-  .tech-summary { margin: 0.875rem 0 1rem; font-size: 0.9375rem; line-height: 1.75; }
-  .tech-details { margin-top: auto; padding-top: 0.75rem; }
+  .tech-tools { margin-top: 0.375rem; font-size: 0.8125rem; line-height: 1.5; opacity: 0.65; overflow-wrap: anywhere; }
+  .tech-summary { font-size: 0.9375rem; line-height: 1.75; }
+  .tech-details { margin-top: 0.5rem; }
   .tech-details summary { cursor: pointer; width: fit-content; font-size: 0.8125rem; font-weight: 600; line-height: 1.75; }
   .tech-details summary:focus-visible { outline: 2px solid currentColor; outline-offset: 4px; border-radius: 0.125rem; }
   .tech-detail-body { display: grid; gap: 0.75rem; padding-top: 0.875rem; font-size: 0.875rem; line-height: 1.75; }
@@ -303,8 +277,6 @@ const facts = [
     .project-body { padding: 1.25rem; }
     .project-overview { flex-direction: column; align-items: flex-start; }
     .project-cover { width: 100%; }
-    .project-facts { grid-template-columns: 1fr; gap: 1rem; }
-    .tech-grid { grid-template-columns: 1fr; }
-    .tech-tools { min-height: 0; }
+    .project-row { grid-template-columns: 1fr; row-gap: 0.375rem; }
   }
 </style>
