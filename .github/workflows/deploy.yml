@@ -4,7 +4,7 @@ on:
   push:
     branches: [main]
   workflow_dispatch:
-  # Rebuild daily so the visitors page and the Steam and Nintendo cards pick up new numbers.
+  # Rebuild daily so the Steam and Nintendo cards pick up new numbers.
   schedule:
     - cron: "0 8 * * *"
 
@@ -32,10 +32,6 @@ jobs:
         uses: actions/configure-pages@v5
       - name: Install dependencies
         run: npm ci
-      - name: Fetch visitor counts
-        run: node scripts/fetch-visitors.mjs
-        env:
-          GOATCOUNTER_TOKEN: ${{ secrets.GOATCOUNTER_TOKEN }}
       - name: Fetch Steam stats
         run: node scripts/fetch-steam.mjs
         env:

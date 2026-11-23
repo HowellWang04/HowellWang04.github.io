@@ -2,7 +2,6 @@
 // Import the global.css file here so that it is included on
 // all pages through the use of the <BaseHead /> component.
 import '../styles/global.css';
-import { GOATCOUNTER_CODE } from '../config';
 
 export interface Props {
 	title: string;
@@ -43,42 +42,3 @@ const { title, description, image = '/social_img.webp', ogType = 'website' } = A
 <meta property="twitter:title" content={title} />
 <meta property="twitter:description" content={description} />
 <meta property="twitter:image" content={new URL(image, Astro.url)} />
-
-<!-- Visitor counting (GoatCounter: no cookies, localhost is ignored). Page changes don't reload the page, so the
-     script below counts each page itself instead of letting count.js count only the first one. -->
-{GOATCOUNTER_CODE && (
-	<script is:inline async data-goatcounter={`https://${GOATCOUNTER_CODE}.goatcounter.com/count`} data-goatcounter-settings='{"no_onload": true}' src="https://gc.zgo.at/count.js"></script>
-)}
-
-<script>
-	// GoatCounter counts a visitor once per page, so someone who looks at four pages counts four times. The visitor
-	// map counts people instead: each browser also sends a single "visit" event, the first time it ever comes by.
-	const visitedKey = "guanhao-visited";
-	const countVisit = (goatcounter: any) => {
-		try {
-			// filter() says why a hit wouldn't be sent (localhost, or switched off with #toggle-goatcounter).
-			if (localStorage.getItem(visitedKey) || goatcounter.filter?.()) return;
-			goatcounter.count({ path: "visit", title: "First visit", event: true });
-			// When this browser first came by, so the visitor map can show it before the next build counts it.
-			localStorage.setItem(visitedKey, String(Date.now()));
-			window.dispatchEvent(new Event("guanhao:first-visit"));
-		} catch {
-			// Storage blocked: skip the visit rather than count this browser again on every page.
-		}
-	};
-
-	// count.js loads async, so the first page may arrive before it does; wait a few seconds for it.
-	const countPage = () => {
-		let tries = 0;
-		const timer = window.setInterval(() => {
-			const goatcounter = (window as any).goatcounter;
-			if (goatcounter?.count) {
-				goatcounter.count({ path: location.pathname });
-				countVisit(goatcounter);
-			}
-			if (goatcounter?.count || ++tries > 50) window.clearInterval(timer);
-		}, 100);
-	};
-
-	if (document.querySelector("[data-goatcounter]")) document.addEventListener("astro:page-load", countPage);
-</script>
