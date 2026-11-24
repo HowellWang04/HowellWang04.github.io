@@ -1,117 +1,20 @@
 ---
 import HorizontalCard from "../HorizontalCard.astro";
 import LocalizedText from "../LocalizedText.astro";
+import { featuredProjects, teamProjects } from "../../data/projects";
 ---
 
 <section id="projects" class="scroll-mt-20">
   <div>
     <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="Featured Projects" zh="主要作品" /></div>
   </div>
-
-  <HorizontalCard
-    title="Coal Echoes"
-    titleZh="Coal Echoes 煤火回声"
-    projectId="coal-echoes"
-    portfolioPdf="/portfolio-pages/coal-echoes.pdf"
-    portfolioPages="2–20"
-    img="/coal-echoes-cover.jpg"
-    desc="A first-person narrative exploration game set in an abandoned coal washing plant in northwest China. Carrying a late grandfather's diary and a 1980 group photo, photograph traces of the past, keep a scrapbook, and ride the old ropeway to the ridge where two workers once planned to watch the plant's lights."
-    descZh="第一人称叙事探索游戏，故事发生在中国西北一座废弃的洗煤厂。带着已故爷爷的日记和一张 1980 年的合影，拍下过去的痕迹、整理手账，乘上老索道，去往两位工人当年约好看厂区灯火的山脊。"
-    url="https://github.com/HowellWang04/Coal-Echoes"
-    category="personal-game"
-  />
-  <div class="divider my-0" data-reveal></div>
-  <HorizontalCard
-    title="Vanishing Fireflies"
-    titleZh="Vanishing Fireflies 消逝的萤火虫"
-    projectId="project-fireflies"
-    portfolioPdf="/portfolio-pages/vanishing-fireflies.pdf"
-    portfolioPages="21–35"
-    img="/fireflies-cover.jpg"
-    desc="An interactive light installation about ecological disturbance and recovery. Visitor movement and bright light disrupt LED fireflies, while the Kuramoto model shapes their collective flashing rhythm. ESP32 sensing connects to Unity control and sound."
-    descZh="围绕生态扰动与恢复设计的灯光交互装置。参与者的移动与强光影响 LED 萤火虫的行为，藏本模型驱动群体闪烁节奏，通过 ESP32 传感与 Unity 控制连接灯光和声音。"
-    url="https://github.com/HowellWang04/Vanishing-Fireflies"
-    category="personal-interactive"
-  />
-  <div class="divider my-0" data-reveal></div>
-  <HorizontalCard
-    title="Against the Current"
-    projectId="against-the-current"
-    portfolioPdf="/portfolio-pages/against-the-current.pdf"
-    portfolioPages="36–48"
-    img="/against-the-current-cover.jpg"
-    desc="A 3D environment study of the Three Gorges on the Yangtze River and the river trackers who once hauled wooden boats upstream. Steep cliffs, a narrow working bank, and a towline tell the story of their labor through composition alone."
-    descZh="以长江三峡和曾经拉船逆流而上的纤夫为题材的三维环境作品。陡峭崖壁、狭窄纤道与连接船只的纤绳，仅靠构图讲述纤夫的劳作。"
-    category="personal-art"
-  />
-  <div class="divider my-0" data-reveal></div>
-  <HorizontalCard
-    title="Desert Restoration Simulator"
-    titleZh="Desert Restoration Simulator"
-    projectId="project-sand"
-    portfolioPdf="/portfolio-pages/desert-restoration-simulator.pdf"
-    portfolioPages="49–62"
-    img="/desert-restoration-cover.jpg"
-    desc="A desert restoration simulation. Plant trees, build factories, and mine for resources while balancing income against ecological damage. Watch wind, sand, heat haze, and the sky respond to your decisions."
-    descZh="一款治沙模拟经营游戏。通过植树、建厂与采矿，在经济收益和生态损耗之间作出取舍，并观察风沙、热浪与天空随决策变化。"
-    url="https://github.com/HowellWang04/Desert-Restoration-Simulator"
-    category="personal-game"
-  />
+  <div class="grid gap-4">
+    {featuredProjects.map((project) => <HorizontalCard {...project} />)}
+  </div>
   <div>
     <div class="text-3xl w-full font-bold font-heading mb-5 mt-10" data-reveal><LocalizedText en="Team & Jam Projects" zh="团队与 Game Jam 项目" /></div>
   </div>
-  <HorizontalCard
-    title="QnA: RAG Course Q&A Board"
-    titleZh="QnA 课程问答平台"
-    projectId="qna-rag"
-    teamProject
-    coverPending
-    desc="A Piazza style course Q&A board with a RAG auto responder, built by a team of two for COMPSCI 639, AI-Assisted Full Stack Software Development. When a student asks a question, it searches course materials and past threads, and posts a clearly labeled AI answer with numbered sources only when the match clears a calibrated threshold. Everything else is left for course staff."
-    descZh="COMPSCI 639 AI-Assisted Full Stack Software Development 课程中两人合作开发的课程问答平台，形式类似 Piazza，并加入了基于 RAG 的自动回答。学生提问后，系统检索课程资料与历史帖子，只有匹配度超过校准阈值时才发布明确标注、附带编号来源的 AI 回答，其余问题留给课程助教。"
-    url="mailto:gwang284@wisc.edu?subject=QnA%20source%20code%20access"
-    linkLabel="Private repo, email me for an invite"
-    linkLabelZh="私有仓库，欢迎邮件申请访问邀请"
-    category="university"
-  />
-  <div class="divider my-0" data-reveal></div>
-  <HorizontalCard
-    title="Seafloor Revival"
-    titleZh="Seafloor Revival 海底回潮"
-    projectId="seafloor-revival"
-    teamProject
-    img="/seafloor-revival.jpg"
-    desc="A 2.5D underwater base building game made for GMTK Game Jam 2025. Lead a sea hare civilization, gather resources, unlock technology, and rebuild through recurring pollution disasters."
-    descZh="为 GMTK Game Jam 2025 制作的 2.5D 海底基地建造游戏。带领海兔文明采集资源、解锁科技，在循环来袭的污染灾难中重建家园。"
-    url="https://github.com/HowellWang04/Game-Toolkit-2025-Seafloor-Revival"
-    playUrl="https://nikolai16.itch.io/seafloor-revival"
-    jamUrl="https://itch.io/jam/gmtk-2025/rate/3783873"
-    category="game-jam"
-  />
-  <div class="divider my-0" data-reveal></div>
-  <HorizontalCard
-    title="Mask"
-    titleZh="Mask 面具"
-    projectId="mask"
-    teamProject
-    img="/mask-cover.jpg"
-    desc="A 2D platformer made for Global Game Jam 2026. Explore the roles we take on in life and peel away layers of masks to discover the self beneath."
-    descZh="为 Global Game Jam 2026 制作的 2D 平台跳跃游戏。探索人生中被赋予的多重角色，揭开层层面具，寻找真实的自我。"
-    url="https://github.com/HowellWang04/GGJ-2026-MASK"
-    playUrl="https://hawang2004.itch.io/mask"
-    jamUrl="https://globalgamejam.org/games/2026/mask-6-4"
-    category="game-jam"
-  />
-  <div class="divider my-0" data-reveal></div>
-  <HorizontalCard
-    title="La Luna: Star Sweeper"
-    titleZh="La Luna: Star Sweeper 月夜扫星"
-    projectId="la-luna"
-    teamProject
-    img="/la-luna-cover.jpg"
-    desc="A 15 minute, two player board game made by a team of three and inspired by Pixar's La Luna. Walk across a 5 × 5 moon whose edges loop around, sweep up stars, and use meteors and 28 action and special cards to outplay your opponent. Whoever collects the most stars wins."
-    descZh="三人团队制作的双人桌游，受皮克斯短片《月神》启发，一局约 15 分钟。玩家在边缘首尾相连的 5 × 5 月面上行走、扫星，并利用流星与 28 张行动卡和特殊卡牌与对手周旋，收集星星最多者获胜。"
-    url="/la-luna-guidebook.pdf"
-    linkLabel="Guidebook PDF"
-    linkLabelZh="说明书 PDF"
-  />
+  <div class="grid gap-4">
+    {teamProjects.map((project) => <HorizontalCard {...project} />)}
+  </div>
 </section>

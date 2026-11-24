@@ -86,14 +86,14 @@ const { class: className = "" } = Astro.props;
 </script>
 
 <style>
-  /* Matches the language switch: hairline outline, no shadow, same height */
+  /* Matches the language switch: the ink line, no shadow, same height */
   .theme-toggle {
     display: inline-grid;
     place-items: center;
     box-sizing: content-box;
     width: calc(1.75rem + 6px);
     height: calc(1.75rem + 6px);
-    border: 1px solid color-mix(in srgb, currentColor 18%, transparent);
+    border: 1.5px solid var(--ink-line);
     border-radius: 999px;
     opacity: 0.8;
     transition: opacity 180ms ease, background-color 180ms ease, transform 420ms cubic-bezier(0.22, 1, 0.36, 1);

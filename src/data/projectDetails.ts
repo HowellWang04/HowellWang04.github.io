@@ -15,79 +15,83 @@ export type ProjectDetails = {
 // Describe contributions as an action, the work you owned, and its impact.
 export const projectDetails: Record<string, ProjectDetails> = {
   "project-fireflies": {
-    role: { en: "Interaction design, hardware integration, firmware & Unity control", zh: "交互设计、硬件整合、固件与 Unity 控制端开发" },
+    role: { en: "Interaction design, hardware build, firmware & Unity sound", zh: "交互设计、硬件搭建、固件与 Unity 声音" },
     team: { en: "Solo project", zh: "个人独立完成" },
     duration: { en: "June 2026", zh: "2026 年 6 月" },
     contributionGroups: [
       {
-        title: { en: "Kuramoto synchronization", zh: "Kuramoto 藏本同步模型" },
-        tools: "C++ · Phase oscillators · Kuramoto model",
+        title: { en: "Kuramoto synchronization", zh: "Kuramoto 藏本同步" },
+        tools: "C/C++ · Arduino · FireflySwarm.cpp",
         summary: {
-          en: "Adapted Yoshiki Kuramoto's phase oscillator model to let individual fireflies gradually synchronize their flashes, with disturbance weakening their shared rhythm.",
-          zh: "基于日本物理学家 Yoshiki Kuramoto 的藏本相位振子模型，实现萤火虫从独立闪烁到逐渐同步的变化，并让外界扰动削弱群体节奏。",
+          en: "Gave each simulated firefly its own flashing rhythm, then used Kuramoto coupling to draw the two interactive groups toward a shared phase.",
+          zh: "让每只模拟萤火虫拥有独立的闪烁节奏，再通过藏本耦合把两组互动灯群拉向共同的相位。",
         },
         details: [
           {
-            en: "Each firefly maintains its own phase. The swarm sums the sine of phase differences between individuals, scales the result by coupling strength and elapsed time, and normalizes it by swarm size to adjust each phase.",
-            zh: "每只萤火虫维护独立相位。灯群累加个体间相位差的正弦值，按群体数量归一化，再结合耦合强度与时间步长更新相位。",
+            en: "Each firefly follows its own phase. Following the Kuramoto phase coupling formula, FireflySwarm.cpp sums the sine of the phase differences between fireflies, scales it by coupling strength and divides it by the swarm count, pulling active fireflies toward a shared rhythm. A disruption term adds each firefly's own phase drift.",
+            zh: "每只萤火虫按自己的相位闪烁。FireflySwarm.cpp 按藏本相位耦合公式累加个体间相位差的正弦值，乘以耦合强度并除以群体数量，把活跃的萤火虫拉向共同节奏。另有一项相位扰动为每只萤火虫加入各自的相位漂移。",
           },
           {
-            en: "Unity commands smoothly raise or lower coupling for either interactive swarm. Disturbance reduces coupling and adds individual phase drift. The background swarm keeps zero coupling and ignores synchronization commands.",
-            zh: "Unity 指令平滑调整两组互动灯群的耦合强度。扰动会降低耦合并增加个体相位漂移；背景灯群始终保持零耦合，不接受同步指令。",
+            en: "The lights move between three states. When independent, each point follows its own phase. When synchronized, coupling draws the interactive groups together. When disturbed, points dim, disperse and fall out of step. The background strip keeps its independent rhythm.",
+            zh: "灯光在三种状态之间变化。独立时每个光点按自己的相位闪烁，同步时耦合把互动灯群拉到一起，受扰时光点变暗、散开并失去同步。背景灯带始终保持独立的节奏。",
           },
         ],
       },
       {
-        title: { en: "Sensing & ecological response", zh: "传感与生态响应" },
-        tools: "ESP32 · LD2410B · Analog light sensors",
+        title: { en: "Sensing & disturbance mapping", zh: "传感与扰动映射" },
+        tools: "ESP32-WROOM · HLK-LD2410B · TEMT6000",
         summary: {
-          en: "Built two independent interaction zones that turn nearby movement and bright light into faster movement, fewer visible fireflies, and dimmer flashes, followed by gradual recovery.",
-          zh: "构建两组独立互动区，将附近人体移动与强光转化为飞行加速、可见萤火虫减少和闪光变暗，并在干扰减弱后逐步恢复。",
+          en: "The firmware turns radar and light input from two interactive zones into a shared response across motion, brightness and rhythm.",
+          zh: "固件把两个互动区的雷达与光照输入转化为同一套响应，同时作用于移动、亮度与节奏。",
         },
         details: [
           {
-            en: "Each zone uses its own LD2410B radar and analog light sensor. Radar distance and movement energy filter the motion input; stationary targets do not add disturbance. Light readings are mapped between configurable thresholds.",
-            zh: "每个区域使用独立的 LD2410B 雷达与模拟光照传感器。通过距离和运动能量筛选人体移动输入，静止目标不增加扰动；光照读数按可配置阈值映射。",
+            en: "The mmWave radar reports motion, presence and distance, and the light sensor reports brightness as an ADC reading. The firmware smooths the disturbance of each interactive swarm and maps it to effect strength, with effect = disturbance^0.70.",
+            zh: "毫米波雷达上报移动、存在与距离，光照传感器以 ADC 读数上报亮度。固件对每组互动灯群的扰动值做平滑，再映射为效果强度，effect = disturbance^0.70。",
           },
           {
-            en: "Motion and light combine into a smoothed disturbance value for each zone. That value changes motion, brightness, visible population, and phase behavior without affecting the other interaction zone or the natural background.",
-            zh: "人体移动和光照合成为各区域独立的平滑扰动值，同时调节移动、亮度、可见数量与相位行为，不影响另一互动区或自然背景。",
+            en: "As the effect rises, fewer points stay visible (count − effect × 4), travel along the strip quickens (1.5 + effect × 4.5), the overall light fades (1 − effect × 0.90), phase alignment weakens, and the rhythm spreads out.",
+            zh: "效果越强，可见的光点越少（count − effect × 4），沿灯带移动越快（1.5 + effect × 4.5），整体亮度越低（1 − effect × 0.90），相位对齐越弱，节奏也随之散开。",
+          },
+          {
+            en: "Distance lets visitors discover the trigger by walking, as radar turns physical presence into a local change they can see. Bright light carries the same idea to a larger scale and can raise disturbance even when a visitor keeps their distance.",
+            zh: "距离让参与者在走动中自己发现触发方式，雷达把人的在场变成看得见的局部变化。强光把同一想法放大，即使参与者保持距离，亮光也会提高扰动。",
           },
         ],
       },
       {
-        title: { en: "LED swarm animation", zh: "LED 灯群动画" },
-        tools: "Arduino · FastLED · WS2812B",
+        title: { en: "LED swarms & installation build", zh: "LED 灯群与装置搭建" },
+        tools: "WS2812B · ESP32-WROOM · Firefly.cpp",
         summary: {
-          en: "Configured 420 addressable LEDs across three strips, animating two interactive groups of eight fireflies and a natural background of 35 independent fireflies.",
-          zh: "使用三条灯带共 420 颗可寻址 LED，呈现两组各 8 只的互动萤火虫，以及 35 只独立闪烁的自然背景萤火虫。",
+          en: "Laid out three swarms on addressable LED strips. Two interactive zones each run 8 simulated fireflies on 60 LEDs, and a background of 35 fireflies on 300 LEDs flickers slower and dimmer, independent of visitor input.",
+          zh: "在可寻址 LED 灯带上布置三组灯群。左右两个互动区各用 60 颗 LED 模拟 8 只萤火虫，背景用 300 颗 LED 模拟 35 只，闪烁更慢更暗，不受参与者影响。",
         },
         details: [
           {
-            en: "Each firefly has a position, direction, random turning time, and blink phase. Movement reflects at strip boundaries, while brightness envelopes soften the light pulses. The background uses a slower cycle and a cosine envelope.",
-            zh: "每只萤火虫拥有位置、方向、随机转向时间与闪烁相位，在灯带边界折返，并通过亮度包络柔化明暗变化。背景灯群采用更慢的周期与余弦亮度包络。",
+            en: "Each simulated firefly cycles through a lit and an off window, and a brightness envelope makes it brighten and fade within the lit window. Individually addressed pixels let the fireflies move, flicker and disappear. The ESP32-WROOM reads the sensors, updates firefly states and drives the strips, coded in C/C++ with the Arduino framework.",
+            zh: "每只模拟萤火虫在亮灯窗口与熄灭窗口之间循环，亮度包络让它在亮灯窗口内渐亮渐暗。逐颗寻址的像素让萤火虫可以移动、闪烁和消失。ESP32-WROOM 读取传感器、更新萤火虫状态并驱动灯带，用 C/C++ 与 Arduino 框架编写。",
           },
           {
-            en: "Separated individual motion and brightness logic, swarm coupling, and hardware input and LED output into distinct firmware files, allowing behavior to be tuned independently of wiring and communication.",
-            zh: "将个体运动与亮度、群体耦合、硬件输入与 LED 输出分别组织在不同固件文件中，使行为参数可独立于接线和通信进行调整。",
+            en: "Bench tests of the sensor wiring came before installation. The lights are routed against black fabric, which hides the strip path and the wiring so each LED reads as a separate point of light in the dark room.",
+            zh: "安装前先在桌面上测试传感器接线，再把灯带沿黑布布置。黑布遮住灯带走线与接线，让每颗 LED 在暗室里都像一个独立的光点。",
           },
         ],
       },
       {
-        title: { en: "Unity control & soundscape", zh: "Unity 控制与声音环境" },
-        tools: "Unity · C# · UDP · TextMesh Pro · AudioSource",
+        title: { en: "Unity soundscape", zh: "Unity 声音环境" },
+        tools: "Unity · UDP",
         summary: {
-          en: "Connected the installation to a Unity control panel for synchronization, sensor overrides, live telemetry, and gradual mixing of nature and city sounds.",
-          zh: "通过 Unity 控制面板连接装置，实现同步控制、传感器覆盖、实时遥测，以及自然声与城市声的渐变混合。",
+          en: "The ESP32 sends a disturbance value to the installation computer over UDP on the local network, and Unity uses it to crossfade the soundscape between nature and city.",
+          zh: "ESP32 通过局域网 UDP 把扰动值发送到装置电脑，Unity 据此在自然声与城市声之间做交叉渐变。",
         },
         details: [
           {
-            en: "UDP carries sensor telemetry and commands between ESP32 and Unity. Commands include unique IDs and acknowledgements; disturbance override buttons wait for confirmation before updating their state. Device discovery and connection feedback support setup and monitoring.",
-            zh: "通过 UDP 在 ESP32 与 Unity 之间传输传感器遥测和控制指令。指令携带唯一 ID 并返回确认，扰动覆盖按钮收到确认后才更新状态；设备发现与连接反馈支持布置和监控。",
+            en: "The soundscape starts with water, wind and insects. As disturbance increases, city audio rises and the nature track recedes.",
+            zh: "声音从水声、风声和虫鸣开始。扰动升高时，城市声渐强，自然声退后。",
           },
           {
-            en: "Unity maps disturbance to city sound intensity and blends the soundscape over time. Separate automatic and manual controls manage nature audio, city audio, light input, and disturbance for demonstrations and calibration.",
-            zh: "Unity 将扰动映射为城市声强度，并随时间平滑混合声音。自然声、城市声、光照输入与扰动分别提供自动及手动控制，便于演示和调试。",
+            en: "Unity sets target volumes for the nature and city tracks from the disturbance value, and the fade follows those targets.",
+            zh: "Unity 根据扰动值设定自然声与城市声的目标音量，渐变跟随这些目标音量进行。",
           },
         ],
       },
@@ -99,79 +103,83 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
   },
   "project-sand": {
-    role: { en: "Gameplay systems & environmental effects", zh: "玩法系统与环境效果开发" },
+    role: { en: "Gameplay systems, C# programming & art direction", zh: "玩法系统、C# 编程与美术指导" },
     team: { en: "Solo project", zh: "个人独立完成" },
     duration: { en: "January 2026", zh: "2026 年 1 月" },
     contributionGroups: [
       {
         title: { en: "Economy & ecological tradeoffs", zh: "经济与生态取舍" },
-        tools: "Unity · C#",
+        tools: "Unity 6 · C#",
         summary: {
-          en: "Connected planting costs, factory income, mining payouts, and pollution so that funding restoration also creates environmental pressure.",
-          zh: "连接植树成本、工厂收入、采矿收益与污染，让筹集治沙资金的过程同时带来生态压力。",
+          en: "Put mining, factories and tree planting on the same land. Mining makes quick money, factories pay over time, and planting commits money before the landscape recovers.",
+          zh: "让采矿、工厂与植树发生在同一片土地上。采矿快速回款，工厂持续产出收入，植树则要先投入资金，之后土地才慢慢恢复。",
         },
         details: [
           {
-            en: "Factories generate continuous income with diminishing returns and an overall cap, while mining pays out in timed stages. Affordability checks connect the available budget to planting, construction, and extraction.",
-            zh: "工厂持续产出收入，并设有边际收益递减与总收入上限。采矿收益按时间分阶段发放，资金检查将预算与植树、建厂、开采操作连接起来。",
+            en: "By default, mining costs 450 and pays out 900 in three stages, a factory costs 1,200, and planting costs 2 per tree. Factory income starts at 1.5 per second for the first factory with a soft cap of 6 per second, so diminishing returns limit income while the ecological cost keeps growing.",
+            zh: "默认参数下，采矿花费 450，分三个阶段共返还 900，建厂花费 1,200，植树每棵花费 2。第一座工厂每秒产出 1.5，总收入的软上限为每秒 6，边际收益递减限制了收入，生态代价却持续增长。",
           },
           {
-            en: "Factory pollution periodically removes trees and updates the environmental state. Players can demolish factories to stop their ongoing ecological cost.",
-            zh: "工厂污染定期移除树木并更新环境状态，玩家可以拆除工厂，停止其持续造成的生态损耗。",
+            en: "Each factory's pollution removes 0.6 trees per second by default, even with the economy toggle off. A timer batches tree removal and refreshes the environment. Removing factories stops their pollution so vegetation can recover.",
+            zh: "默认每座工厂每秒因污染移除 0.6 棵树，即使关闭经济开关也照常进行。计时器把树木移除分批处理并刷新环境状态。拆除工厂会停止其污染，让植被得以恢复。",
           },
         ],
       },
       {
-        title: { en: "Terrain placement & land use", zh: "地形放置与土地利用" },
-        tools: "Unity Terrain · C# · Coroutines",
+        title: { en: "Placement & land use", zh: "放置与土地利用" },
+        tools: "Unity 6 · C# · Inspector",
         summary: {
-          en: "Built shared occupancy rules for trees and factories, making planting, construction, and mining change the same landscape.",
-          zh: "为树木与工厂建立共用的空间占用规则，让植树、建设与采矿共同改变场景中的土地。",
+          en: "Planting, construction and mining change the same map. Trees occupy free terrain cells, factories reserve a footprint, and mining clears trees in a circular area.",
+          zh: "植树、建厂与采矿改变的是同一张地图。树木占用空闲的地形格，工厂预留占地范围，采矿清除圆形区域内的树木。",
         },
         details: [
           {
-            en: "Trees occupy shuffled free grid cells, sample terrain height, and grow through scale animation with randomized prefabs, rotation, and final size.",
-            zh: "树木放置在打乱顺序的空闲网格中，采样地形高度，并通过缩放动画生长，预制体、朝向和最终尺寸随机变化。",
+            en: "DesertEnvironmentUI sends plant, build and mine actions to the simulation layer, which covers environment, economy and placement and tracks money, pollution and the environment index.",
+            zh: "DesertEnvironmentUI 把植树、建厂和采矿操作发送给模拟层。模拟层负责环境、经济与放置，跟踪资金、污染和环境指数。",
           },
           {
-            en: "Factories cluster around existing plants and reserve their footprints to prevent factory overlap. Placement first avoids trees, then allows clearing when space is limited. Mining removes trees within a sampled circular area.",
-            zh: "工厂围绕已有厂区聚集，通过占地网格避免彼此重叠。放置时优先避开树木，空间不足时允许清除占地内的树木。采矿则移除随机圆形区域内的植被。",
+            en: "Tree, factory and mining parameters are tuned in Unity inspectors.",
+            zh: "树木、工厂与采矿的参数都在 Unity 的 Inspector 中调节。",
           },
         ],
       },
       {
-        title: { en: "Environmental feedback", zh: "环境反馈" },
-        tools: "C# · uGUI",
+        title: { en: "Environment index & feedback", zh: "环境指数与反馈" },
+        tools: "C# · DesertFxAPI · FxSnapshot",
         summary: {
-          en: "Mapped player decisions to an environmental index that controls wind, sand density, heat haze, and the transition toward a clear sky.",
-          zh: "将玩家决策映射为环境指数，控制风力、沙尘浓度、热浪与晴空过渡。",
+          en: "A weighted environment index built from tree, factory and mining counts drives wind, airborne sand, heat haze and the sky.",
+          zh: "由树木、工厂和采矿数量加权得到环境指数，驱动风、空中扬沙、热浪与天空的变化。",
         },
         details: [
           {
-            en: "Normalized tree, factory, and mining counts feed a weighted environmental score. A shared effects API blends between parameter snapshots, while planting thresholds progressively reduce sand and heat and change sky clarity and cloud coverage.",
-            zh: "将树木、工厂与采矿数量归一化后计算加权环境指数，通过统一特效接口在参数快照间平滑过渡。植树阈值逐步降低沙尘和热浪，并改变天空清晰度与云量。",
+            en: "E = clamp(0.55t − 0.30f − 0.25m + 0.50, 0, 1), where t, f and m are the normalized tree, factory and mining counts. A higher E weakens wind and heat haze and makes airborne sand sparser and slower, and blue sky emerges as vegetation grows. By default 15,000 trees give full sky clearing, and the HUD shows the score and the sky blend separately.",
+            zh: "E = clamp(0.55t − 0.30f − 0.25m + 0.50, 0, 1)，其中 t、f、m 分别是归一化后的树木、工厂与采矿数量。E 越高，风和热浪越弱，扬沙越稀越慢，蓝天随植被增长而出现。默认 15,000 棵树对应天空完全放晴，HUD 分别显示环境分数与天空混合程度。",
           },
           {
-            en: "The decision UI connects planting, construction, demolition, and mining actions to the economy and placement systems. Environment and money events refresh the displayed state.",
-            zh: "决策界面将植树、建厂、拆厂与采矿操作连接到经济和放置系统，通过环境与资金事件刷新显示状态。",
+            en: "FxSnapshot stores wind, sand, heat distortion and sky settings. DesertFxAPI captures the current values and supplies the target state, and a smoothstep curve eases the progress while each setting interpolates between snapshots, so several effects respond to the same change together.",
+            zh: "FxSnapshot 保存风、沙、热浪扭曲与天空的设置。DesertFxAPI 捕获当前数值并给出目标状态，各项设置在快照之间插值，进度由 smoothstep 曲线缓动，让多个视觉效果对同一变化一起响应。",
           },
         ],
       },
       {
         title: { en: "Sand & heat rendering", zh: "风沙与热浪渲染" },
-        tools: "URP 17.4 · HLSL · Render Graph",
+        tools: "Unity 6 · URP · Shader · Renderer Feature",
         summary: {
-          en: "Implemented coordinated ground sand, airborne sand, and heat distortion to make environmental change visible throughout the scene.",
-          zh: "实现同步变化的地表流沙、空中扬沙与热浪扭曲，让环境状态通过场景画面直接呈现。",
+          en: "Wrote ground sand, airborne sand and heat distortion effects that respond to the wind and the state of the environment.",
+          zh: "编写了地表流沙、空中扬沙和热浪扭曲三种效果，随风和环境状态变化。",
         },
         details: [
           {
-            en: "A shared global wind vector drives shader scrolling. Airborne sand uses layered transparent surfaces with noise, scene depth fading, and distance fading to soften intersections and layer boundaries.",
-            zh: "通过统一全局风向向量驱动着色器滚动。空中扬沙使用多层透明面片，结合噪声、场景深度淡出和距离淡出，柔化与场景的交界及图层边缘。",
+            en: "Ground sand uses one wind vector and three parallax layers. Far, middle and near layers move at different rates, scrolled by GPU time without accumulating UV offsets on the CPU. The shader blends them and clips low alpha areas before output.",
+            zh: "地表流沙用一个风向向量驱动三层视差。远、中、近三层以不同速度移动，滚动由 GPU 时间驱动，不在 CPU 上累加 UV 偏移。着色器混合三层，并在输出前裁掉低透明度区域。",
           },
           {
-            en: "A custom URP renderer feature supports Render Graph and distorts the scene color for heat haze. Depth and world height masks control where the distortion appears.",
-            zh: "自定义 URP Renderer Feature 支持 Render Graph，通过扭曲场景颜色实现热浪，并以深度与世界高度遮罩控制效果范围。",
+            en: "Airborne sand is drawn as near, middle and far sheets. Dual noise varies density within each sheet, scene depth fading softens intersections with the ground, and camera distance and edge fades soften the boundaries.",
+            zh: "空中扬沙由近、中、远三层面片构成。双重噪声改变每层面片内的浓度，场景深度淡出柔化与地面的交界，相机距离淡出与边缘淡出柔化面片边界。",
+          },
+          {
+            en: "Heat distortion is a masked fullscreen pass enqueued by a URP renderer feature, with exposed strength, noise and scroll controls. Two noise samples offset the scene color lookup, and depth and world height mask the distortion so it stays within the intended range.",
+            zh: "热浪扭曲是一个带遮罩的全屏 Pass，由 URP Renderer Feature 加入渲染队列，强度、噪声与滚动参数均可调节。两次噪声采样偏移场景颜色的采样位置，深度与世界高度遮罩把扭曲限制在预期范围内。",
           },
         ],
       },
@@ -182,127 +190,138 @@ export const projectDetails: Record<string, ProjectDetails> = {
     ],
   },
   "coal-echoes": {
-    role: { en: "Game design, interaction systems & environment integration", zh: "游戏设计、交互系统与场景整合" },
+    role: { en: "Story & level design, gameplay systems, scene & terrain build", zh: "叙事与关卡设计、玩法系统、场景与地形搭建" },
     team: { en: "Solo project", zh: "个人独立完成" },
     duration: { en: "August 2026", zh: "2026 年 8 月" },
     contributionGroups: [
       {
-        "title": {
-          "en": "Rendering & visual effects",
-          "zh": "渲染与视觉效果"
+        title: { en: "Story & level design", zh: "叙事与关卡设计" },
+        tools: "Four levels · Diary · Camera · Scrapbook",
+        summary: {
+          en: "Designed a four level route from the factory gate to the ridge, with an emotional curve that moves from loss and curiosity through regret to quiet acceptance.",
+          zh: "设计了从厂门到山脊的四个关卡，情绪曲线从失落与好奇出发，经过遗憾，最后落在平静的接受。",
         },
-        "tools": "HDRP · Shader Graph · VFX Graph · HLSL",
-        "summary": {
-          "en": "Created sandstorm and heat haze effects, and rendered the camera's live view of the scene in a newspaper ink style for the game's opening transition.",
-          "zh": "实现沙尘与热浪效果，并将相机在场景中的实际画面渲染为报纸纸墨效果，作为游戏开场的转场画面。"
-        },
-        "details": [
+        details: [
           {
-            "en": "Uses HDRP 17.4.0 with Shader Graph and VFX Graph, Local Volumetric Fog for sandstorms, and Custom Pass for heat haze.",
-            "zh": "使用 HDRP 17.4.0、Shader Graph 与 VFX Graph，通过 Local Volumetric Fog 表现沙尘，通过 Custom Pass 实现热浪。"
+            en: "At the factory gate the player reads the diary, takes a photo and cuts the chain. Room 207 holds the mountain map, the lower station has the old cableway to fix and ride, and at the upper station the last diary entry reveals that the two workers never made the trip.",
+            zh: "在厂门，玩家阅读日记、拍下照片并剪断铁链。207 宿舍里藏着上山的地图，下站要修好老索道并乘坐上山。到了上站，最后一篇日记揭示两位工人始终没有成行。",
           },
           {
-            "en": "The newspaper effect copies the menu camera's color buffer after post processing, processes it on the GPU, and displays it in a RawImage. It combines grayscale, subtle halftone dots, paper grain, and uneven ink coverage. The halftone algorithm adapts Daniel Ilett's MIT licensed work.",
-            "zh": "报纸效果在后处理结束后复制菜单相机色缓冲，经 GPU 处理后交给 RawImage 显示。效果结合灰阶、细网点、纸纹与缺墨处理，其中半调算法改写自 Daniel Ilett 的 MIT 许可作品。"
-          }
-        ]
+            en: "In Room 207 the diary tells the player what to look for, and light leads the eye from the doorway to the drawer.",
+            zh: "在 207 宿舍，日记告诉玩家要找什么，光线把视线从门口引向抽屉。",
+          },
+          {
+            en: "The first three levels take place in daylight. Night falls during the cableway ride, and the plant below is completely unlit. The orange sand haze is removed, a low moon lights the cableway towers, the plant buildings and the dormitory through cold fog, and the final photo frames the dark plant under the night sky.",
+            zh: "前三关都在白天进行。夜幕在乘坐索道的途中降临，山下的厂区一盏灯也没有。橙色的沙尘被去掉，低垂的月亮透过冷雾照亮索道塔、厂房和宿舍楼，最后一张照片拍下夜空下漆黑的厂区。",
+          },
+        ],
       },
       {
-        "title": {
-          "en": "Opening sequence",
-          "zh": "开场演出"
+        title: { en: "Photography & Echoes", zh: "拍照与回响" },
+        tools: "Unity 6 · CameraStateMachine · EchoTargetDetector",
+        summary: {
+          en: "Made photography the way the player learns the story. When the camera points at an Echo, a trace of grandpa's time, the frame turns yellow, and the saved photo records it.",
+          zh: "让拍照成为玩家了解故事的方式。镜头对准回响，也就是爷爷那个年代留下的痕迹时，取景框会变黄，保存的照片会记录下这次发现。",
         },
-        "tools": "DOTween · RenderTexture · TerrainData · HDRI Sky",
-        "summary": {
-          "en": "Synchronized the photograph transition, sky motion, sand accumulation, and material aging. Restored original resources when the sequence ends or is interrupted.",
-          "zh": "同步照片转场、天空运动、积沙与材质老化。演出结束或中断时恢复原资源。"
-        },
-        "details": [
+        details: [
           {
-            "en": "uGUI and TextMesh Pro build the newspaper and player interfaces. DOTween enlarges the newspaper photograph over 1.8 seconds, then fades its ink effect over 1.4 seconds. UIEffect 5.11.7 supplies dissolve and page turning light effects.",
-            "zh": "使用 uGUI 与 TextMesh Pro 构建报纸和玩家界面。DOTween 先用 1.8 秒放大照片，再用 1.4 秒消退纸墨效果。UIEffect 5.11.7 用于溶解与翻页光影。"
+            en: "A state machine moves the camera through Disabled, Active, Capturing and Reviewing and blocks illegal jumps. The shutter works in fullscreen only. The target is locked on the shutter press, then a coroutine hides the HUD, fires the flash, captures, and saves the Echo.",
+            zh: "状态机让相机在 Disabled、Active、Capturing、Reviewing 四个状态之间切换，并阻止非法跳转。只有全屏模式下才能按快门。按下快门时锁定目标，随后协程隐藏 HUD、触发闪光、截取画面并保存回响。",
           },
           {
-            "en": "Seven material pairs across eight dormitory renderers drive the aging transition. Three RenderTextures blend clean and weathered base colors in linear space, while normal strength, window properties, and rain stains change in sync. Temporary resources are released and original materials restored on completion or interruption.",
-            "zh": "通过七组材质与八个宿舍楼 Renderer 实现老化渐变。三个 RenderTexture 在线性颜色空间混合干净与斑驳底色，同步插值法线强度、窗框属性及雨水痕。结束或中断时释放临时资源并恢复原材质。"
+            en: "While the camera is active, the detector checks every frame that the target sits near the center and is large enough, within distance, stand point and focal length limits. An occlusion check uses a center ray plus 3 of 4 inner samples, and Echoes that require focus also check the blur circle.",
+            zh: "相机处于 Active 状态时，检测器每帧检查目标是否位于画面中央且足够大，并满足距离、站位和焦距限制。遮挡检测使用中心射线加四个内部采样点中的三个，需要对焦的回响还会检查弥散圆。",
           },
           {
-            "en": "The opening timeline synchronizes temporary terrain height animation with an independent HDRI sky rotation and material aging. Terrain collision retains the final height data; the original terrain references and sky settings are restored when the transition ends or is interrupted.",
-            "zh": "开场时间轴同步驱动临时地形高度动画、独立 HDRI 天空旋转与材质老化。地形碰撞保留最终高度数据，转场结束或中断时恢复原地形引用与天空设置。"
-          }
-        ]
+            en: "Picking up grandpa's diary is what turns Echoes on. Tools found by inspecting, such as the lock pick and bolt cutter, open ways forward without the camera. Main story Echoes are photographed to continue, and optional Echoes add context.",
+            zh: "拾起爷爷的日记后回响才会开启。通过检视找到的工具，例如开锁工具和断线钳，不用相机也能打开前路。主线回响需要拍下才能继续，可选回响则补充背景。",
+          },
+        ],
       },
       {
-        "title": {
-          "en": "Terrain & environment",
-          "zh": "地形与场景"
+        title: { en: "Album, scrapbook & saves", zh: "相册、手账与存档" },
+        tools: "ScrapBookCanvas · JSON · persistentDataPath",
+        summary: {
+          en: "Built the album and scrapbook that carry each photo forward. Echo photos get a warm frame in the album, and in the scrapbook their text becomes a handwritten note taped to the photo.",
+          zh: "实现了承接每张照片的相册与手账。回响照片在相册里带有暖色边框，到了手账里，它的文字会变成贴在照片上的手写便签。",
         },
-        "tools": "MapMagic · DEM · C++ · OpenGL · Python",
-        "summary": {
-          "en": "Integrated measured terrain and offline transition results into MapMagic, using a shared height source for terrain geometry and slope materials.",
-          "zh": "将实测地形与离线过渡结果接入 MapMagic，让地形几何和坡度材质共用同一高度源。"
-        },
-        "details": [
+        details: [
           {
-            "en": "MapMagic manages fixed terrain tiles and LOD using stitched USGS Sheep Range DEM data. A shared C# height source feeds terrain geometry and slope materials. Terrain Tools 5.3.2 supports local editing.",
-            "zh": "MapMagic 基于拼接后的 USGS Sheep Range DEM 管理固定地块与 LOD。C# 高度源同时供给地形几何与坡度材质，Terrain Tools 5.3.2 用于局部地形编辑。"
+            en: "Every photo is saved as a PNG, and a right click sends it from the album to the scrapbook. There the player drags, rotates and resizes photos, stickers and text, and the layout is saved between sessions.",
+            zh: "每张照片保存为 PNG，右键即可从相册送入手账。玩家在手账里拖动、旋转和缩放照片、贴纸与文字，布局会在两次游玩之间保留。",
           },
           {
-            "en": "Gradient Terrain Authoring reconstructs terrain transitions. C++ and OpenGL perform the offline solve; Python processes data, refines the solution, and validates results. Unity reads the measured heights and the precomputed 800 metre transition.",
-            "zh": "使用 Gradient Terrain Authoring 重建地形过渡。C++ 与 OpenGL 执行离线求解，Python 处理数据、精化求解并验证结果，Unity 读取实测高度与预计算的 800 米过渡结果。"
+            en: "Captured photos, Echo texts, registered scrapbook photos, the canvas layout and discovered Echoes are kept in separate files under Application.persistentDataPath, so a photograph keeps its discovery state and handwritten note when the player returns. Grandpa's diary pages are pure data loaded from a JSON file.",
+            zh: "拍摄的照片、回响文字、已登记的手账照片、画布布局和已发现的回响分别保存在 Application.persistentDataPath 下的独立文件里，玩家回来时照片仍保有发现状态和手写便签。爷爷的日记页是纯数据，从 JSON 文件加载。",
           },
-          {
-            "en": "Integrated industrial environment assets and a moving cableway with the terrain to support the exploration route.",
-            "zh": "将工业场景资源、运行索道与地形整合，支撑探索路线。"
-          }
-        ]
+        ],
       },
       {
-        "title": {
-          "en": "Interaction & saves",
-          "zh": "交互与存档"
+        title: { en: "Terrain pipeline", zh: "地形流程" },
+        tools: "USGS 1 m DEM · Poisson solver · MapMagic 2",
+        summary: {
+          en: "Turned a real 1 m elevation survey of Nevada's Sheep Range into the game's enclosed valley, a stand-in for the bare stone ridges of Shitanjing.",
+          zh: "把内华达州 Sheep Range 的 1 米实测高程数据做成游戏里的封闭山谷，用来代替石炭井光秃的石山。",
         },
-        "tools": "Unity · C# · Input System · JsonUtility",
-        "summary": {
-          "en": "Built photography, album, scrapbook, and diary systems so players can collect photographs, arrange records, and save their exploration progress.",
-          "zh": "实现拍照、相册、手账与日记系统，让玩家收集照片、整理记录，并保存探索进度。"
-        },
-        "details": [
+        details: [
           {
-            "en": "Designed the narrative framework and the four-level exploration route around a late grandfather's diary and a 1980 group photo from the coal washing plant, using photography, diary entries, and scrapbooking as the core interactions.",
-            "zh": "围绕已故爷爷的日记和一张 1980 年的洗煤厂合影设计叙事框架和四个关卡的探索路线，以摄影、日记与手账组织核心交互。"
+            en: "Shitanjing only has 30 m data, which looks blurry to the player, while Sheep Range has the same bare rock, a similar 700 m rise and a 1 m survey. A single block did not fit the map, so I ringed a flatter plant site with three real survey pieces as high ground and joined them with the Poisson solver from Gradient Terrain Authoring (Guérin et al. 2022).",
+            zh: "石炭井只有 30 米精度的数据，玩家看起来会很模糊，而 Sheep Range 有同样裸露的岩石、相近的 700 米落差和 1 米精度的实测数据。单块数据放不进地图，于是用三块真实测绘地形作为高地围住较平坦的厂区，再用 Gradient Terrain Authoring（Guérin 等，2022）中的 Poisson 求解器把它们接合起来。",
           },
           {
-            "en": "Connected photography to Echo discoveries, using target framing and visibility checks to link photographed objects with narrative discoveries. Unity 6000.4.6f1 and C# implement the interactions, with Input System 1.19 handling player input.",
-            "zh": "将拍照与回响发现连接，通过目标构图与可见性判断，将被拍摄物品与叙事发现关联。使用 Unity 6000.4.6f1 与 C# 实现交互，通过 Input System 1.19 处理玩家输入。"
+            en: "MapMagic 2 spreads the solved heights over 36 tiles with LOD, and slope rules pick sand or rock. One-shot editor scripts back up the scene, write only the tiles that changed, and match tile edges before saving.",
+            zh: "MapMagic 2 把求解后的高度铺到 36 个带 LOD 的地块上，并按坡度规则选择沙或岩石。一次性的编辑器脚本先备份场景，只写入发生变化的地块，对齐地块边缘后再保存。",
           },
           {
-            "en": "Used JsonUtility to read and write save and diary data. Photos, scrapbook layouts, Echo discoveries, and the grandfather's diary use separate local storage directories.",
-            "zh": "使用 JsonUtility 读写存档与日记数据，照片、手账布局、回响发现和爷爷日记分别使用独立本地存储目录。"
-          }
-        ]
+            en: "Verification reads all 58 terrains back and compares them with the solver's result. Where pinned survey edges left visible straight creases across the hillside, a second Poisson pass spreads each bend over 60 to 100 m and leaves roads and the factory untouched.",
+            zh: "验证环节把全部 58 块地形读回，与求解器的结果比对。固定为实测高度的边缘会在山坡上留下明显的直线折痕，第二遍 Poisson 求解把每处转折摊开到 60 至 100 米，道路和厂区保持不动。",
+          },
+        ],
       },
       {
-        "title": {
-          "en": "Development tools",
-          "zh": "开发工具"
+        title: { en: "Newspaper menu & 1980 group photo", zh: "报纸菜单与 1980 年合影" },
+        tools: "HDRP · HLSL · Claude Code · Codex MCP",
+        summary: {
+          en: "Made both printed images from the game's own scene. The main menu is a 1980 newspaper whose photo is filmed live from a cableway tower, and grandpa's group photo starts from a Unity render of the same gate the player walks through.",
+          zh: "两张印刷图像都出自游戏自身的场景。主菜单是一份 1980 年的报纸，上面的照片从索道塔上实时拍摄。爷爷的合影则以玩家将要走过的同一座厂门的 Unity 渲染图为底。",
         },
-        "tools": "Blender · Python · MCP · Git LFS",
-        "summary": {
-          "en": "Modeled and generated assets with Blender and Python, used AI assistance for scene work, and managed large assets with Git LFS.",
-          "zh": "使用 Blender 与 Python 建模和生成资源，通过 AI 辅助场景操作，以 Git LFS 管理大型资源。"
-        },
-        "details": [
+        details: [
           {
-            "en": "Blender 5.2.2 and Python support modeling and parametric generation. Environments also integrate Industrial Harbour, RocksGobi, Lands, and RockyDesert assets, with a CC0 sky HDRI from Poly Haven.",
-            "zh": "使用 Blender 5.2.2 与 Python 进行建模和参数化生成。场景同时整合 Industrial Harbour、RocksGobi、Lands 与 RockyDesert 资源，天空采用 Poly Haven 的 CC0 HDRI。"
+            en: "For the newspaper, a pass films the plant every frame after color grading. A shader turns the color into gray ink, raises the contrast, makes the ink light and uneven, and lays it over an AI generated newsprint texture.",
+            zh: "报纸照片由一个 Pass 在调色之后逐帧拍摄厂区。着色器把颜色转成灰色油墨，提高对比度，让墨色变浅且不均匀，再叠在 AI 生成的新闻纸纹理上。",
           },
           {
-            "en": "Unity MCP and Unity AI Assistant assist with scene operations and Console inspection; Blender MCP supports the art workflow. Git and Git LFS manage source files and large assets.",
-            "zh": "通过 Unity MCP 与 Unity AI Assistant 辅助场景操作和 Console 检查，使用 Blender MCP 辅助美术工作流，通过 Git 与 Git LFS 管理源码和大型资源。"
-          }
-        ]
-      }
+            en: "The shader also holds a halftone dot grid adapted from Daniel Ilett's Halftone Shader Graph (MIT), which I converted from a URP Shader Graph into a fullscreen HLSL shader for HDRP. The dots surface faintly in the opening transition, when Start New Game zooms the photo to fill the screen.",
+            zh: "着色器里还有一套半调网点，改写自 Daniel Ilett 的 Halftone Shader Graph（MIT），我把它从 URP Shader Graph 转成了 HDRP 的全屏 HLSL 着色器。网点只在开场转场中隐约出现，也就是点击 Start New Game 后照片放大到铺满屏幕的时候。",
+          },
+          {
+            en: "For the group photo, the gate is rendered in Unity with no people and set back to 1980 with fresh paint and a red banner. Claude cannot generate images, so it wrote the prompt and called OpenAI's GPT image model through the Codex MCP, which added only the twelve workers. One script cut the people out and placed them back onto the untouched render, and a second aged it into a black and white print.",
+            zh: "合影先在 Unity 中渲染没有人物的厂门，并用新刷的油漆和红色横幅把它还原到 1980 年。Claude 不能生成图像，所以由它撰写提示词，通过 Codex MCP 调用 OpenAI 的 GPT 图像模型，只添加十二位工人。一个脚本把人物抠出来放回未改动的渲染图，另一个脚本把它做旧成黑白照片。",
+          },
+        ],
+      },
+      {
+        title: { en: "Playtest & iteration", zh: "试玩与迭代" },
+        tools: "3 players · UI · Level design · Onboarding",
+        summary: {
+          en: "Invited three players from different backgrounds, grouped their feedback by design area, and iterated on the interface, the ridge photo and the onboarding.",
+          zh: "邀请三位背景不同的玩家试玩，按设计领域整理反馈，并针对界面、山脊照片和新手引导逐项迭代。",
+        },
+        details: [
+          {
+            en: "Player A pointed out that the tabs on the left of the Player Panel did not look like tabs, because the whole panel was one color tone. Each of the four tabs became an index tab with its own muted color, and the open tab sticks out further than the others.",
+            zh: "玩家 A 指出玩家面板左侧的标签看起来不像标签，因为整个面板只有一种色调。四个标签各自改成带有柔和颜色的索引标签，当前打开的标签比其他的更突出。",
+          },
+          {
+            en: "At the ridge, Player B took the photo as soon as the frame turned yellow, and the old mine tower blocked part of the plant. The Echo check still passed because the tower did not count as an obstacle. I moved the tower west of the station and the photo spot to the east railing, so the dormitory and the flagpole are in view.",
+            zh: "在山脊上，玩家 B 在取景框一变黄时就按下快门，老矿塔挡住了一部分厂区。由于矿塔不算遮挡物，回响检测仍然通过。我把矿塔移到车站西侧，把拍摄点移到东侧栏杆，让宿舍楼和旗杆都进入画面。",
+          },
+          {
+            en: "Player C found the guidance in the first level too rough, since it unlocked too many things at once. Tabs now open one at a time, in the order the first level teaches them, each with its own task hint. A planned per level Echo counter was dropped at the design stage, and each Echo photo goes into the scrapbook with the protagonist's note to Grandpa instead.",
+            zh: "玩家 C 觉得第一关的引导太粗糙，一次解锁的东西太多。现在标签按第一关教学的顺序逐个开启，每个都有自己的任务提示。原计划的每关回响计数器在设计阶段就被放弃，每张回响照片改为带着主角写给爷爷的便签进入手账。",
+          },
+        ],
+      },
     ],
     links: [
       { label: { en: "GitHub repository", zh: "GitHub 仓库" }, url: "https://github.com/HowellWang04/Coal-Echoes" },
@@ -318,23 +337,35 @@ export const projectDetails: Record<string, ProjectDetails> = {
       {
         name: "Unreal Engine",
         use: {
-          en: "Blockout, cliff and ground materials, fog, sky atmosphere, and color grading.",
-          zh: "场景白盒、崖壁与地面材质、雾效、天空大气与调色。",
+          en: "Blockout, cliff and ground materials, vegetation, height fog, sky atmosphere, and color grading.",
+          zh: "场景白盒、崖壁与地面材质、植被、高度雾、天空大气与调色。",
         },
       },
     ],
     contributions: [
       {
-        en: "Built a 3D environment study of the Three Gorges on the Yangtze River and the river trackers who once hauled wooden boats upstream, inspired by a trip to Chongqing.",
-        zh: "以长江三峡和曾经拉船逆流而上的纤夫为题材制作三维环境，灵感来自一次重庆之行。",
+        en: "Built a 3D environment study of the Three Gorges and the river trackers who hauled wooden boats upstream. It began on a visit to Chongqing with my mother, where I watched performers haul towropes and sing trackers' work songs.",
+        zh: "以三峡和拉着木船逆流而上的纤夫为题材制作三维环境习作。起因是和母亲去重庆时，看到表演者拉着纤绳、唱着纤夫号子。",
       },
       {
-        en: "Used steep cliffs, a narrow working bank, and a towline linking the trackers to the boat to tell the story of their labor through composition alone.",
-        zh: "通过陡峭崖壁、狭窄的纤道和连接纤夫与船只的纤绳，仅靠构图讲述纤夫的劳作。",
+        en: "Told the story through the space itself. A narrow bank leaves little room to move, the figures lean in the direction of the pull, and the towline gives the eye a path from the workers on land to the boat on the water.",
+        zh: "用空间本身讲故事。狭窄的河岸几乎没有活动的余地，人物朝着拉纤的方向前倾，纤绳把视线从岸上的纤夫引向水面上的船。",
       },
       {
-        en: "Explored the tracker pose with AI-assisted concept images.",
-        zh: "借助 AI 辅助生成的概念图推敲纤夫姿态。",
+        en: "Blocked out three large shapes first, the cliffs, the open river and the boat, under high contrast lighting so each silhouette reads before the warmer grade is introduced.",
+        zh: "先用白盒确立崖壁、开阔的江面和船三个大形体，并用高对比光照检查每个剪影，之后才加入偏暖的调色。",
+      },
+      {
+        en: "Built the cliff material from a world projected texture masked by vertex color, followed by a detail pass and a distance overlay. At river level, small plants and uneven ground mark the transition from water to rock.",
+        zh: "崖壁材质采用世界空间投射的纹理，以顶点色作遮罩，再叠加细节层与远景叠加层。在江面高度，小型植物与起伏的地面衔接水面和岩石。",
+      },
+      {
+        en: "Explored the tracker through pose studies and AI-assisted character exploration. A forward lean and bent knees suggest the weight of the pull, and the head wrap and rope give the figure a clear silhouette against the rock.",
+        zh: "通过姿态研究和 AI 辅助的角色探索推敲纤夫形象。身体前倾、膝盖弯曲表现拉纤的重量，头巾和纤绳让人物在岩石背景前有清晰的剪影。",
+      },
+      {
+        en: "Lowered global saturation and adjusted gamma and gain separately to control the tonal range. Height fog and sky atmosphere shape the far bank so distant cliffs recede behind the foreground, and a color review called out a bank that looked too green.",
+        zh: "降低全局饱和度，并分别调整 gamma 与 gain 来控制影调范围。高度雾与天空大气塑造远岸，让远处的崖壁退到前景之后。调色评审中还指出了一处偏绿的河岸。",
       },
     ],
     links: [

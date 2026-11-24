@@ -97,7 +97,7 @@ const facts = [
         </section>}
 
         {details.links?.length && <div class="project-links flex flex-wrap gap-x-6 gap-y-3 mt-8">
-          {details.links.map((link) => <a class="inline-flex items-center gap-1.5 border-b border-primary/40 pb-0.5 text-sm font-semibold text-primary transition-colors hover:border-primary" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
+          {details.links.map((link) => <a class="inline-flex items-center gap-1.5 border-b border-accent/40 text-sm font-semibold leading-tight text-accent transition-colors hover:border-accent" href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /><span aria-hidden="true">↗</span></a>)}
         </div>}
 
       </div>
@@ -212,10 +212,9 @@ const facts = [
     max-height: min(84dvh, 52rem);
     margin: auto;
     padding: 0;
-    border: 0;
-    border-radius: 1.25rem;
+    border: 1.5px solid var(--ink-line);
+    border-radius: 0.75rem;
     overflow: hidden;
-    box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
   }
 
   .project-dialog::backdrop {

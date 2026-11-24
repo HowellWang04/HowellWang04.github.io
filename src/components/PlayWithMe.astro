@@ -46,7 +46,7 @@ const stats = [
 ---
 
 <section id="play" class="scroll-mt-20 pt-16">
-  <!-- Doodled like My Favorite Video Games (index.astro draws it): a highlighter swipe and a line-drawn handheld
+  <!-- Doodled like My Favorite Video Games (scripts/doodle-headings.ts draws it): a highlighter swipe and a line-drawn handheld
        console, with a screen, a d-pad and two buttons. -->
   <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal>
     <span class="doodle-heading">
@@ -347,16 +347,18 @@ const stats = [
     flex-direction: column;
     gap: 0.75rem;
     padding: 1.25rem 1.5rem;
-    transition: transform 240ms ease, box-shadow 240ms ease;
+    transition: transform 100ms ease-in-out, box-shadow 100ms ease-in-out;
   }
 
   .play-card:hover {
-    transform: translateY(-3px);
+    transform: translate(2px, 2px);
+    box-shadow: var(--ink-shadow-pressed);
   }
 
-  /* The Nintendo card links nowhere, so it doesn't lift as if it could be clicked. */
+  /* The Nintendo card links nowhere, so it doesn't sink as if it could be clicked. */
   .play-card-still:hover {
     transform: none;
+    box-shadow: var(--ink-shadow);
   }
 
   /* PlayStation and Nintendo stack in the right-hand column. */
@@ -527,7 +529,7 @@ const stats = [
     width: calc(var(--done) * 100%);
     height: 100%;
     border-radius: inherit;
-    background: oklch(var(--p));
+    background: oklch(var(--a));
   }
 
   .play-achievements-count {
@@ -584,7 +586,7 @@ const stats = [
     transform: translateX(-50%);
     white-space: nowrap;
     font-size: 0.8rem;
-    color: oklch(var(--p));
+    color: oklch(var(--a));
   }
 
   .play-id {
@@ -660,10 +662,9 @@ const stats = [
     max-height: min(82dvh, 46rem);
     margin: auto;
     padding: 0;
-    border: 0;
-    border-radius: 1.25rem;
+    border: 1.5px solid var(--ink-line);
+    border-radius: 0.75rem;
     overflow: hidden;
-    box-shadow: 0 24px 80px rgb(0 0 0 / 30%);
   }
 
   .library-dialog::backdrop {
@@ -735,7 +736,7 @@ const stats = [
   .library-sort select {
     appearance: none;
     padding: 0.3rem 2.2rem 0.3rem 0.9rem;
-    border: 1px solid oklch(var(--bc) / 0.15);
+    border: 1.5px solid var(--ink-line);
     border-radius: 999px;
     background: transparent;
     color: inherit;
@@ -745,7 +746,6 @@ const stats = [
   }
 
   .library-sort select:hover {
-    border-color: oklch(var(--bc) / 0.3);
     background: color-mix(in srgb, currentColor 6%, transparent);
   }
 

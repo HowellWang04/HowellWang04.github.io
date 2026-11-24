@@ -84,21 +84,21 @@ const splitEntry = (entry: { title: string; meta?: string }) => {
   .resume-name { font-size: 2.25rem; font-weight: 700; line-height: 1.15; }
   .resume-contact { margin-top: 0.75rem; font-size: 0.9375rem; line-height: 1.75; overflow-wrap: anywhere; opacity: 0.8; }
   .resume-links { display: flex; flex-wrap: wrap; gap: 0.75rem 1.25rem; font-size: 0.875rem; }
-  .resume-links a { color: oklch(var(--p)); text-decoration: underline; text-underline-offset: 0.2em; }
+  .resume-links a { color: oklch(var(--a)); text-decoration: underline; text-underline-offset: 0.2em; }
   .resume-links a:hover { opacity: 0.75; }
   .resume-summary { margin-top: 1.25rem; line-height: 1.75; }
   .resume-section { margin-top: 2.5rem; }
   /* Courier Prime caps with wide tracking read as labels, so the entries below carry the weight. */
-  .resume-section-title { padding-bottom: 0.625rem; font-size: 1rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(var(--p)); }
+  .resume-section-title { padding-bottom: 0.625rem; font-size: 1rem; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: oklch(var(--a)); }
   .resume-entries { display: grid; gap: 1.5rem; padding-top: 1.25rem; }
   .resume-entry-head { display: flex; flex-wrap: wrap; align-items: baseline; justify-content: space-between; gap: 0.125rem 1.5rem; }
-  /* Entry names use the serif body face; long monospace names crowded the line. FangYuanTi carries the Chinese. */
-  .resume-entry-name { font-family: "Source Serif 4", "Alimama FangYuanTi VF", Georgia, serif; font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }
+  /* Entry names use the body face; long monospace names crowded the line. FangYuanTi carries the Chinese. */
+  .resume-entry-name { font-family: var(--font-body); font-size: 1.0625rem; font-weight: 600; line-height: 1.4; }
   .resume-date { font-size: 0.875rem; font-variant-numeric: tabular-nums; white-space: nowrap; opacity: 0.7; }
   .resume-meta { margin-top: 0.25rem; font-size: 0.875rem; font-style: italic; line-height: 1.6; opacity: 0.7; }
   :lang(zh-CN) .resume-meta { font-style: normal; }
   .resume-bullets { display: grid; gap: 0.5rem; margin-top: 0.75rem; padding-left: 1.25rem; list-style: disc; line-height: 1.7; }
-  .resume-bullets li::marker { color: oklch(var(--p) / 0.6); }
+  .resume-bullets li::marker { color: oklch(var(--a) / 0.6); }
   .resume-skill { display: grid; grid-template-columns: 11rem 1fr; gap: 0.25rem 1.5rem; align-items: baseline; }
   .resume-skill .resume-entry-name { font-size: 1rem; }
   .resume-section:has(.resume-skill) .resume-entries { gap: 0.75rem; }

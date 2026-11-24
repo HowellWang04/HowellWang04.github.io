@@ -1,0 +1,667 @@
+---
+// Coal Echoes has its own page instead of a pop-up, so the playthrough video can run wide and each system gets room
+// for pictures. The page is a scrapbook spread: game screenshots taped down on paper cards, the game's own stickers
+// beside the headings and its stamps faint in the background. The background follows the game from day to night,
+// sand at the top, dusk in the middle, and the moonlit ridge at the bottom.
+// The text comes from projectDetails, the same as the pop-ups; the pictures for each part are listed here.
+import BaseLayout from "../../layouts/BaseLayout.astro";
+import LocalizedText from "../../components/LocalizedText.astro";
+import { featuredProjects } from "../../data/projects";
+import { projectDetails } from "../../data/projectDetails";
+
+// The full playthrough on YouTube: the video id, the part after "v=" in its link. Empty shows a "coming soon" poster.
+const youtubeId = "";
+
+const project = featuredProjects.find((item) => item.projectId === "coal-echoes")!;
+const details = projectDetails["coal-echoes"];
+const asset = (name: string) => `/coal-echoes/${name}.webp`;
+
+const facts = [
+  { label: { en: "My role", zh: "我的角色" }, value: details.role },
+  { label: { en: "Team", zh: "团队背景" }, value: details.team },
+  { label: { en: "Timeline", zh: "开发周期" }, value: details.duration },
+];
+
+// The four levels, day to night, under the story part.
+const route = [
+  { src: asset("route-gate"), en: "The factory gate, day", zh: "厂门，白天" },
+  { src: asset("route-room207"), en: "Room 207", zh: "207 宿舍" },
+  { src: asset("route-ride"), en: "The cableway", zh: "索道" },
+  { src: asset("route-ridge"), en: "The ridge, night", zh: "山脊，夜晚" },
+];
+
+// One entry per contribution group, in the same order: the sticker beside its heading and its pictures.
+// wide pictures take the full width of the card; the rest sit two to a row.
+const chapters = [
+  { sticker: "sticker-MinerHelmet", route: true, figures: [] },
+  {
+    sticker: "sticker-RidgeNight",
+    figures: [
+      { src: asset("echo-undiscovered"), en: "Framing an Echo: the gate from Grandpa's photo", zh: "对准回响：外公照片里的那扇厂门" },
+      { src: asset("echo-discovered"), en: "The frame turns yellow and the photo is stamped", zh: "取景框变黄，照片盖上印章" },
+    ],
+  },
+  {
+    sticker: "sticker-EnamelMug",
+    figures: [
+      { src: asset("echo-notes"), en: "Echo photos in the scrapbook, each with a taped note to Grandpa", zh: "手账里的回响照片，各贴着一张写给外公的便签", wide: true },
+      { src: asset("scrapbook"), en: "Photos, stickers and stamps arranged by the player", zh: "玩家自己摆放的照片、贴纸和印章", wide: true },
+    ],
+  },
+  {
+    sticker: "sticker-CablewayBucket",
+    figures: [
+      { src: asset("terrain-stages"), en: "Survey heights, the Poisson join, and the final valley", zh: "实测高度、Poisson 接合、最终的山谷", wide: true },
+      { src: asset("terrain-valley"), en: "The valley in game", zh: "游戏里的山谷", wide: true },
+    ],
+  },
+  {
+    sticker: "sticker-PlantStamp",
+    figures: [
+      { src: asset("newspaper-menu"), en: "The 1980 newspaper main menu", zh: "1980 年报纸样式的主菜单", wide: true },
+      { src: asset("print-stage-1"), en: "The camera's picture", zh: "相机拍到的画面" },
+      { src: asset("print-stage-3"), en: "Ink, paper and wear", zh: "加上油墨、纸张和磨损" },
+    ],
+  },
+  {
+    stamp: "echo-stamp",
+    figures: [
+      { src: asset("ridge-photo"), en: "The ridge photo after the playtest: the dormitory and the flagpole in view", zh: "试玩后的山脊照片：宿舍楼和旗杆都进了画面", wide: true },
+    ],
+  },
+];
+
+const links = [
+  { label: { en: "Portfolio PDF", zh: "作品集 PDF" }, url: `${project.portfolioPdf}` },
+  ...(details.links ?? []),
+];
+---
+
+<BaseLayout title="Coal Echoes | Guanhao Wang" description={project.desc} image={asset("hero-gate")}>
+  <main slot="hero" class="ce-page">
+    <!-- Faint stamps behind the page, like the ink on a scrapbook page that shows through. -->
+    <img class="ce-watermark is-right" style="--top: 16%; --turn: 12deg" src={asset("deco/stamp-Postmark1980")} alt="" aria-hidden="true" />
+    <img class="ce-watermark is-left" style="--top: 42%; --turn: -9deg" src={asset("deco/stamp-PlantSeal")} alt="" aria-hidden="true" />
+    <img class="ce-watermark is-right" style="--top: 66%; --turn: 6deg" src={asset("deco/stamp-CablewayTower")} alt="" aria-hidden="true" />
+
+    <header class="ce-hero">
+      <div class="ce-column ce-hero-text">
+        <a href="/portfolio" class="ce-back"><span aria-hidden="true">←</span> <LocalizedText en="Portfolio" zh="作品集" /></a>
+        <h1 class="ce-title">Coal Echoes</h1>
+        <p class="ce-title-zh font-heading">煤火回声</p>
+        <p class="ce-lede"><LocalizedText en={project.desc} zh={project.descZh} /></p>
+        <dl class="ce-facts">
+          {facts.map(({ label, value }) => (
+            <div>
+              <dt><LocalizedText {...label} /></dt>
+              <dd><LocalizedText {...value} /></dd>
+            </div>
+          ))}
+        </dl>
+        <div class="ce-actions">
+          <a href="#playthrough" class="btn btn-primary btn-sm"><LocalizedText en="Watch the playthrough" zh="观看完整游玩" /> <span aria-hidden="true">↓</span></a>
+          <a href={project.url} target="_blank" rel="noopener noreferrer" class="ce-link">GitHub <span aria-hidden="true">↗</span></a>
+          <a href={project.portfolioPdf} target="_blank" rel="noopener noreferrer" class="ce-link"><LocalizedText en={`Portfolio PDF · pp. ${project.portfolioPages}`} zh={`作品集 PDF · 第 ${project.portfolioPages} 页`} /> <span aria-hidden="true">↗</span></a>
+        </div>
+      </div>
+    </header>
+
+    <div class="ce-column">
+      <section id="playthrough" class="ce-video-wrap" data-reveal>
+        <h2 class="ce-section-title"><LocalizedText en="Full playthrough" zh="完整游玩" /></h2>
+        <div class="ce-taped ce-video-frame">
+          <ce-video data-youtube-id={youtubeId}>
+            <button type="button" class="ce-poster" disabled={!youtubeId}>
+              <img src={asset("hero-gate")} alt="" loading="lazy" />
+              <span class="ce-play" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M8 5.5v13l10.5-6.5z" /></svg></span>
+              <span class="ce-poster-label">
+                {youtubeId
+                  ? <LocalizedText en="Play the full playthrough" zh="播放完整游玩视频" />
+                  : <LocalizedText en="Full playthrough coming soon" zh="完整游玩视频即将上线" />}
+              </span>
+            </button>
+          </ce-video>
+          <img class="ce-echo-stamp" src={asset("deco/echo-stamp")} alt="" aria-hidden="true" />
+        </div>
+      </section>
+
+      {details.contributionGroups.map((group, index) => {
+        const chapter = chapters[index] ?? { figures: [] };
+        return (
+          <section class="ce-chapter paper" data-reveal>
+            <header class="ce-chapter-head">
+              <img class:list={["ce-sticker", chapter.stamp && "is-stamp"]} src={asset(`deco/${chapter.sticker ?? chapter.stamp}`)} alt="" aria-hidden="true" />
+              <div>
+                <h2 class="ce-chapter-title"><LocalizedText {...group.title} /></h2>
+                <p class="ce-tools">{group.tools}</p>
+              </div>
+            </header>
+            <p class="ce-summary"><LocalizedText {...group.summary} /></p>
+
+            {chapter.route && (
+              <ol class="ce-route">
+                {route.map((stop, stopIndex) => (
+                  <li class="ce-polaroid" style={`--tilt: ${[-2.5, 1.5, -1, 2][stopIndex]}deg`}>
+                    <img src={stop.src} alt="" loading="lazy" />
+                    <span class="ce-hand"><LocalizedText en={stop.en} zh={stop.zh} /></span>
+                  </li>
+                ))}
+              </ol>
+            )}
+
+            <div class="ce-body">
+              {group.details.map((paragraph) => <p><LocalizedText {...paragraph} /></p>)}
+            </div>
+
+            {chapter.figures.length > 0 && (
+              <div class="ce-figures">
+                {chapter.figures.map((figure) => (
+                  <figure class:list={["ce-figure", figure.wide && "is-wide"]}>
+                    <div class="ce-taped"><img src={figure.src} alt="" loading="lazy" /></div>
+                    <figcaption class="ce-hand"><LocalizedText en={figure.en} zh={figure.zh} /></figcaption>
+                  </figure>
+                ))}
+              </div>
+            )}
+          </section>
+        );
+      })}
+    </div>
+
+    <footer class="ce-night">
+      <div class="ce-column ce-night-text" data-reveal>
+        <p class="ce-closing ce-hand">
+          <LocalizedText en="“The plant is dark. Up here the stars come all the way down to the hills.”" zh="“厂区一片漆黑。在这上面，星星一直铺到山边。”" />
+        </p>
+        <p class="ce-closing-source"><LocalizedText en="The last Echo note, from the ridge" zh="最后一张回响便签，写在山脊上" /></p>
+        <div class="ce-night-links">
+          {links.map((link) => (
+            <a href={link.url} target="_blank" rel="noopener noreferrer"><LocalizedText {...link.label} /> <span aria-hidden="true">↗</span></a>
+          ))}
+        </div>
+        <a href="/portfolio" class="ce-back"><span aria-hidden="true">←</span> <LocalizedText en="Back to the portfolio" zh="回到作品集" /></a>
+      </div>
+    </footer>
+  </main>
+</BaseLayout>
+
+<script>
+  // The YouTube player loads only when the poster is clicked, so the page doesn't pull in YouTube's scripts up front.
+  class CoalEchoesVideo extends HTMLElement {
+    connectedCallback() {
+      const id = this.dataset.youtubeId;
+      const poster = this.querySelector("button");
+      if (!id || !poster) return;
+      poster.addEventListener("click", () => {
+        const player = document.createElement("iframe");
+        player.src = `https://www.youtube-nocookie.com/embed/${id}?autoplay=1&rel=0`;
+        player.title = "Coal Echoes full playthrough";
+        player.allow = "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+        player.allowFullscreen = true;
+        poster.replaceWith(player);
+      }, { once: true });
+    }
+  }
+  if (!customElements.get("ce-video")) customElements.define("ce-video", CoalEchoesVideo);
+</script>
+
+<style>
+  /* Day, sand, dusk and night: the four stops of the background, top to bottom. */
+  .ce-page {
+    --ce-day: #f6f0e1;
+    --ce-sand: #ecdcc0;
+    --ce-dusk: #d4a88a;
+    --ce-night: #141a27;
+    --ce-tape: url(/coal-echoes/deco/tape.webp);
+    position: relative;
+    overflow: hidden;
+    margin-top: -3.5rem;
+    background: linear-gradient(
+      to bottom,
+      var(--ce-day) 0%,
+      var(--ce-day) 14%,
+      var(--ce-sand) 34%,
+      var(--ce-dusk) 68%,
+      var(--ce-night) 90%
+    );
+  }
+
+  :global(html[data-theme="dark"]) .ce-page {
+    --ce-day: #1d1b19;
+    --ce-sand: #282019;
+    --ce-dusk: #3a2722;
+    --ce-night: #0d111b;
+  }
+
+  /* The footer below continues the night. */
+  :global(.portfolio-canvas:has(.ce-page) footer.footer) {
+    margin-bottom: 0;
+    padding-bottom: 1.25rem;
+    background: #141a27;
+    color: #e9e4d8;
+  }
+
+  :global(html[data-theme="dark"] .portfolio-canvas:has(.ce-page) footer.footer) {
+    background: #0d111b;
+  }
+
+  .ce-column {
+    position: relative;
+    z-index: 1;
+    width: min(100%, 66rem);
+    margin-inline: auto;
+    padding-inline: 1.5rem;
+  }
+
+  .ce-watermark {
+    position: absolute;
+    top: var(--top);
+    width: clamp(14rem, 30vw, 24rem);
+    opacity: 0.09;
+    rotate: var(--turn);
+    pointer-events: none;
+    user-select: none;
+  }
+
+  .ce-watermark.is-right { right: -3rem; }
+  .ce-watermark.is-left { left: -3rem; }
+
+  /* ── Hero: the gate screenshot, fading into the page from the right and the bottom. The gate and the
+     motorcycle are on the left of the shot, so the words sit on the right, over the sandstorm. ── */
+
+  .ce-hero {
+    position: relative;
+    display: flex;
+    align-items: flex-end;
+    min-height: min(92vh, 54rem);
+    padding: 6.5rem 0 3rem;
+    background:
+      linear-gradient(270deg, var(--ce-day) 0%, color-mix(in srgb, var(--ce-day) 86%, transparent) 34%, transparent 58%),
+      linear-gradient(0deg, var(--ce-day) 0%, transparent 30%),
+      linear-gradient(180deg, color-mix(in srgb, var(--ce-day) 60%, transparent) 0%, transparent 14%),
+      url(/coal-echoes/hero-gate.webp) left 40% / cover no-repeat;
+  }
+
+  .ce-hero-text {
+    display: grid;
+    justify-items: start;
+    gap: 0.9rem;
+  }
+
+  .ce-hero-text > * {
+    width: min(100%, 32rem);
+    margin-left: auto;
+  }
+
+  .ce-back {
+    display: inline-flex;
+    gap: 0.4rem;
+    font-size: 0.875rem;
+    font-weight: 600;
+    opacity: 0.75;
+    transition: opacity 150ms ease;
+  }
+
+  .ce-back:hover { opacity: 1; }
+
+  .ce-title {
+    font-size: clamp(2.6rem, 6vw, 4.25rem);
+    font-weight: 700;
+    line-height: 1;
+  }
+
+  .ce-title-zh {
+    margin-top: -0.5rem;
+    font-size: 1.25rem;
+    letter-spacing: 0.3em;
+    opacity: 0.7;
+  }
+
+  .ce-lede {
+    font-size: 1.0625rem;
+    line-height: 1.65;
+  }
+
+  .ce-facts {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem 2rem;
+    padding-block: 0.75rem;
+    border-block: 1.5px solid var(--ink-line);
+  }
+
+  .ce-facts dt {
+    font-size: 0.75rem;
+    opacity: 0.6;
+  }
+
+  .ce-facts dd {
+    font-size: 0.9375rem;
+    font-weight: 500;
+  }
+
+  .ce-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 0.75rem 1.5rem;
+  }
+
+  .ce-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    border-bottom: 1px solid color-mix(in oklab, oklch(var(--a)) 40%, transparent);
+    font-size: 0.875rem;
+    font-weight: 600;
+    color: oklch(var(--a));
+  }
+
+  .ce-link:hover { border-color: oklch(var(--a)); }
+
+  /* ── Tape: two strips of the game's own note tape across the top corners. ── */
+
+  .ce-taped {
+    position: relative;
+  }
+
+  .ce-taped::before,
+  .ce-taped::after {
+    content: "";
+    position: absolute;
+    z-index: 2;
+    top: -0.6rem;
+    width: 4.5rem;
+    height: 1.3rem;
+    background: var(--ce-tape) center / 100% 100% no-repeat;
+    pointer-events: none;
+  }
+
+  .ce-taped::before { left: -1rem; rotate: -32deg; }
+  .ce-taped::after { right: -1rem; rotate: 32deg; }
+
+  .ce-taped > img:not(.ce-echo-stamp),
+  .ce-taped > :global(ce-video) {
+    display: block;
+    width: 100%;
+    border: 1.5px solid var(--ink-line);
+    border-radius: 0.375rem;
+  }
+
+  /* ── Video ── */
+
+  .ce-video-wrap {
+    padding-block: 2.5rem 4rem;
+  }
+
+  .ce-section-title,
+  .ce-chapter-title {
+    font-size: 1.75rem;
+    font-weight: 700;
+    line-height: 1.2;
+  }
+
+  .ce-section-title {
+    margin-bottom: 1.5rem;
+  }
+
+  .ce-video-frame {
+    box-shadow: var(--ink-shadow);
+    border-radius: 0.375rem;
+  }
+
+  .ce-video-frame :global(ce-video) {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: #000;
+  }
+
+  .ce-video-frame :global(iframe) {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+  }
+
+  .ce-poster {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 100%;
+    height: 100%;
+    cursor: pointer;
+  }
+
+  .ce-poster:disabled { cursor: default; }
+
+  .ce-poster > img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    filter: brightness(0.72);
+    transition: filter 200ms ease;
+  }
+
+  .ce-poster:not(:disabled):hover > img { filter: brightness(0.85); }
+
+  .ce-play {
+    position: relative;
+    display: grid;
+    place-items: center;
+    width: 4.5rem;
+    height: 4.5rem;
+    border: 1.5px solid #1c1b1a;
+    border-radius: 999px;
+    background: #fcf8ec;
+    box-shadow: 3px 3px 0 #1c1b1a;
+  }
+
+  .ce-play svg {
+    width: 2rem;
+    fill: #8b4935;
+    translate: 2px 0;
+  }
+
+  .ce-poster:disabled .ce-play { opacity: 0.55; }
+
+  .ce-poster-label {
+    position: absolute;
+    bottom: 1.25rem;
+    color: #fcf8ec;
+    font-family: var(--font-heading);
+    font-size: 1rem;
+    letter-spacing: 0.04em;
+    text-shadow: 0 1px 6px rgb(0 0 0 / 0.6);
+  }
+
+  .ce-echo-stamp {
+    position: absolute;
+    z-index: 2;
+    top: -1.4rem;
+    right: 1.5rem;
+    width: clamp(5rem, 11vw, 7.5rem);
+    rotate: -11deg;
+    pointer-events: none;
+  }
+
+  /* ── Chapters: one paper card per part of the work. ── */
+
+  .ce-chapter {
+    position: relative;
+    margin-bottom: 3.5rem;
+    padding: clamp(1.25rem, 3vw, 2.5rem);
+  }
+
+  .ce-chapter-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+
+  .ce-sticker {
+    flex: none;
+    width: 4.25rem;
+    height: 4.25rem;
+    object-fit: contain;
+    rotate: -6deg;
+    filter: drop-shadow(1px 2px 0 rgb(28 27 26 / 0.15));
+  }
+
+  .ce-sticker.is-stamp {
+    width: 5rem;
+    rotate: -11deg;
+  }
+
+  .ce-tools {
+    margin-top: 0.25rem;
+    font-size: 0.8125rem;
+    opacity: 0.6;
+  }
+
+  .ce-summary {
+    margin-top: 1.25rem;
+    font-size: 1.125rem;
+    line-height: 1.6;
+    font-weight: 500;
+  }
+
+  .ce-body {
+    display: grid;
+    gap: 0.9rem;
+    margin-top: 1rem;
+    font-size: 1rem;
+    line-height: 1.7;
+  }
+
+  .ce-hand {
+    font-family: var(--font-hand);
+    font-size: 1.35rem;
+    line-height: 1.2;
+  }
+
+  .ce-route {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    gap: 1.25rem;
+    margin-top: 1.75rem;
+  }
+
+  .ce-polaroid {
+    padding: 0.5rem 0.5rem 0.4rem;
+    border: 1.5px solid var(--ink-line);
+    background: #fffdf6;
+    color: #1c1b1a;
+    rotate: var(--tilt);
+    box-shadow: 2px 3px 0 rgb(28 27 26 / 0.18);
+  }
+
+  .ce-polaroid img {
+    aspect-ratio: 4 / 3;
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .ce-polaroid .ce-hand {
+    display: block;
+    margin-top: 0.35rem;
+    text-align: center;
+  }
+
+  .ce-figures {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 2.25rem 1.75rem;
+    margin-top: 2.25rem;
+  }
+
+  .ce-figure.is-wide { grid-column: 1 / -1; }
+
+  .ce-figure figcaption {
+    margin-top: 0.6rem;
+    opacity: 0.8;
+  }
+
+  /* ── Night: the moon over the ridges, with stars above. ── */
+
+  .ce-night {
+    position: relative;
+    margin-top: 2rem;
+    padding: 17rem 0 6rem;
+    color: #e9e4d8;
+    /* The moon stays above the words; the picture fades into the night at the top and into the footer below. */
+    background:
+      linear-gradient(180deg, var(--ce-night) 0%, transparent 22%),
+      linear-gradient(0deg, var(--ce-night) 0%, transparent 35%),
+      url(/coal-echoes/night-moon.webp) center top / cover no-repeat;
+  }
+
+  .ce-night::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 50%;
+    background-image:
+      radial-gradient(1.5px 1.5px at 12% 22%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 27% 58%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 41% 14%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 56% 40%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 68% 18%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 79% 63%, #fff 50%, transparent 51%),
+      radial-gradient(1.5px 1.5px at 88% 30%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 6% 70%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 35% 82%, #fff 50%, transparent 51%),
+      radial-gradient(1px 1px at 94% 76%, #fff 50%, transparent 51%);
+    opacity: 0.7;
+    pointer-events: none;
+  }
+
+  .ce-night-text {
+    display: grid;
+    justify-items: center;
+    gap: 1rem;
+    text-align: center;
+  }
+
+  .ce-closing {
+    max-width: 34rem;
+    font-size: clamp(1.6rem, 3.5vw, 2.25rem);
+  }
+
+  .ce-closing-source {
+    font-size: 0.875rem;
+    opacity: 0.65;
+  }
+
+  .ce-night-links {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 0.75rem 1.75rem;
+    margin-top: 1.5rem;
+  }
+
+  .ce-night-links a {
+    border-bottom: 1px solid rgb(233 228 216 / 0.4);
+    font-size: 0.875rem;
+    font-weight: 600;
+  }
+
+  .ce-night-links a:hover { border-color: #e9e4d8; }
+
+  .ce-night .ce-back { margin-top: 1rem; }
+
+  @media (max-width: 720px) {
+    .ce-route { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .ce-figures { grid-template-columns: minmax(0, 1fr); }
+    .ce-watermark { display: none; }
+    .ce-hero {
+      min-height: 0;
+      /* The picture is a fixed 24rem tall here, so the fade ends in plain paper just before it does. */
+      background:
+        linear-gradient(180deg, transparent 5rem, var(--ce-day) 23rem),
+        url(/coal-echoes/hero-gate.webp) left top / auto 24rem no-repeat;
+      padding-top: 14rem;
+    }
+  }
+</style>

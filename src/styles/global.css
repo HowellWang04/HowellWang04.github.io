@@ -1,4 +1,4 @@
-/* Source Serif 4 for body text, Courier Prime for headings (loaded in BaseHead). Neither has Chinese glyphs,
+/* Roboto for body text, Courier Prime for headings (loaded in BaseHead). Neither has Chinese glyphs,
    so Chinese text uses Alimama FangYuanTi, a rounded variable font that covers every weight. It isn't sliced, so the
    whole file (about 2.8 MB) loads once and is cached after that; swap shows the fallback until it arrives. */
 @font-face {
@@ -9,7 +9,7 @@
 }
 
 :root {
-    --font-body: "Source Serif 4", "Alimama FangYuanTi VF", Georgia, serif;
+    --font-body: "Roboto", "Alimama FangYuanTi VF", system-ui, sans-serif;
     --font-heading: "Courier Prime", "Alimama FangYuanTi VF", "Courier New", monospace;
     /* Handwritten notes: Caveat for English, Long Cang for Chinese. */
     --font-hand: "Caveat", "Long Cang", cursive;
@@ -80,13 +80,18 @@ html.lenis {
     scroll-behavior: auto;
 }
 
+/* Ink on paper: every surface is one flat colour inside a firm ink line
+   (--ink-line), and the only shadow is the hard ink one under a card (--ink-shadow). Hairlines are kept for the
+   quiet dividers inside a surface. */
 html[data-theme="portfolio-light"] {
-    --portfolio-canvas: #F7F1E2;
-    --portfolio-hairline: #E8DDC7;
+    --portfolio-canvas: #F6F0E1;
+    --portfolio-hairline: #E4DAC4;
+    --ink-line: #1C1B1A;
 }
 
 html[data-theme="dark"] {
-    --portfolio-canvas: #181919;
+    --portfolio-canvas: #151617;
+    --ink-line: oklch(var(--bc) / 0.5);
 }
 
 .portfolio-canvas {
@@ -95,25 +100,28 @@ html[data-theme="dark"] {
     overflow-x: clip;
 }
 
-/* Light mode surfaces: hairline edges and soft warm shadows instead of flat tan blocks. The home page's cards
-   (.paper and the play cards) are flat, so they keep the edge but not the shadows. */
-html[data-theme="portfolio-light"] :is(.reveal-card, .card):not(.paper) {
-    border: 1px solid var(--portfolio-hairline);
+/* Cards: the ink line around a flat fill, with a hard shadow in the same ink off the lower right edge, like a
+   block print. A card that can be clicked sinks into its shadow on hover (.card-press, or the card's own rule). */
+html {
+    --ink-shadow: 4px 4px 0 var(--ink-line);
+    --ink-shadow-pressed: 2px 2px 0 var(--ink-line);
 }
 
-html[data-theme="portfolio-light"] :is(.reveal-card, .card):not(.paper, .play-card) {
-    box-shadow: 0 1px 2px rgba(60, 38, 28, 0.04);
+:is(.reveal-card, .card):not(.paper) {
+    border: 1.5px solid var(--ink-line);
+    box-shadow: var(--ink-shadow);
 }
 
-html[data-theme="portfolio-light"] :is(.reveal-card, .card):not(.paper, .play-card):hover {
-    box-shadow: 0 18px 40px -20px rgba(60, 38, 28, 0.28);
+.reveal-card.card-press:hover {
+    transform: translate(2px, 2px);
+    box-shadow: var(--ink-shadow-pressed);
 }
 
-/* The flat cards on the home page (the game photos and the hobby cards): one solid colour, a hairline edge and
+/* The flat cards on the about page (the game photos and the hobby cards): one solid colour, the ink line and
    rounded corners, with no texture, tape or shadow. */
 html {
-    --paper: #fcf8ee;
-    --paper-ink: #2e2a27;
+    --paper: #fcf8ec;
+    --paper-ink: #1c1b1a;
 }
 
 html[data-theme="dark"] {
@@ -122,8 +130,9 @@ html[data-theme="dark"] {
 }
 
 .paper {
-    border: 1px solid var(--portfolio-hairline, rgb(255 255 255 / 8%));
+    border: 1.5px solid var(--ink-line);
     border-radius: 0.75rem;
+    box-shadow: var(--ink-shadow);
     background: var(--paper);
     color: var(--paper-ink);
 }
@@ -162,7 +171,7 @@ html[data-theme="dark"] {
     to { opacity: 1; transform: translateY(0); }
 }
 
-/* Doodled headings (scripted in index.astro): a highlighter swipe behind the words and a line-drawn icon. */
+/* Doodled headings (scripted in scripts/doodle-headings.ts): a highlighter swipe behind the words and a line-drawn icon. */
 /* The heading leaves room on its right for its icons (--doodle-icons of them, one by default); the doodle's SVG is
    laid over it by the script. */
 .doodle-heading {
@@ -185,7 +194,7 @@ html[data-theme="dark"] {
 
 .doodle-stroke :is(path, circle) {
     fill: none;
-    stroke: oklch(var(--p));
+    stroke: oklch(var(--a));
     stroke-linecap: round;
     stroke-linejoin: round;
     /* The icon is drawn scaled; keep its line weight in screen pixels. */

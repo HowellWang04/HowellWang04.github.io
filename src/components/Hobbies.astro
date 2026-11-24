@@ -50,7 +50,7 @@ const sides = [
 ---
 
 <section id="hobbies" class="scroll-mt-20 pt-16">
-  <!-- Doodled like the other home headings (index.astro draws it): a highlighter swipe, then three icons for the three
+  <!-- Doodled like the other headings (scripts/doodle-headings.ts draws it): a highlighter swipe, then three icons for the three
        cards below: a leaf on a shallow plate, a dumbbell, and two beamed notes. -->
   <div class="text-3xl w-full font-bold font-heading mb-8" data-reveal>
     <span class="doodle-heading" style="--doodle-icons: 3">
@@ -299,8 +299,8 @@ const sides = [
     max-width: 36rem;
     margin: 0 0.5rem 2.75rem;
     padding: 0.75rem 1.1rem;
-    border: 1px solid oklch(var(--bc) / 0.12);
-    border-radius: 1.25rem;
+    border: 1.5px solid var(--ink-line);
+    border-radius: 0.75rem;
     background: oklch(var(--b1));
     font-size: 0.95rem;
     line-height: 1.75;
@@ -314,8 +314,8 @@ const sides = [
     bottom: -0.4rem;
     width: 0.75rem;
     height: 0.75rem;
-    border-right: 1px solid oklch(var(--bc) / 0.12);
-    border-bottom: 1px solid oklch(var(--bc) / 0.12);
+    border-right: 1.5px solid var(--ink-line);
+    border-bottom: 1.5px solid var(--ink-line);
     background: inherit;
     rotate: 45deg;
   }
@@ -329,12 +329,32 @@ const sides = [
     transition: transform var(--settle);
   }
 
-  /* Graph paper: fine squares, ruled from the card's own ink colour so it works in both themes. */
+  /* Graph paper: fine squares, ruled from the card's own ink colour so it works in both themes. The squares are a
+     sheet of their own behind the words, clipped to the card: it drifts along the diagonal by one square and
+     starts over, which reads as endless, and swells a little while the pointer is on the card. */
   .training {
+    isolation: isolate;
+    overflow: hidden;
+  }
+
+  .training::before {
+    content: "";
+    position: absolute;
+    /* One square of spare paper on every side, so the drift never shows an edge. */
+    inset: -1rem;
+    z-index: -1;
     background-image:
       linear-gradient(color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px),
       linear-gradient(90deg, color-mix(in srgb, currentColor 9%, transparent) 1px, transparent 1px);
     background-size: 1rem 1rem;
+    animation: training-drift 3s linear infinite;
+    transition: scale 500ms cubic-bezier(0.25, 1, 0.5, 1);
+  }
+
+  @keyframes training-drift {
+    to {
+      translate: 1rem 1rem;
+    }
   }
 
   .training-since {
@@ -358,6 +378,10 @@ const sides = [
   @media (hover: hover) {
     .hobby-card:hover {
       transform: translateY(-4px);
+    }
+
+    .training:hover::before {
+      scale: 1.2;
     }
   }
 
@@ -638,7 +662,7 @@ const sides = [
     position: absolute;
     inset: -1.5px;
     border-radius: 50%;
-    background: conic-gradient(oklch(var(--p)) calc(var(--progress, 0) * 1turn), transparent 0);
+    background: conic-gradient(oklch(var(--a)) calc(var(--progress, 0) * 1turn), transparent 0);
     mask: radial-gradient(farthest-side, transparent calc(100% - 2.5px), #000 calc(100% - 2px));
   }
 
@@ -665,10 +689,12 @@ const sides = [
 
   @media (prefers-reduced-motion: reduce) {
     .hobby-card,
+    .training::before,
     .turntable-arm {
       transition: none;
     }
 
+    .training::before,
     .turntable-disc {
       animation: none;
     }

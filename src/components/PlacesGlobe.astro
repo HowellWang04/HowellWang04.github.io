@@ -1,0 +1,387 @@
+---
+// A globe with the places that matter to me pinned on it. It can be dragged around, and choosing a place in the
+// list beside it turns the globe to face that place.
+import LocalizedText from "./LocalizedText.astro";
+import { geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
+import { feature } from "topojson-client";
+import polygonClipping from "polygon-clipping";
+import world from "world-atlas/countries-110m.json";
+
+// Antarctica only takes up room.
+const shapes = (feature(world as any, (world as any).objects.countries) as any).features
+  .filter((shape: any) => shape.id !== "010");
+
+// The map data puts South Tibet (Zangnan), south of the McMahon Line, in India; here it is part of China. This
+// outline's southern edge follows the foothills along the Assam plain. The rest of it reaches well past India's
+// borders, and clipping it to India's shape supplies the true outline there.
+const zangnanOutline = [[
+  [92.05, 26.9], [92.55, 26.95], [93.0, 26.95], [93.45, 26.95], [93.85, 27.0], [94.1, 27.35], [94.4, 27.55],
+  [94.7, 27.75], [95.05, 27.85], [95.35, 27.9], [95.6, 27.6], [96.05, 27.55], [96.05, 27.3], [95.8, 27.22],
+  [95.45, 27.22], [95.25, 27.1], [95.2, 26.9], [95.2, 26.6], [96.5, 26.0], [98.5, 26.0], [98.5, 30.5],
+  [91.0, 30.5], [91.0, 27.3], [91.9, 26.95], [92.05, 26.9],
+]];
+const polygonsOf = (geometry: any) => (geometry.type === "Polygon" ? [geometry.coordinates] : geometry.coordinates);
+// d3 wants outer rings clockwise and holes anticlockwise; polygon-clipping returns the opposite.
+const ringArea = (ring: number[][]) =>
+  ring.slice(1).reduce((sum, [x, y], i) => sum + ring[i][0] * y - x * ring[i][1], 0);
+const toD3 = (multi: any) => ({
+  type: "MultiPolygon",
+  coordinates: multi.map((polygon: any) =>
+    polygon.map((ring: any, i: number) => ((ringArea(ring) > 0) === (i === 0) ? [...ring].reverse() : ring))),
+});
+const china = shapes.find((shape: any) => shape.id === "156");
+const india = shapes.find((shape: any) => shape.id === "356");
+const zangnan = polygonClipping.intersection(polygonsOf(india.geometry), zangnanOutline as any);
+china.geometry = toD3(polygonClipping.union(polygonsOf(china.geometry), zangnan));
+india.geometry = toD3(polygonClipping.difference(polygonsOf(india.geometry), zangnan));
+
+// The browser redraws the globe as it turns, so it gets the shapes too, rounded to keep the page small.
+const round = (value: any): any => (typeof value === "number" ? Math.round(value * 10) / 10 : value.map(round));
+const land = {
+  type: "GeometryCollection",
+  geometries: shapes.map((shape: any) => ({ type: shape.geometry.type, coordinates: round(shape.geometry.coordinates) })),
+};
+
+// On the globe each pin carries the short name (pin); the list gives the fuller one and what the place is to me.
+// A label sits to the right of its pin unless it would run into a neighbour there.
+const places = [
+  { at: [121.47, 31.23], side: "right", pin: { en: "Shanghai", zh: "上海" }, place: { en: "Shanghai", zh: "上海" }, note: { en: "Where I grew up", zh: "我长大的地方" } },
+  { at: [-89.4, 43.07], side: "left", pin: { en: "Madison", zh: "麦迪逊" }, place: { en: "Madison", zh: "麦迪逊" }, note: { en: "Where I am now", zh: "我现在在这里" } },
+  { at: [129.77, 43.31], side: "right", pin: { en: "Wangqing", zh: "汪清" }, place: { en: "Wangqing, Jilin", zh: "吉林汪清" }, note: { en: "My father's hometown", zh: "父亲的家乡" } },
+  { at: [106.35, 39.19], side: "top", pin: { en: "Shitanjing", zh: "石炭井" }, place: { en: "Shitanjing, Ningxia", zh: "宁夏石炭井" }, note: { en: "My mother's hometown", zh: "母亲的家乡" } },
+  { at: [119.3, 26.08], side: "left", pin: { en: "Fuzhou", zh: "福州" }, place: { en: "Fuzhou", zh: "福州" }, note: { en: "Where my girlfriend lives", zh: "女朋友住的地方" } },
+];
+const labelAt = {
+  right: { x: 10, y: 4, "text-anchor": "start" },
+  left: { x: -10, y: 4, "text-anchor": "end" },
+  top: { x: 0, y: -11, "text-anchor": "middle" },
+};
+
+// The first view looks down on the North Pacific, with China on the left and Madison on the right, so every pin
+// shows at once. The browser refits the globe to its box as soon as it loads.
+const width = 600;
+const height = 352;
+const rotate: [number, number] = [-175, -55];
+const projection = geoOrthographic().rotate(rotate).scale(height / 2 - 14).translate([width / 2, height / 2]);
+const path = geoPath(projection).digits(1);
+const globeData = JSON.stringify({ rotate, land, pins: places.map(({ at }) => at) });
+---
+
+<figure class="globe-card" data-reveal data-places-globe>
+  <svg viewBox={`0 0 ${width} ${height}`} class="globe" role="img" aria-label="Globe with the places that matter to me" data-globe>
+    <path class="globe-sphere" d={path({ type: "Sphere" })} data-globe-sphere />
+    <path class="globe-graticule" d={path(geoGraticule10())} data-globe-graticule />
+    <path class="globe-land" d={path(land as any)} data-globe-land />
+    {places.map((place, index) => {
+      const [x, y] = projection(place.at as [number, number])!;
+      return (
+        <g class="place-pin" data-pin={index} transform={`translate(${x.toFixed(1)} ${y.toFixed(1)})`}>
+          <circle r="5" />
+          <text {...labelAt[place.side as keyof typeof labelAt]} data-en={place.pin.en} data-zh={place.pin.zh}>{place.pin.en}</text>
+        </g>
+      );
+    })}
+  </svg>
+  <ul class="place-list">
+    {places.map((place, index) => (
+      <li>
+        <button type="button" class="place" data-place={index}>
+          <span class="place-name"><LocalizedText {...place.place} /></span>
+          <span class="place-note"><LocalizedText {...place.note} /></span>
+        </button>
+      </li>
+    ))}
+  </ul>
+  <script type="application/json" data-globe-data set:html={globeData}></script>
+</figure>
+
+<script>
+  import { geoDistance, geoGraticule10, geoOrthographic, geoPath } from "d3-geo";
+
+  const graticule = geoGraticule10();
+
+  // Dragging turns the globe, and a flick keeps it spinning and slowing down. Choosing a place in the list turns
+  // the globe to face it.
+  const setupGlobe = () => {
+    const card = document.querySelector<HTMLElement>("[data-places-globe]");
+    const globe = card?.querySelector<SVGSVGElement>("[data-globe]");
+    if (!card || !globe || card.dataset.bound) return;
+    card.dataset.bound = "true";
+
+    const data = JSON.parse(card.querySelector("[data-globe-data]")!.textContent!);
+    const projection = geoOrthographic().rotate(data.rotate);
+    const path = geoPath(projection).digits(1);
+    const sphere = globe.querySelector("[data-globe-sphere]")!;
+    const lines = globe.querySelector("[data-globe-graticule]")!;
+    const land = globe.querySelector("[data-globe-land]")!;
+    const pins = [...globe.querySelectorAll<SVGGElement>("[data-pin]")];
+    const buttons = [...card.querySelectorAll<HTMLButtonElement>("[data-place]")];
+    const reducedMotion = matchMedia("(prefers-reduced-motion: reduce)");
+    let rotation: [number, number] = data.rotate;
+    let frame = 0;
+    let velocity: [number, number] = [0, 0]; // degrees per millisecond
+    let lastMove = 0;
+    let previous = 0;
+    let gliding = 0;
+    let flight = 0;
+    // The pointer that is dragging the globe.
+    let drag: { id: number; x: number; y: number } | undefined;
+
+    const render = () => {
+      frame = 0;
+      projection.rotate(rotation);
+      sphere.setAttribute("d", path({ type: "Sphere" }) ?? "");
+      lines.setAttribute("d", path(graticule) ?? "");
+      land.setAttribute("d", path(data.land) ?? "");
+      // Only pins on the side facing the viewer show.
+      pins.forEach((pin, index) => {
+        const at = data.pins[index];
+        const facing = geoDistance(at, [-rotation[0], -rotation[1]]) < Math.PI / 2;
+        pin.style.visibility = facing ? "" : "hidden";
+        if (!facing) return;
+        const [x, y] = projection(at)!;
+        pin.setAttribute("transform", `translate(${x.toFixed(1)} ${y.toFixed(1)})`);
+      });
+    };
+    const redraw = () => {
+      if (!frame && !gliding) frame = requestAnimationFrame(render);
+    };
+    const turn = (dx: number, dy: number) => {
+      rotation = [rotation[0] + dx, Math.max(-90, Math.min(90, rotation[1] + dy))];
+    };
+    const stopGlide = () => {
+      cancelAnimationFrame(gliding);
+      gliding = 0;
+      previous = 0;
+      velocity = [0, 0];
+    };
+    const glide = (now: number) => {
+      const dt = previous ? Math.min(now - previous, 64) : 16;
+      previous = now;
+      turn(velocity[0] * dt, velocity[1] * dt);
+      if (Math.abs(rotation[1]) === 90) velocity[1] = 0;
+      const decay = Math.exp(-dt / 325);
+      velocity = [velocity[0] * decay, velocity[1] * decay];
+      if (Math.hypot(...velocity) < 0.002) velocity = [0, 0];
+      render();
+      gliding = velocity[0] || velocity[1] ? requestAnimationFrame(glide) : 0;
+      if (!gliding) previous = 0;
+    };
+    // Draws the globe in the box's own pixels, as large as fits, so the labels stay the same size on every screen.
+    const fit = () => {
+      const { width, height } = globe.getBoundingClientRect();
+      if (!width || !height) return;
+      globe.setAttribute("viewBox", `0 0 ${width} ${height}`);
+      projection.scale(Math.min(width, height) / 2 - 14).translate([width / 2, height / 2]);
+      render();
+    };
+    // Turns the globe until a place faces the viewer, the short way round, easing in and out.
+    const flyTo = (at: [number, number]) => {
+      cancelAnimationFrame(flight);
+      stopGlide();
+      const from = rotation;
+      const turnBy = [((-at[0] - from[0]) % 360 + 540) % 360 - 180, -at[1] - from[1]];
+      const start = performance.now();
+      const duration = reducedMotion.matches ? 0 : 1100;
+      const step = (now: number) => {
+        const t = duration ? Math.min(1, (now - start) / duration) : 1;
+        const eased = t < 0.5 ? 4 * t ** 3 : 1 - (-2 * t + 2) ** 3 / 2;
+        rotation = [from[0] + turnBy[0] * eased, from[1] + turnBy[1] * eased];
+        render();
+        flight = t < 1 ? requestAnimationFrame(step) : 0;
+      };
+      step(start);
+    };
+
+    buttons.forEach((button, index) => button.addEventListener("click", () => {
+      pins.forEach((pin, i) => pin.classList.toggle("is-current", i === index));
+      buttons.forEach((other, i) => other.classList.toggle("is-current", i === index));
+      flyTo(data.pins[index]);
+    }));
+
+    globe.addEventListener("pointerdown", (event) => {
+      if (drag) return;
+      globe.setPointerCapture(event.pointerId);
+      drag = { id: event.pointerId, x: event.clientX, y: event.clientY };
+      globe.classList.add("is-dragging");
+      // Touching a spinning globe catches it.
+      cancelAnimationFrame(flight);
+      stopGlide();
+      lastMove = event.timeStamp;
+    });
+
+    globe.addEventListener("pointermove", (event) => {
+      if (drag?.id !== event.pointerId) return;
+      // Degrees per screen pixel, so the spot under the pointer roughly follows it.
+      const step = (180 / Math.PI) / projection.scale();
+      const dx = (event.clientX - drag.x) * step;
+      const dy = -(event.clientY - drag.y) * step;
+      turn(dx, dy);
+      // Recent moves count most, so the spin on release matches the end of the flick.
+      const dt = Math.max(event.timeStamp - lastMove, 1);
+      velocity = [0.8 * dx / dt + 0.2 * velocity[0], 0.8 * dy / dt + 0.2 * velocity[1]];
+      lastMove = event.timeStamp;
+      drag = { id: drag.id, x: event.clientX, y: event.clientY };
+      redraw();
+    });
+
+    const release = (event: PointerEvent) => {
+      if (drag?.id !== event.pointerId) return;
+      drag = undefined;
+      globe.classList.remove("is-dragging");
+      // Holding still before letting go means no flick. Very fast flicks are capped so the globe stays readable.
+      const speed = Math.hypot(...velocity);
+      if (event.timeStamp - lastMove > 80 || event.type === "pointercancel" || reducedMotion.matches) velocity = [0, 0];
+      else if (speed > 1.5) velocity = [velocity[0] * 1.5 / speed, velocity[1] * 1.5 / speed];
+      if (velocity[0] || velocity[1]) {
+        cancelAnimationFrame(frame);
+        frame = 0;
+        gliding = requestAnimationFrame(glide);
+      }
+    };
+    globe.addEventListener("pointerup", release);
+    globe.addEventListener("pointercancel", release);
+
+    fit();
+    new ResizeObserver(fit).observe(globe);
+  };
+
+  setupGlobe();
+  document.addEventListener("astro:page-load", setupGlobe);
+</script>
+
+<style>
+  /* An ink-lined card like the others: the globe, and beside it (under it on a phone) the list of places. */
+  .globe-card {
+    display: grid;
+    margin: 0 0 2rem;
+    overflow: hidden;
+    border: 1.5px solid var(--ink-line);
+    border-radius: 0.75rem;
+    background: oklch(var(--b1));
+    box-shadow: var(--ink-shadow);
+  }
+
+  .globe {
+    display: block;
+    width: 100%;
+    height: 22rem;
+    cursor: grab;
+    /* Vertical swipes still scroll the page on phones; sideways swipes turn the globe. */
+    touch-action: pan-y;
+    user-select: none;
+  }
+
+  .globe.is-dragging {
+    cursor: grabbing;
+  }
+
+  .globe-sphere {
+    fill: oklch(var(--b2));
+    stroke: var(--ink-line);
+    stroke-width: 1.5;
+  }
+
+  .globe-graticule {
+    fill: none;
+    stroke: color-mix(in srgb, currentColor 7%, transparent);
+    stroke-width: 0.5;
+  }
+
+  .globe-land {
+    fill: oklch(var(--b3));
+    stroke: oklch(var(--b1));
+    stroke-width: 0.5;
+    stroke-linejoin: round;
+  }
+
+  .place-pin {
+    pointer-events: none;
+  }
+
+  .place-pin circle {
+    fill: oklch(var(--a));
+    stroke: oklch(var(--b1));
+    stroke-width: 2;
+    transition: r 200ms ease;
+  }
+
+  .place-pin.is-current circle {
+    r: 7;
+  }
+
+  /* A halo in the card's colour keeps the label readable over land and sea. */
+  .place-pin text {
+    fill: oklch(var(--bc));
+    font-size: 12px;
+    font-weight: 600;
+    paint-order: stroke;
+    stroke: oklch(var(--b1));
+    stroke-width: 3px;
+    stroke-linejoin: round;
+  }
+
+  .place-list {
+    display: grid;
+    align-content: center;
+    gap: 0.15rem;
+    padding: 0.6rem;
+    border-top: 1.5px solid var(--ink-line);
+  }
+
+  /* Each place: a dot in the pin's colour, its name, and under the name what it is to me. */
+  .place {
+    display: grid;
+    grid-template-columns: auto 1fr;
+    column-gap: 0.6rem;
+    width: 100%;
+    padding: 0.4rem 0.6rem;
+    border-radius: 0.5rem;
+    text-align: left;
+    transition: background-color 160ms ease;
+  }
+
+  .place::before {
+    content: "";
+    grid-row: span 2;
+    width: 0.55rem;
+    height: 0.55rem;
+    margin-top: 0.45rem;
+    border-radius: 50%;
+    background: oklch(var(--a));
+  }
+
+  .place:hover,
+  .place.is-current {
+    background: oklch(var(--s));
+    color: oklch(var(--sc));
+  }
+
+  .place-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+  }
+
+  .place-note {
+    font-size: 0.8rem;
+    opacity: 0.7;
+  }
+
+  @media (min-width: 768px) {
+    .globe-card {
+      grid-template-columns: minmax(0, 1fr) 15rem;
+    }
+
+    .place-list {
+      border-top: 0;
+      border-left: 1.5px solid var(--ink-line);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .place-pin circle,
+    .place {
+      transition: none;
+    }
+  }
+</style>

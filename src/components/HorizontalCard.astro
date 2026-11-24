@@ -2,55 +2,60 @@
 // linkLabel / linkLabelZh name the outbound button when it isn't a GitHub repository.
 // playUrl adds a "Play" button and jamUrl a "Jam entry" button next to the source link.
 // portfolioPdf links this project's pages from the portfolio PDF; portfolioPages is their range there.
-const { title, titleZh, img, coverPending, desc, descZh, url, playUrl, jamUrl, portfolioPdf, portfolioPages, badge, category, teamProject, tags, projectId, linkLabel, linkLabelZh, target = "_blank" } = Astro.props;
+// pageUrl sends the card to the project's own page instead of opening its pop-up.
+const { title, titleZh, img, coverPending, desc, descZh, url, playUrl, jamUrl, portfolioPdf, portfolioPages, badge, category, teamProject, tags, projectId, pageUrl, linkLabel, linkLabelZh, target = "_blank" } = Astro.props;
 import { Image } from "astro:assets";
 import LocalizedText from "./LocalizedText.astro";
 import ProjectDetails from "./ProjectDetails.astro";
 import CoverPlaceholder from "./CoverPlaceholder.astro";
 const tag_url = (url ?? "").split("/").slice(0, -1).join("/") + "/tag";
+// Each label is a small tag in a pale wash of one muted colour (its tone): sage for a project of my own or the
+// university's, sand for a game jam, olive for team work.
 const categories = {
-  "game-jam": { en: "Game Jam", zh: "Game Jam" },
-  university: { en: "University Project", zh: "校内项目" },
-  "personal-game": { en: "Personal Game Project", zh: "个人游戏项目" },
-  "personal-interactive": { en: "Personal Interactive Project", zh: "个人交互项目" },
-  "personal-art": { en: "Personal Art Project", zh: "个人美术项目" },
+  "game-jam": { en: "Game Jam", zh: "Game Jam", tone: "sand" },
+  university: { en: "University Project", zh: "校内项目", tone: "sage" },
+  "personal-game": { en: "Personal Game Project", zh: "个人游戏项目", tone: "sage" },
+  "personal-interactive": { en: "Personal Interactive Project", zh: "个人交互项目", tone: "sage" },
+  "personal-art": { en: "Personal Art Project", zh: "个人美术项目", tone: "sage" },
 };
-// Shown as one quiet line after the title: the category (or the plain badge text), then whether it was a team project.
+// Shown after the title: the category (or the plain badge text), then whether it was a team project.
 const labels = [
-  (category && categories[category]) || (badge && { en: badge, zh: badge }),
-  teamProject && { en: "Team Project", zh: "团队项目" },
+  (category && categories[category]) || (badge && { en: badge, zh: badge, tone: "sand" }),
+  teamProject && { en: "Team Project", zh: "团队项目", tone: "olive" },
 ].filter(Boolean);
 // Outbound links other than Play are text links, so the one filled button stays the main action.
-const linkClass = "relative z-10 inline-flex items-center gap-1.5 border-b border-primary/40 pb-0.5 text-sm font-semibold text-primary transition-colors hover:border-primary";
+const linkClass = "relative z-10 inline-flex items-center gap-1.5 border-b border-accent/40 text-sm font-semibold leading-tight text-accent transition-colors hover:border-accent";
 const CardContent = projectId ? "div" : "a";
 ---
 
 <div
   data-reveal
-  class="reveal-card relative rounded-lg bg-base-100 hover:shadow-xl transition-[transform,box-shadow] ease-in-out hover:scale-[102%]"
+  class="reveal-card card-press relative rounded-xl bg-base-100 transition-[transform,box-shadow] duration-100 ease-in-out"
 >
-  {projectId && <button type="button" class="absolute inset-0 rounded-lg cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4" data-project-open aria-haspopup="dialog" aria-controls={`project-details-${projectId}`}>
+  {projectId && (pageUrl ? <a href={pageUrl} class="absolute inset-0 rounded-xl focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4">
+    <span class="sr-only"><LocalizedText en={`Open the ${title} project page`} zh={`打开 ${titleZh ?? title} 项目页面`} /></span>
+  </a> : <button type="button" class="absolute inset-0 rounded-xl cursor-pointer focus-visible:outline focus-visible:outline-2 focus-visible:outline-primary focus-visible:outline-offset-4" data-project-open aria-haspopup="dialog" aria-controls={`project-details-${projectId}`}>
     <span class="sr-only"><LocalizedText en={`View ${title} details`} zh={`查看 ${titleZh ?? title} 项目详情`} /></span>
-  </button>}
+  </button>)}
   <CardContent href={projectId ? undefined : url} target={projectId ? undefined : target}>
     <div class="hero-content flex-col md:flex-row">
       {
-        coverPending ? <CoverPlaceholder class="w-full md:w-52 shrink-0" {title} /> : img && (
+        coverPending ? <CoverPlaceholder class="w-full md:w-52 shrink-0 border-[1.5px] border-[color:var(--ink-line)]" {title} /> : img && (
           <Image
             src={img}
             width={750}
             height={422}
             format="webp"
             alt={title}
-            class="max-w-full md:max-w-[13rem] rounded-lg"
+            class="max-w-full md:max-w-[13rem] rounded-lg border-[1.5px] border-[color:var(--ink-line)]"
           />
         )
       }
       <div class="grow w-full">
         <h1 class="text-xl font-bold">
           {titleZh ? <LocalizedText en={title} zh={titleZh} /> : title}
-          {labels.length > 0 && <span class="ml-2 font-sans text-sm font-normal opacity-60">
-            {labels.map((label, index) => <>{index > 0 && " · "}<LocalizedText en={label.en} zh={label.zh} /></>)}
+          {labels.length > 0 && <span class="ml-2 inline-flex flex-wrap items-center gap-1.5 align-middle">
+            {labels.map((label) => <span class="card-label" data-tone={label.tone}><LocalizedText en={label.en} zh={label.zh} /></span>)}
           </span>}
         </h1>
         <p class="py-1 text-1xl">{descZh ? <LocalizedText en={desc} zh={descZh} /> : desc}</p>
@@ -68,6 +73,10 @@ const CardContent = projectId ? "div" : "a";
     </div>
   </CardContent>
   {projectId && <div class="px-4 pb-4 flex flex-wrap items-center justify-end gap-x-5 gap-y-2">
+    {pageUrl && <a href={pageUrl} class="relative z-10 btn btn-sm btn-primary">
+      <svg aria-hidden="true" width="14" height="14" viewBox="0 0 24 24" fill="currentColor"><path d="M8 5.5v13l10.5-6.5z" /></svg>
+      <LocalizedText en="Playthrough & details" zh="游玩视频与详情" /> <span aria-hidden="true">→</span>
+    </a>}
     {playUrl && <a href={playUrl} target="_blank" rel="noopener noreferrer" class="relative z-10 btn btn-sm btn-primary">
       <LocalizedText en="Play" zh="试玩" /> <span aria-hidden="true">↗</span>
     </a>}
@@ -82,5 +91,33 @@ const CardContent = projectId ? "div" : "a";
       GitHub</>} <span aria-hidden="true">↗</span>
     </a>}
   </div>}
-  {projectId && <ProjectDetails {projectId} {title} {titleZh} {desc} {descZh} {img} {coverPending} />}
+  {projectId && !pageUrl && <ProjectDetails {projectId} {title} {titleZh} {desc} {descZh} {img} {coverPending} />}
 </div>
+
+<style>
+  /* A label: its tone washed thinly into the card's own colour, with the words in a deeper mix of the same tone
+     and the text colour, so it stays muted and reads in both themes. */
+  .card-label {
+    padding: 0.1rem 0.5rem;
+    border-radius: 0.375rem;
+    background: color-mix(in oklab, var(--tone) 24%, oklch(var(--b1)));
+    color: color-mix(in oklab, var(--tone) 55%, oklch(var(--bc)));
+    font-family: var(--font-body);
+    font-size: 0.75rem;
+    font-weight: 500;
+    line-height: 1.5;
+    white-space: nowrap;
+  }
+
+  .card-label[data-tone="sage"] {
+    --tone: #5f9482;
+  }
+
+  .card-label[data-tone="sand"] {
+    --tone: #b98c4a;
+  }
+
+  .card-label[data-tone="olive"] {
+    --tone: #8c9a4a;
+  }
+</style>

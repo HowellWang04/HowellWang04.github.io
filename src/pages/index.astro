@@ -1,11 +1,14 @@
 ---
 import BaseLayout from "../layouts/BaseLayout.astro";
 import LocalizedText from "../components/LocalizedText.astro";
-import GameCollage from "../components/GameCollage.astro";
 import HomeHero from "../components/HomeHero.astro";
-import PlayWithMe from "../components/PlayWithMe.astro";
-import Hobbies from "../components/Hobbies.astro";
 import Skills from "../components/Skills.astro";
+import HorizontalCard from "../components/HorizontalCard.astro";
+import { featuredProjects } from "../data/projects";
+
+// The home page shows the first two featured projects; the portfolio page has them all.
+const selectedProjects = featuredProjects.slice(0, 2);
+const linkClass = "inline-flex items-center gap-1.5 border-b border-accent/40 text-sm font-semibold leading-tight text-accent transition-colors hover:border-accent";
 ---
 
 <BaseLayout>
@@ -18,13 +21,9 @@ import Skills from "../components/Skills.astro";
       <span class="subtitle-lead"><LocalizedText en="A Computer Science student focused on" zh="计算机科学专业学生，专注于" /></span>
       <span class="typewriter" data-typewriter><LocalizedText en="Game Design / Game Development" zh="游戏设计 / 游戏开发" /></span>
     </div>
+    <!-- The sentence carries on from the typed line, and ends on the two words set like an arcade title. -->
     <div class="hero-tagline py-2" data-intro="tagline">
-      <text>
-        <LocalizedText
-          en="I'm passionate about video games and interactive experiences, and I enjoy designing them. Through programming and design, I hope to turn that passion into creations of my own."
-          zh="我热爱电子游戏与交互体验，也享受设计它们的过程。我希望通过编程与设计，将这份热爱转化为自己的作品。"
-        />
-      </text>
+      <span class="tagline-text" data-tagline-text><LocalizedText en="and I'm passionate about" zh="也热爱" /><span class="game-word font-heading" data-en="video games" data-zh="电子游戏">video games</span></span>
     </div>
     <div class="pt-4" data-intro="cta">
       <a class="btn btn-primary" href="/portfolio"><LocalizedText en="View Portfolio" zh="查看作品集" /><span aria-hidden="true">→</span></a>
@@ -34,44 +33,44 @@ import Skills from "../components/Skills.astro";
 
   <Skills />
 
-  <section id="games" class="scroll-mt-20 pt-12">
-    <!-- Above the game photos, which drop in from higher up while the doodle is being drawn. -->
-    <div class="relative z-[3] text-3xl w-full font-bold font-heading" data-reveal>
-      <!-- A highlighter swipe behind the heading, then a line-drawn controller beside it (two separate strokes).
-           The script fits both to the heading text, which changes with the language. -->
+  <section id="work" class="scroll-mt-20 pt-16">
+    <!-- Doodled like Tech I've Worked With (scripts/doodle-headings.ts draws it): a highlighter swipe and a screen with a play mark. -->
+    <div class="text-3xl w-full font-bold font-heading mb-5" data-reveal>
       <span class="doodle-heading">
-        <LocalizedText en="My Favorite Video Games" zh="我最喜欢的电子游戏作品" />
+        <LocalizedText en="Selected Projects" zh="精选作品" />
         <svg class="doodle-stroke" aria-hidden="true">
           <path class="doodle-line" />
           <g class="doodle-icon">
-            <path d="M6.5 30C8.5 30 10 29 11.1 27.4L14 23H34L36.9 27.4C38 29 39.5 30 41.5 30C44.5 30 47.1 27.5 46.5 24L45 16C44 10 40 6 34 6H14C8 6 4 10 3 16L1.5 24C0.9 27.5 3.5 30 6.5 30Z" />
-            <path d="M13 12.5v6M10 15.5h6" />
-            <circle cx="32.5" cy="13" r="1.2" />
-            <circle cx="37.5" cy="18" r="1.2" />
+            <path d="M9 4H39C41.8 4 44 6.2 44 9V23C44 25.8 41.8 28 39 28H9C6.2 28 4 25.8 4 23V9C4 6.2 6.2 4 9 4Z" />
+            <path d="M20 10.5L30 16L20 21.5Z" />
           </g>
         </svg>
       </span>
     </div>
-    <GameCollage />
+    <div class="grid gap-4">
+      {selectedProjects.map((project) => <HorizontalCard {...project} />)}
+    </div>
+    <p class="mt-6 text-right" data-reveal>
+      <a class={linkClass} href="/portfolio"><LocalizedText en="View all projects" zh="查看全部作品" /><span aria-hidden="true">→</span></a>
+    </p>
   </section>
 
-  <PlayWithMe />
-  <Hobbies />
+  <!-- The way on to the personal side of the site. -->
+  <section class="mt-16 border-t border-base-300 pt-8" data-reveal>
+    <a class={linkClass} href="/about"><LocalizedText en="More about me" zh="了解更多" /><span aria-hidden="true">→</span></a>
+  </section>
 </BaseLayout>
 
 <script>
-  import { gsap, ScrollTrigger } from "../scripts/smooth-scroll";
-  import { DrawSVGPlugin } from "gsap/DrawSVGPlugin";
+  import { gsap } from "../scripts/smooth-scroll";
+  import "../scripts/doodle-headings";
 
-  gsap.registerPlugin(DrawSVGPlugin);
-
-  // About Me lives on the right of the hero and is one sequence, built on GSAP:
+  // The introduction lives on the right of the hero and is one sequence, built on GSAP:
   //  1. The hero starts without it. Shortly after the page opens it plays in by itself: the name rises in,
   //     then "A Computer Science student focused on" rises in and the fields start typing out and deleting one after another behind a caret,
   //     the tagline rises in, and the View Portfolio button comes in last.
-  //  2. Once the hero scrolls away, the note the text sits on lifts off and fades away as My Favorite Video Games arrives.
-  //  3. The doodles beside My Favorite Video Games, Find Me on Every Platform and Beyond Games draw themselves in.
-  // Steps 2 and 3 are scrubbed, so scrolling back up plays them in reverse.
+  //  2. Once the hero scrolls away, the note the text sits on lifts off and fades away as the page below arrives.
+  // Step 2 is scrubbed, so scrolling back up plays it in reverse.
 
   const clamp = (value: number) => Math.min(1, Math.max(0, value));
   const easeOut = (t: number) => 1 - (1 - t) ** 3;
@@ -129,58 +128,6 @@ import Skills from "../components/Skills.astro";
     return () => clearTimeout(timer);
   };
 
-  // Fit a heading's doodle to its text: the highlighter runs behind the words and the icons (each drawn in a 48 x 32
-  // box) sit in a row just right of them. Tech I've Worked With has code brackets, My Favorite Video Games a controller,
-  // Find Me on Every Platform a handheld, and Beyond Games a leaf on a plate, a dumbbell and two notes.
-  const layoutDoodle = (heading: HTMLElement) => {
-    const svg = heading.querySelector<SVGSVGElement>(".doodle-stroke")!;
-    const line = svg.querySelector<SVGPathElement>(".doodle-line")!;
-    const icons = [...svg.querySelectorAll<SVGGElement>(".doodle-icon")];
-    const range = document.createRange();
-    range.selectNodeContents(heading.querySelector("[data-en]")!);
-    const box = heading.getBoundingClientRect();
-    const em = parseFloat(getComputedStyle(heading).fontSize);
-    // A long heading can wrap on a narrow screen, so measure each line of the words on its own.
-    const lines: { left: number; right: number; top: number; bottom: number }[] = [];
-    for (const rect of range.getClientRects()) {
-      if (!rect.width) continue;
-      const row = lines.find((line) => Math.abs(line.top - rect.top) < em / 2);
-      if (row) {
-        row.left = Math.min(row.left, rect.left);
-        row.right = Math.max(row.right, rect.right);
-        row.bottom = Math.max(row.bottom, rect.bottom);
-      } else {
-        lines.push({ left: rect.left, right: rect.right, top: rect.top, bottom: rect.bottom });
-      }
-    }
-    if (!lines.length) return;
-
-    // One swipe of a highlighter behind the lower part of each line: it starts a little before the words, rises a
-    // touch as a hand drifts, and runs a little past the end.
-    line.setAttribute("d", lines.map((row) => {
-      const left = row.left - box.left;
-      const w = row.right - row.left;
-      const x = (fraction: number) => left + w * fraction;
-      const y = row.top - box.top + (row.bottom - row.top) * 0.6;
-      return `M ${x(0) - 0.25 * em} ${y + 0.06 * em}` +
-        ` C ${x(0.35)} ${y + 0.02 * em}, ${x(0.7)} ${y - 0.04 * em}, ${x(1) + 0.2 * em} ${y - 0.1 * em}`;
-    }).join(" "));
-
-    // The icons sit right of the last line, centred on it, each tilted a little and alternately one way and the other.
-    const last = lines[lines.length - 1];
-    const scale = (1.3 * em) / 48;
-    const tilts = [-8, 6, -4];
-    const iconY = (last.top + last.bottom) / 2 - box.top - 16 * scale;
-    icons.forEach((icon, index) => {
-      const iconX = last.right - box.left + (0.45 + index * 1.6) * em;
-      icon.setAttribute("transform", `translate(${iconX} ${iconY}) scale(${scale}) rotate(${tilts[index % 3]} 24 16)`);
-    });
-
-    svg.setAttribute("width", String(box.width + em));
-    svg.setAttribute("height", String(box.height + em));
-    svg.setAttribute("viewBox", `0 0 ${box.width + em} ${box.height + em}`);
-  };
-
   let teardownAbout: (() => void) | undefined;
   let setupRun = 0;
 
@@ -196,7 +143,6 @@ import Skills from "../components/Skills.astro";
     const subtitle = about?.querySelector<HTMLElement>('[data-intro="subtitle"]');
     const tagline = about?.querySelector<HTMLElement>('[data-intro="tagline"]');
     const cta = about?.querySelector<HTMLElement>('[data-intro="cta"]');
-    const doodles = [...(main?.querySelectorAll<HTMLElement>(".doodle-heading") ?? [])];
     if (!main || !hero || !about || !name || !subtitle || !tagline || !cta) return;
     main.dataset.introStarted = "true";
 
@@ -210,9 +156,6 @@ import Skills from "../components/Skills.astro";
     if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
       [name, subtitle, tagline, cta].forEach((element) => element.classList.add("is-revealed"));
       finish();
-      // No animation, but the doodles still need fitting to their headings.
-      await document.fonts.ready;
-      if (main.isConnected && run === setupRun) doodles.forEach(layoutDoodle);
       return;
     }
 
@@ -221,7 +164,7 @@ import Skills from "../components/Skills.astro";
     const rebuilding = name.classList.contains("is-revealed");
     if (rebuilding) [name, subtitle, tagline, cta].forEach((element) => { element.style.visibility = "hidden"; });
 
-    // The doodle is fitted to the heading's measured text, so wait for the web fonts (briefly) before measuring.
+    // The text is measured and typed in its web font, so wait for the fonts (briefly).
     await Promise.race([document.fonts.ready, new Promise((resolve) => setTimeout(resolve, 1500))]);
     if (!main.isConnected || run !== setupRun) return;
 
@@ -246,7 +189,7 @@ import Skills from "../components/Skills.astro";
     let stopTyping: (() => void) | undefined;
 
     // The tagline rises in as a whole, like the name.
-    const taglineText = tagline.querySelector<HTMLElement>("[data-en]")!;
+    const taglineText = tagline.querySelector<HTMLElement>("[data-tagline-text]")!;
 
     const render = (progress: number) => {
       // The note of paper behind the text lands first.
@@ -293,49 +236,13 @@ import Skills from "../components/Skills.astro";
     });
     exit.to(about, { y: -90, opacity: 0, ease: "none" }, 0);
 
-    // 3. As each doodled heading arrives, the highlighter swipe goes on first, then after a short lift of the pen the
-    //    icons beside it, one after another: the outline, then the details. The pieces get time in proportion to
-    //    their length, so the pen moves at an even speed, and it lifts briefly between icons.
-    const strokes: SVGGeometryElement[] = [];
-    const draws = doodles.map((doodle) => {
-      layoutDoodle(doodle);
-      const highlight = doodle.querySelector<SVGPathElement>(".doodle-line")!;
-      const icons = [...doodle.querySelectorAll<SVGGElement>(".doodle-icon")].map((icon) =>
-        [...icon.querySelectorAll<SVGGeometryElement>("path, circle")]);
-      const pieces = icons.flat();
-      strokes.push(highlight, ...pieces);
-      const lengths = pieces.map((stroke) => stroke.getTotalLength());
-      const total = lengths.reduce((sum, length) => sum + length, 0) || 1;
-      // Start undrawn: the from-values inside a scroll-linked timeline aren't applied until the first scroll.
-      gsap.set([highlight, ...pieces], { drawSVG: "0%" });
-      const draw = gsap.timeline({
-        scrollTrigger: {
-          trigger: doodle,
-          start: "top 90%",
-          end: "top 40%",
-          scrub: 0.4,
-          onRefresh: () => layoutDoodle(doodle),
-        },
-      });
-      draw.fromTo(highlight, { drawSVG: "0%" }, { drawSVG: "100%", ease: "power1.inOut", duration: 0.7 });
-      draw.to({}, { duration: 0.15 });
-      let index = 0;
-      icons.forEach((icon, iconIndex) => {
-        if (iconIndex) draw.to({}, { duration: 0.08 });
-        icon.forEach((stroke) => {
-          draw.fromTo(stroke, { drawSVG: "0%" }, { drawSVG: "100%", ease: "none", duration: lengths[index++] / total });
-        });
-      });
-      return draw;
-    });
-
     // A language switch rewrites the text, so rebuild everything for the new language.
     const rebuild = () => setupAbout();
     document.addEventListener("portfolio:language-change", rebuild, { once: true });
 
     teardownAbout = () => {
       document.removeEventListener("portfolio:language-change", rebuild);
-      [intro, exit, ...draws].forEach((animation) => {
+      [intro, exit].forEach((animation) => {
         animation.scrollTrigger?.kill(true);
         animation.kill();
       });
@@ -345,7 +252,6 @@ import Skills from "../components/Skills.astro";
       lead.style.opacity = lead.style.transform = "";
       taglineText.style.opacity = taglineText.style.transform = "";
       ctaButton.style.opacity = ctaButton.style.transform = "";
-      gsap.set(strokes, { clearProps: "all" });
       stopTyping?.();
       typed.remove();
       caret.remove();
@@ -382,9 +288,10 @@ import Skills from "../components/Skills.astro";
     position: absolute;
     inset: 0;
     z-index: -1;
-    border: 1px solid var(--portfolio-hairline, rgb(255 255 255 / 8%));
+    border: 1.5px solid var(--ink-line);
     border-radius: 0.75rem;
     background: oklch(var(--b1));
+    box-shadow: var(--ink-shadow);
     opacity: var(--card, 1);
     transform: translateY(calc((1 - var(--card, 1)) * 14px));
   }
@@ -410,10 +317,84 @@ import Skills from "../components/Skills.astro";
     line-height: 1.5;
   }
 
-  /* A smaller lead line, so it fits the narrow column in one line; the typed field below stays large. */
+  /* "video games" on a small CRT screen lit in the site's orange, lighter at the top and deeper below, with the
+     words in white like a title card, a red and a cyan fringe either side where the beams miss each other. Over
+     the picture lies the tube's shadow mask (a fine dark mesh), and the glass curves away into dark corners. A
+     soft band of light rolls down the screen. */
+  .game-word {
+    position: relative;
+    display: inline-block;
+    overflow: hidden;
+    /* The face keeps room below for descenders, so the letters need a little more above them to sit centred. */
+    padding: 0.44em 0.8em 0.36em;
+    border: 2px solid #121212;
+    border-radius: 0.6em / 0.75em;
+    /* Brighter than the site's orange (#c0643f), which is what it comes to once the mask has dimmed it. */
+    background: linear-gradient(to bottom, #f3a57c 0%, #e07d52 55%, #b05c40 100%);
+    color: #fffbe6;
+    font-size: 1.25em;
+    font-weight: 700;
+    line-height: 1;
+    white-space: nowrap;
+    text-shadow: 0.07em 0.07em 0 #161616, -0.045em 0 rgba(255, 70, 70, 0.7), 0.045em 0 rgba(70, 225, 255, 0.7);
+  }
+
+  /* The rolling band of light. */
+  .game-word::before {
+    content: "";
+    position: absolute;
+    inset: 0 0 auto;
+    height: 45%;
+    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
+    transform: translateY(-110%);
+    animation: crt-roll 5.5s linear infinite;
+    pointer-events: none;
+  }
+
+  /* The glass's dark corners, over the shadow mask: dark lines three pixels apart, down and across. */
+  .game-word::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background:
+      radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.6) 100%),
+      linear-gradient(to bottom, rgba(0, 0, 0, 0.42) 1px, transparent 1px) 0 0 / 3px 3px,
+      linear-gradient(to right, rgba(0, 0, 0, 0.42) 1px, transparent 1px) 0 0 / 3px 3px;
+    box-shadow: inset 0 0 0.45em 0.1em rgba(0, 0, 0, 0.75);
+    pointer-events: none;
+  }
+
+  @keyframes crt-roll {
+    to {
+      transform: translateY(330%);
+    }
+  }
+
+  /* The lead and the two words sit on one line with a word space between them. On a narrow note the two words
+     drop to their own line, flush left. */
+  .tagline-text {
+    display: inline-flex;
+    flex-wrap: wrap;
+    align-items: center;
+    column-gap: 0.45em;
+    row-gap: 0.3em;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .game-word::before {
+      animation: none;
+    }
+  }
+
+  /* The lead line is set like the tagline under the typed field (body face, regular weight, the base text size:
+     0.625 of the subtitle's 1.6), so the two read as one sentence around it; the typed field stays large. */
   .subtitle-lead {
     display: block;
-    font-size: 0.7em;
+    font-family: var(--font-body);
+    font-size: 0.625em;
+    font-weight: 400;
+    line-height: 1.5;
   }
 
   /* The typed field gets its own line, so typing and deleting never rewraps the lead or shifts the tagline. */

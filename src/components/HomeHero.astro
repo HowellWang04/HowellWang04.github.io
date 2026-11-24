@@ -36,7 +36,7 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
 
   // The name circles the lower chest as a ring of letters. It turns on its own and flips direction with the scroll,
   // like turning a reel. As the hero scrolls away its content stays in place, shrinking and fading a little, while
-  // the page below slides over it like a sheet with a rounded, shadowed top edge.
+  // the page below slides over it like a sheet with a rounded top edge drawn in ink.
   let teardownHero: (() => void) | undefined;
   let setUpHero: HTMLElement | undefined;
 
@@ -257,17 +257,13 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     background: var(--portfolio-canvas);
   }
 
-  /* The page after the hero is a sheet that slides over it: drawn above it, with a rounded, shadowed top edge. */
+  /* The page after the hero is a sheet that slides over it: drawn above it, with a rounded top edge in ink. */
   .home-hero + :global(div) {
     position: relative;
     z-index: 1;
+    border-top: 1.5px solid var(--ink-line);
     border-radius: 2rem 2rem 0 0;
     background: var(--portfolio-canvas);
-    box-shadow: 0 -18px 40px -24px rgba(60, 38, 28, 0.35);
-  }
-
-  :global(html[data-theme="dark"]) .home-hero + :global(div) {
-    box-shadow: 0 -18px 40px -24px rgba(0, 0, 0, 0.8);
   }
 
   .hero-inner {
@@ -351,12 +347,19 @@ const portrait = "/portrait/guanhao-portrait-selected-171840.png";
     font-weight: 700;
     line-height: 1;
     white-space: pre;
-    color: oklch(var(--p));
+    /* The ring crosses both the pale page and the dark sweater, so the letters take the warm orange of the typed
+       line beside them (index.astro), which reads on either without an outline. */
+    color: #c0643f;
     /* Each letter shows only while it faces the viewer. Turned away, its faint mirrored twin (below) shows instead,
        so the far side of the ring stays quiet behind the near side. */
     transform-style: preserve-3d;
     -webkit-backface-visibility: hidden;
     backface-visibility: hidden;
+  }
+
+  /* A lighter orange at night, when the page behind the ring is dark too. */
+  :global(html[data-theme="dark"]) .hero-ring :global(.hero-ring-letter) {
+    color: #d5966f;
   }
 
   .hero-ring :global(.hero-ring-letter)::after {

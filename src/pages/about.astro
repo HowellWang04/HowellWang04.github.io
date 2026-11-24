@@ -1,0 +1,49 @@
+---
+import BaseLayout from "../layouts/BaseLayout.astro";
+import LocalizedText from "../components/LocalizedText.astro";
+import GameCollage from "../components/GameCollage.astro";
+import PlayWithMe from "../components/PlayWithMe.astro";
+import Hobbies from "../components/Hobbies.astro";
+import PlacesGlobe from "../components/PlacesGlobe.astro";
+---
+
+<BaseLayout title="About Me">
+  <section>
+    <h1 class="text-3xl w-full font-bold font-heading mb-5" data-reveal><LocalizedText en="About Me" zh="关于我" /></h1>
+    <PlacesGlobe />
+    <p class="max-w-[38rem] text-lg leading-relaxed" data-reveal>
+      <LocalizedText
+        en="Hi, I'm Guanhao, a computer science student at UW–Madison. I make games, play games, cook, lift, and listen to jazz."
+        zh="你好，我是王冠豪，UW–Madison 计算机科学专业的学生。我做游戏、玩游戏、做饭、健身、听爵士乐。"
+      />
+    </p>
+  </section>
+
+  <section id="games" class="scroll-mt-20 pt-12">
+    <!-- Above the game photos, which drop in from higher up while the doodle is being drawn. -->
+    <div class="relative z-[3] text-3xl w-full font-bold font-heading" data-reveal>
+      <!-- A highlighter swipe behind the heading, then a line-drawn controller beside it (two separate strokes).
+           The script fits both to the heading text, which changes with the language. -->
+      <span class="doodle-heading">
+        <LocalizedText en="My Favorite Video Games" zh="我最喜欢的电子游戏作品" />
+        <svg class="doodle-stroke" aria-hidden="true">
+          <path class="doodle-line" />
+          <g class="doodle-icon">
+            <path d="M6.5 30C8.5 30 10 29 11.1 27.4L14 23H34L36.9 27.4C38 29 39.5 30 41.5 30C44.5 30 47.1 27.5 46.5 24L45 16C44 10 40 6 34 6H14C8 6 4 10 3 16L1.5 24C0.9 27.5 3.5 30 6.5 30Z" />
+            <path d="M13 12.5v6M10 15.5h6" />
+            <circle cx="32.5" cy="13" r="1.2" />
+            <circle cx="37.5" cy="18" r="1.2" />
+          </g>
+        </svg>
+      </span>
+    </div>
+    <GameCollage />
+  </section>
+
+  <PlayWithMe />
+  <Hobbies />
+</BaseLayout>
+
+<script>
+  import "../scripts/doodle-headings";
+</script>

@@ -7,7 +7,6 @@ export default defineConfig({
   site: 'https://guanhao.me',
   // Old addresses: About is the home page now, the CV lives at /resume, and Projects became Portfolio.
   redirects: {
-    '/about': '/',
     '/cv': '/resume',
     '/projects': '/portfolio'
   },

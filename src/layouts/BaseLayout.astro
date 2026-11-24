@@ -49,11 +49,13 @@ const {
       <div class="flex flex-1 flex-col" transition:name="page" transition:animate={pageSlide}>
         <!-- Full-width opening that sits outside the centred column (used by the home page). -->
         <slot name="hero" />
-        <div class="flex-1 md:flex md:justify-center">
+        <!-- A page drawn edge to edge (the Coal Echoes project page) brings its own <main> in the hero slot and
+             leaves the column empty. -->
+        {Astro.slots.has("default") && <div class="flex-1 md:flex md:justify-center">
           <main class="p-6 pt-10 lg:max-w-[900px] max-w-[100vw]">
             <slot />
           </main>
-        </div>
+        </div>}
         <Footer />
       </div>
     </div>
