@@ -16,14 +16,16 @@ const linkClass = "inline-flex items-center gap-1.5 border-b border-accent/40 te
   <div id="about" class="about-card">
     <div class="hero-title font-bold font-heading" data-intro="name"><LocalizedText en="I'm Guanhao Wang" zh="我是王冠豪" /></div>
     <!-- The fields are typed out and deleted one after another on their own line. The static list stays for
-         screen readers, and is what shows without JavaScript or with reduced motion. -->
-    <div class="hero-subtitle py-3 font-bold font-heading" data-intro="subtitle">
-      <span class="subtitle-lead"><LocalizedText en="A Computer Science student focused on" zh="计算机科学专业学生，专注于" /></span>
+         screen readers, and is what shows without JavaScript or with reduced motion.
+         The lead and the tagline are split into plain inline pieces (not LocalizedText, which is an inline-block and
+         would drop the spaces at its edges) so a few words can be bold; the language toggle fills each piece. -->
+    <div class="hero-subtitle pt-3 font-bold font-heading" data-intro="subtitle">
+      <span class="subtitle-lead"><span data-en="A " data-zh="">A </span><strong data-en="Computer Science student" data-zh="计算机科学专业学生">Computer Science student</strong><span data-en=" focused on" data-zh="，专注于"> focused on</span></span>
       <span class="typewriter" data-typewriter><LocalizedText en="Game Design / Game Development" zh="游戏设计 / 游戏开发" /></span>
     </div>
-    <!-- The sentence carries on from the typed line, and ends on the two words set like an arcade title. -->
-    <div class="hero-tagline py-2" data-intro="tagline">
-      <span class="tagline-text" data-tagline-text><LocalizedText en="and I'm passionate about" zh="也热爱" /><span class="game-word font-heading" data-en="video games" data-zh="电子游戏">video games</span></span>
+    <!-- The sentence carries on from the typed line, as close under it as the lead is above it. -->
+    <div class="hero-tagline pb-2" data-intro="tagline">
+      <span class="tagline-text" data-tagline-text><span data-en="and I'm " data-zh="也">and I'm </span><strong data-en="passionate" data-zh="热爱">passionate</strong><span data-en=" about video games" data-zh="电子游戏"> about video games</span></span>
     </div>
     <div class="pt-4" data-intro="cta">
       <a class="btn btn-primary" href="/portfolio"><LocalizedText en="View Portfolio" zh="查看作品集" /><span aria-hidden="true">→</span></a>
@@ -317,74 +319,9 @@ const linkClass = "inline-flex items-center gap-1.5 border-b border-accent/40 te
     line-height: 1.5;
   }
 
-  /* "video games" on a small CRT screen lit in the site's orange, lighter at the top and deeper below, with the
-     words in white like a title card, a red and a cyan fringe either side where the beams miss each other. Over
-     the picture lies the tube's shadow mask (a fine dark mesh), and the glass curves away into dark corners. A
-     soft band of light rolls down the screen. */
-  .game-word {
-    position: relative;
-    display: inline-block;
-    overflow: hidden;
-    /* The face keeps room below for descenders, so the letters need a little more above them to sit centred. */
-    padding: 0.44em 0.8em 0.36em;
-    border: 2px solid #121212;
-    border-radius: 0.6em / 0.75em;
-    /* Brighter than the site's orange (#c0643f), which is what it comes to once the mask has dimmed it. */
-    background: linear-gradient(to bottom, #f3a57c 0%, #e07d52 55%, #b05c40 100%);
-    color: #fffbe6;
-    font-size: 1.25em;
-    font-weight: 700;
-    line-height: 1;
-    white-space: nowrap;
-    text-shadow: 0.07em 0.07em 0 #161616, -0.045em 0 rgba(255, 70, 70, 0.7), 0.045em 0 rgba(70, 225, 255, 0.7);
-  }
-
-  /* The rolling band of light. */
-  .game-word::before {
-    content: "";
-    position: absolute;
-    inset: 0 0 auto;
-    height: 45%;
-    background: linear-gradient(to bottom, transparent, rgba(255, 255, 255, 0.2), transparent);
-    transform: translateY(-110%);
-    animation: crt-roll 5.5s linear infinite;
-    pointer-events: none;
-  }
-
-  /* The glass's dark corners, over the shadow mask: dark lines three pixels apart, down and across. */
-  .game-word::after {
-    content: "";
-    position: absolute;
-    inset: 0;
-    border-radius: inherit;
-    background:
-      radial-gradient(ellipse at center, transparent 45%, rgba(0, 0, 0, 0.6) 100%),
-      linear-gradient(to bottom, rgba(0, 0, 0, 0.42) 1px, transparent 1px) 0 0 / 3px 3px,
-      linear-gradient(to right, rgba(0, 0, 0, 0.42) 1px, transparent 1px) 0 0 / 3px 3px;
-    box-shadow: inset 0 0 0.45em 0.1em rgba(0, 0, 0, 0.75);
-    pointer-events: none;
-  }
-
-  @keyframes crt-roll {
-    to {
-      transform: translateY(330%);
-    }
-  }
-
-  /* The lead and the two words sit on one line with a word space between them. On a narrow note the two words
-     drop to their own line, flush left. */
+  /* A block of its own, so the intro can slide it up. */
   .tagline-text {
-    display: inline-flex;
-    flex-wrap: wrap;
-    align-items: center;
-    column-gap: 0.45em;
-    row-gap: 0.3em;
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .game-word::before {
-      animation: none;
-    }
+    display: inline-block;
   }
 
   /* The lead line is set like the tagline under the typed field (body face, regular weight, the base text size:
