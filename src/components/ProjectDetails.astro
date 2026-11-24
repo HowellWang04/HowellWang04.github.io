@@ -252,7 +252,8 @@ const facts = [
   .project-cover { width: 13rem; height: auto; aspect-ratio: 16 / 9; object-fit: cover; flex-shrink: 0; }
   /* Facts and contributions are ruled rows on one grid: a label column as wide as the cover, then the text. */
   .project-row { display: grid; grid-template-columns: 13rem minmax(0, 1fr); column-gap: 1.5rem; align-items: start; }
-  .project-facts { margin-top: 1.75rem; padding: 0.5rem 0; }
+  /* Each rule sits a little closer to what is above it than to what follows, so it closes that part off. */
+  .project-facts { margin-top: 1.25rem; padding: 0.5rem 0; }
   .project-facts .project-row { padding: 0.5rem 0; }
   /* The label is smaller than its value; the same line height keeps their first lines level. */
   .project-facts dt { line-height: 1.5rem; }
@@ -261,8 +262,8 @@ const facts = [
   .project-section { margin-top: 2rem; }
   .project-photo { margin-top: 1rem; }
   .project-photo img { width: 100%; max-width: 28rem; height: auto; }
-  .tech-list { margin-top: 1rem; }
-  .tech-item { padding: 1rem 0; }
+  .tech-list { margin-top: 0.5rem; }
+  .tech-item { padding: 0.875rem 0 0.625rem; }
   .tech-title { font-size: 1rem; font-weight: 700; line-height: 1.5; }
   .tech-tools { margin-top: 0.375rem; font-size: 0.8125rem; line-height: 1.5; opacity: 0.65; overflow-wrap: anywhere; }
   .tech-summary { font-size: 0.9375rem; line-height: 1.75; }
