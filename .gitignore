@@ -21,3 +21,8 @@ pnpm-debug.log*
 
 # Astro
 .astro/
+
+# Drafts and local tooling that are not part of the site
+art/
+.claude/
+skills-lock.json
