@@ -195,7 +195,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
     duration: { en: "August 2026", zh: "2026 年 8 月" },
     contributionGroups: [
       {
-        title: { en: "Story & level design", zh: "叙事与关卡设计" },
+        title: { en: "Emotional Curve and Story", zh: "情绪曲线与故事" },
         tools: "Four levels · Diary · Camera · Scrapbook",
         summary: {
           en: "Designed a four level route from the factory gate to the ridge, with an emotional curve that moves from loss and curiosity through regret to quiet acceptance.",
@@ -217,11 +217,11 @@ export const projectDetails: Record<string, ProjectDetails> = {
         ],
       },
       {
-        title: { en: "Photography & Echoes", zh: "拍照与回响" },
+        title: { en: "Capture Hub", zh: "拍照中枢" },
         tools: "Unity 6 · CameraStateMachine · EchoTargetDetector",
         summary: {
           en: "Made photography the way the player learns the story. When the camera points at an Echo, a trace of grandpa's time, the frame turns yellow, and the saved photo records it.",
-          zh: "让拍照成为玩家了解故事的方式。镜头对准回响，也就是爷爷那个年代留下的痕迹时，取景框会变黄，保存的照片会记录下这次发现。",
+          zh: "让拍照成为玩家了解故事的方式。镜头对准回响，也就是外公那个年代留下的痕迹时，取景框会变黄，保存的照片会记录下这次发现。",
         },
         details: [
           {
@@ -234,12 +234,12 @@ export const projectDetails: Record<string, ProjectDetails> = {
           },
           {
             en: "Picking up grandpa's diary is what turns Echoes on. Tools found by inspecting, such as the lock pick and bolt cutter, open ways forward without the camera. Main story Echoes are photographed to continue, and optional Echoes add context.",
-            zh: "拾起爷爷的日记后回响才会开启。通过检视找到的工具，例如开锁工具和断线钳，不用相机也能打开前路。主线回响需要拍下才能继续，可选回响则补充背景。",
+            zh: "拾起外公的日记后回响才会开启。通过检视找到的工具，例如开锁工具和断线钳，不用相机也能打开前路。主线回响需要拍下才能继续，可选回响则补充背景。",
           },
         ],
       },
       {
-        title: { en: "Album, scrapbook & saves", zh: "相册、手账与存档" },
+        title: { en: "Scripts and Persistence", zh: "脚本与存档" },
         tools: "ScrapBookCanvas · JSON · persistentDataPath",
         summary: {
           en: "Built the album and scrapbook that carry each photo forward. Echo photos get a warm frame in the album, and in the scrapbook their text becomes a handwritten note taped to the photo.",
@@ -252,12 +252,12 @@ export const projectDetails: Record<string, ProjectDetails> = {
           },
           {
             en: "Captured photos, Echo texts, registered scrapbook photos, the canvas layout and discovered Echoes are kept in separate files under Application.persistentDataPath, so a photograph keeps its discovery state and handwritten note when the player returns. Grandpa's diary pages are pure data loaded from a JSON file.",
-            zh: "拍摄的照片、回响文字、已登记的手账照片、画布布局和已发现的回响分别保存在 Application.persistentDataPath 下的独立文件里，玩家回来时照片仍保有发现状态和手写便签。爷爷的日记页是纯数据，从 JSON 文件加载。",
+            zh: "拍摄的照片、回响文字、已登记的手账照片、画布布局和已发现的回响分别保存在 Application.persistentDataPath 下的独立文件里，玩家回来时照片仍保有发现状态和手写便签。外公的日记页是纯数据，从 JSON 文件加载。",
           },
         ],
       },
       {
-        title: { en: "Terrain pipeline", zh: "地形流程" },
+        title: { en: "Terrain Workflow", zh: "地形工作流" },
         tools: "USGS 1 m DEM · Poisson solver · MapMagic 2",
         summary: {
           en: "Turned a real 1 m elevation survey of Nevada's Sheep Range into the game's enclosed valley, a stand-in for the bare stone ridges of Shitanjing.",
@@ -279,11 +279,33 @@ export const projectDetails: Record<string, ProjectDetails> = {
         ],
       },
       {
-        title: { en: "Newspaper menu & 1980 group photo", zh: "报纸菜单与 1980 年合影" },
-        tools: "HDRP · HLSL · Claude Code · Codex MCP",
+        title: { en: "Group Photograph", zh: "合影" },
+        tools: "Unity · Claude Code · Codex MCP",
         summary: {
-          en: "Made both printed images from the game's own scene. The main menu is a 1980 newspaper whose photo is filmed live from a cableway tower, and grandpa's group photo starts from a Unity render of the same gate the player walks through.",
-          zh: "两张印刷图像都出自游戏自身的场景。主菜单是一份 1980 年的报纸，上面的照片从索道塔上实时拍摄。爷爷的合影则以玩家将要走过的同一座厂门的 Unity 渲染图为底。",
+          en: "One gate, two eras. A staged photograph gives the player a viewpoint to find again.",
+          zh: "同一座大门，两个年代。一张摆拍的合影，给玩家留下一个要重新找到的视角。",
+        },
+        details: [
+          {
+            en: "The protagonist carries one old photo of twelve new workers at the plant gate on 3 October 1980. Its background is the game's own gate, rendered in Unity and set back to 1980 with fresh paint and a red banner.",
+            zh: "主角随身带着一张老照片，是 1980 年 10 月 3 日十二位新工人在厂区大门前的合影。它的背景就是游戏里的大门，在 Unity 中渲染，并用新刷的油漆和红色横幅还原到 1980 年。",
+          },
+          {
+            en: "Claude cannot generate images, so it cannot draw people or faces. Instead it wrote the prompt and called OpenAI's GPT image model through the Codex MCP, which added only the workers.",
+            zh: "Claude 不能生成图像，画不了人物和面孔。所以由它撰写提示词，通过 Codex MCP 调用 OpenAI 的 GPT 图像模型，只添加工人。",
+          },
+          {
+            en: "A script then cut the people out and placed them back onto the untouched render, and a second script aged it into a black and white print. That print is the exact image the player finds in the game.",
+            zh: "随后一个脚本把人物抠出来放回未改动的渲染图，另一个脚本把它做旧成黑白照片。这张照片就是玩家在游戏里找到的那一张。",
+          },
+        ],
+      },
+      {
+        title: { en: "Newspaper Print", zh: "报纸印刷" },
+        tools: "HDRP · HLSL",
+        summary: {
+          en: "The menu photograph uses the actual plant view and carries the player from newsprint into the scene.",
+          zh: "菜单上的照片用的是真实的厂区视角，把玩家从报纸带进场景。",
         },
         details: [
           {
@@ -294,14 +316,10 @@ export const projectDetails: Record<string, ProjectDetails> = {
             en: "The shader also holds a halftone dot grid adapted from Daniel Ilett's Halftone Shader Graph (MIT), which I converted from a URP Shader Graph into a fullscreen HLSL shader for HDRP. The dots surface faintly in the opening transition, when Start New Game zooms the photo to fill the screen.",
             zh: "着色器里还有一套半调网点，改写自 Daniel Ilett 的 Halftone Shader Graph（MIT），我把它从 URP Shader Graph 转成了 HDRP 的全屏 HLSL 着色器。网点只在开场转场中隐约出现，也就是点击 Start New Game 后照片放大到铺满屏幕的时候。",
           },
-          {
-            en: "For the group photo, the gate is rendered in Unity with no people and set back to 1980 with fresh paint and a red banner. Claude cannot generate images, so it wrote the prompt and called OpenAI's GPT image model through the Codex MCP, which added only the twelve workers. One script cut the people out and placed them back onto the untouched render, and a second aged it into a black and white print.",
-            zh: "合影先在 Unity 中渲染没有人物的厂门，并用新刷的油漆和红色横幅把它还原到 1980 年。Claude 不能生成图像，所以由它撰写提示词，通过 Codex MCP 调用 OpenAI 的 GPT 图像模型，只添加十二位工人。一个脚本把人物抠出来放回未改动的渲染图，另一个脚本把它做旧成黑白照片。",
-          },
         ],
       },
       {
-        title: { en: "Playtest & iteration", zh: "试玩与迭代" },
+        title: { en: "Playtest and Iteration", zh: "试玩与迭代" },
         tools: "3 players · UI · Level design · Onboarding",
         summary: {
           en: "Invited three players from different backgrounds, grouped their feedback by design area, and iterated on the interface, the ridge photo and the onboarding.",
@@ -318,7 +336,7 @@ export const projectDetails: Record<string, ProjectDetails> = {
           },
           {
             en: "Player C found the guidance in the first level too rough, since it unlocked too many things at once. Tabs now open one at a time, in the order the first level teaches them, each with its own task hint. A planned per level Echo counter was dropped at the design stage, and each Echo photo goes into the scrapbook with the protagonist's note to Grandpa instead.",
-            zh: "玩家 C 觉得第一关的引导太粗糙，一次解锁的东西太多。现在标签按第一关教学的顺序逐个开启，每个都有自己的任务提示。原计划的每关回响计数器在设计阶段就被放弃，每张回响照片改为带着主角写给爷爷的便签进入手账。",
+            zh: "玩家 C 觉得第一关的引导太粗糙，一次解锁的东西太多。现在标签按第一关教学的顺序逐个开启，每个都有自己的任务提示。原计划的每关回响计数器在设计阶段就被放弃，每张回响照片改为带着主角写给外公的便签进入手账。",
           },
         ],
       },

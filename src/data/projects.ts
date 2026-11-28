@@ -10,7 +10,7 @@ export const featuredProjects = [
     portfolioPages: "2–20",
     img: "/coal-echoes-cover.jpg",
     desc: "A first-person narrative exploration game set in an abandoned coal washing plant in northwest China. Carrying a late grandfather's diary and a 1980 group photo, photograph traces of the past, keep a scrapbook, and ride the old ropeway to the ridge where two workers once planned to watch the plant's lights.",
-    descZh: "第一人称叙事探索游戏，故事发生在中国西北一座废弃的洗煤厂。带着已故爷爷的日记和一张 1980 年的合影，拍下过去的痕迹、整理手账，乘上老索道，去往两位工人当年约好看厂区灯火的山脊。",
+    descZh: "第一人称叙事探索游戏，故事发生在中国西北一座废弃的洗煤厂。带着已故外公的日记和一张 1980 年的合影，拍下过去的痕迹、整理手账，乘上老索道，去往两位工人当年约好看厂区灯火的山脊。",
     url: "https://github.com/HowellWang04/Coal-Echoes",
     category: "personal-game",
   },

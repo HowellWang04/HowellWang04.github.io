@@ -16,18 +16,19 @@ const project = featuredProjects.find((item) => item.projectId === "coal-echoes"
 const details = projectDetails["coal-echoes"];
 const asset = (name: string) => `/coal-echoes/${name}.webp`;
 
+// The same three facts as the cover of the portfolio PDF.
 const facts = [
-  { label: { en: "My role", zh: "我的角色" }, value: details.role },
-  { label: { en: "Team", zh: "团队背景" }, value: details.team },
-  { label: { en: "Timeline", zh: "开发周期" }, value: details.duration },
+  { label: { en: "Software", zh: "软件" }, value: { en: "Unity 6 · Blender", zh: "Unity 6 · Blender" } },
+  { label: { en: "Role", zh: "角色" }, value: details.team },
+  { label: { en: "Date", zh: "日期" }, value: details.duration },
 ];
 
-// The four levels, day to night, under the story part.
+// The four levels, day to night, under the story part, named as in the portfolio's emotional curve.
 const route = [
-  { src: asset("route-gate"), en: "The factory gate, day", zh: "厂门，白天" },
-  { src: asset("route-room207"), en: "Room 207", zh: "207 宿舍" },
-  { src: asset("route-ride"), en: "The cableway", zh: "索道" },
-  { src: asset("route-ridge"), en: "The ridge, night", zh: "山脊，夜晚" },
+  { src: asset("route-gate"), en: "01 The Factory Gate", zh: "01 厂区大门" },
+  { src: asset("route-room207"), en: "02 The Dormitory", zh: "02 宿舍楼" },
+  { src: asset("route-ride"), en: "03 The Lower Station", zh: "03 索道下站" },
+  { src: asset("route-ridge"), en: "04 The Upper Station", zh: "04 索道上站" },
 ];
 
 // One entry per contribution group, in the same order: the sticker beside its heading and its pictures.
@@ -37,36 +38,42 @@ const chapters = [
   {
     sticker: "sticker-RidgeNight",
     figures: [
-      { src: asset("echo-undiscovered"), en: "Framing an Echo: the gate from Grandpa's photo", zh: "对准回响：外公照片里的那扇厂门" },
-      { src: asset("echo-discovered"), en: "The frame turns yellow and the photo is stamped", zh: "取景框变黄，照片盖上印章" },
+      { src: asset("echo-undiscovered"), en: "Undiscovered Echo. Recognise an Echo.", zh: "未发现的回响。认出回响。" },
+      { src: asset("echo-discovered"), en: "New Echo discovered. A present-day photograph records a trace of the past.", zh: "发现新的回响。一张今天的照片记下过去的痕迹。" },
     ],
   },
   {
     sticker: "sticker-EnamelMug",
     figures: [
-      { src: asset("echo-notes"), en: "Echo photos in the scrapbook, each with a taped note to Grandpa", zh: "手账里的回响照片，各贴着一张写给外公的便签", wide: true },
-      { src: asset("scrapbook"), en: "Photos, stickers and stamps arranged by the player", zh: "玩家自己摆放的照片、贴纸和印章", wide: true },
+      { src: asset("echo-notes"), en: "Echo Notes. Shoot a trace of Grandpa's era and the photo gets an ECHO stamp and a handwritten note.", zh: "回响便签。拍下外公那个年代的痕迹，照片会盖上 ECHO 印章，附上一张手写便签。", wide: true },
+      { src: asset("scrapbook"), en: "Photos, stickers and text. Drag to place, rotate and resize.", zh: "照片、贴纸和文字。拖动摆放、旋转和缩放。", wide: true },
     ],
   },
   {
     sticker: "sticker-CablewayBucket",
     figures: [
-      { src: asset("terrain-stages"), en: "Survey heights, the Poisson join, and the final valley", zh: "实测高度、Poisson 接合、最终的山谷", wide: true },
-      { src: asset("terrain-valley"), en: "The valley in game", zh: "游戏里的山谷", wide: true },
+      { src: asset("terrain-stages"), en: "Solver comparison. Survey heights, the Poisson join, and crease repair.", zh: "求解对比。实测高度、Poisson 接合和折痕修复。", wide: true },
+      { src: asset("terrain-valley"), en: "Unity view of the valley, rendered with shaders and environment treatment.", zh: "Unity 里的山谷，带着色器和环境处理。", wide: true },
+    ],
+  },
+  {
+    stamp: "stamp-Postmark1980",
+    figures: [
+      { src: asset("group-photo"), en: "In the game. Comes with Grandpa's diary and is retaken later at the same gate.", zh: "游戏里的合影。随外公的日记一起找到，之后在同一座大门前重拍。", wide: true },
     ],
   },
   {
     sticker: "sticker-PlantStamp",
     figures: [
-      { src: asset("newspaper-menu"), en: "The 1980 newspaper main menu", zh: "1980 年报纸样式的主菜单", wide: true },
-      { src: asset("print-stage-1"), en: "The camera's picture", zh: "相机拍到的画面" },
-      { src: asset("print-stage-3"), en: "Ink, paper and wear", zh: "加上油墨、纸张和磨损" },
+      { src: asset("newspaper-menu"), en: "Newspaper menu. The plant as it once appeared in print.", zh: "报纸菜单。厂区当年见报的样子。", wide: true },
+      { src: asset("print-stage-1"), en: "1 · The live camera image.", zh: "1 · 实时相机画面。" },
+      { src: asset("print-stage-3"), en: "3 · Newsprint shows through, and the ink turns light and uneven. This is the final menu photo.", zh: "3 · 透出新闻纸，墨色变浅且不均匀。这就是菜单上的照片。" },
     ],
   },
   {
     stamp: "echo-stamp",
     figures: [
-      { src: asset("ridge-photo"), en: "The ridge photo after the playtest: the dormitory and the flagpole in view", zh: "试玩后的山脊照片：宿舍楼和旗杆都进了画面", wide: true },
+      { src: asset("ridge-photo"), en: "After. The dormitory and the flagpole are in view.", zh: "修改后。宿舍楼和旗杆都进入画面。", wide: true },
     ],
   },
 ];
