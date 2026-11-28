@@ -17,7 +17,7 @@ const absolute = (url) => (url.startsWith("/") ? site + url : url);
 const splitEntry = (entry) => {
   const [name, role] = entry.title.split("  |  ");
   const [date, ...details] = entry.meta ? entry.meta.split("  ·  ") : [];
-  return { name, date, details: [role, ...details].filter(Boolean).join(" · ") };
+  return { name, date, details: [role, ...details].filter(Boolean).join(" | ") };
 };
 
 const renderEntry = (entry) => {
